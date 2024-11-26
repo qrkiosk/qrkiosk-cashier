@@ -1,0 +1,75 @@
+html {
+  background-color: var(--zmp-background-color);
+}
+
+.safe-area {
+  padding-top: var(--zaui-safe-area-inset-top, 16px);
+  padding-bottom: var(--zaui-safe-area-inset-bottom, 16px);
+}
+
+.safe-area-top {
+  padding-top: var(--zaui-safe-area-inset-top, 16px);
+}
+
+.safe-area-bottom {
+  padding-bottom: var(--zaui-safe-area-inset-bottom, 16px);
+}
+
+.safe-area .zaui-page {
+  min-height: unset;
+}
+
+.section-container {
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.two-line-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.5em;
+  max-height: 3em;
+}
+
+.zaui-header::after {
+  content: none;
+}
+
+.zaui-bottom-navigation-item .zaui-bottom-navigation-item-icon {
+  font-size: 20px;
+}
+
+:not(input):not(textarea) {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.toast-container {
+  > div > div {
+    padding: 12px 16px;
+    background-color: #212121;
+    color: #fffffff2;
+    border-radius: 8px;
+  }
+}
+
+.zaui-sheet {
+  .zaui-sheet-content {
+    min-height: unset;
+  }
+}
