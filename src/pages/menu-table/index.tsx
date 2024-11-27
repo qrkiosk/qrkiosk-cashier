@@ -21,78 +21,75 @@ const MenuTable = () => {
   useRemoveQueriesOnUnmount(["table"]);
 
   return (
-    <>
-      <hr />
-      <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-        <Tabs
-          items={["Tất cả", "Chờ xác nhận", "Đang sử dụng", "Còn trống"]}
-          value={MENU_TABLE_TABS[index]}
-          onChange={(tab) => setIndex(MENU_TABLE_TABS.indexOf(tab))}
-          renderLabel={(item) => item}
-        />
+    <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+      <Tabs
+        items={["Tất cả", "Chờ xác nhận", "Đang sử dụng", "Còn trống"]}
+        value={MENU_TABLE_TABS[index]}
+        onChange={(tab) => setIndex(MENU_TABLE_TABS.indexOf(tab))}
+        renderLabel={(item) => item}
+      />
 
-        {(function () {
-          if (isLoading) {
-            return (
-              <FlexDiv row center>
-                <Spinner />
-              </FlexDiv>
-            );
-          }
-
-          if (error) {
-            return (
-              <FlexDiv col center className="space-y-4">
-                <p className="text-sm text-subtitle">
-                  Lỗi: Không thể tải dữ liệu.
-                </p>
-                <Button
-                  onClick={async () => {
-                    try {
-                      await refetch();
-                    } catch {
-                      toast.error("Xảy ra lỗi khi tải dữ liệu.");
-                    }
-                  }}
-                >
-                  Tải lại
-                </Button>
-              </FlexDiv>
-            );
-          }
-
-          if (isEmpty(data)) {
-            return (
-              <FlexDiv row center>
-                <p className="text-sm text-subtitle">Không có dữ liệu.</p>
-              </FlexDiv>
-            );
-          }
-
+      {(function () {
+        if (isLoading) {
           return (
-            <>
-              <ZoneList />
-              <div className="flex-1 overflow-auto">
-                {(function () {
-                  switch (index) {
-                    case 0:
-                      return <TableGrid.All />;
-                    case 1:
-                      return <TableGrid.Waiting />;
-                    case 2:
-                      return <TableGrid.InUse />;
-                    case 3:
-                      return <TableGrid.Empty />;
-                    default:
-                      return null;
-                  }
-                })()}
-              </div>
-            </>
+            <FlexDiv row center>
+              <Spinner />
+            </FlexDiv>
           );
-        })()}
-      </div>
-    </>
+        }
+
+        if (error) {
+          return (
+            <FlexDiv col center className="space-y-4">
+              <p className="text-sm text-subtitle">
+                Lỗi: Không thể tải dữ liệu.
+              </p>
+              <Button
+                onClick={async () => {
+                  try {
+                    await refetch();
+                  } catch {
+                    toast.error("Xảy ra lỗi khi tải dữ liệu.");
+                  }
+                }}
+              >
+                Tải lại
+              </Button>
+            </FlexDiv>
+          );
+        }
+
+        if (isEmpty(data)) {
+          return (
+            <FlexDiv row center>
+              <p className="text-sm text-subtitle">Không có dữ liệu.</p>
+            </FlexDiv>
+          );
+        }
+
+        return (
+          <>
+            <ZoneList />
+            <div className="flex-1 overflow-auto">
+              {(function () {
+                switch (index) {
+                  case 0:
+                    return <TableGrid.All />;
+                  case 1:
+                    return <TableGrid.Waiting />;
+                  case 2:
+                    return <TableGrid.InUse />;
+                  case 3:
+                    return <TableGrid.Empty />;
+                  default:
+                    return null;
+                }
+              })()}
+            </div>
+          </>
+        );
+      })()}
+    </div>
   );
 };
 

@@ -1,3 +1,4 @@
+import { useRouteHandle } from "@/hooks";
 import HorizontalDivider from "./horizontal-divider";
 import TransitionLink from "./transition-link";
 import {
@@ -15,7 +16,7 @@ const BOTTOM_NAV_ITEMS = [
   },
   {
     name: "Sổ quỹ",
-    path: "/categories",
+    path: "/cart",
     icon: LedgerIcon,
   },
   {
@@ -64,6 +65,10 @@ const BOTTOM_NAV_ITEMS = [
 ];
 
 export default function Footer() {
+  const [handle] = useRouteHandle();
+
+  if (handle?.footerless === true) return null;
+
   return (
     <>
       <HorizontalDivider />

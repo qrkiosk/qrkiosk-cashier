@@ -1,9 +1,11 @@
+import { BreadcrumbEntry } from "@/types/common";
+import { Table } from "@/types/company";
+import { withThousandSeparators } from "@/utils/number";
 import classNames from "classnames";
 import isEmpty from "lodash/isEmpty";
 import React from "react";
 import { FaBagShopping, FaFileLines, FaTruckFast } from "react-icons/fa6";
-import { Table } from "../../types/company";
-import { withThousandSeparators } from "../../utils/number";
+import { useNavigate } from "react-router-dom";
 
 type TileProps = {
   children: React.ReactNode;
@@ -29,14 +31,14 @@ const Tile = ({ children, highlighted = false, onClick }: TileProps) => {
 };
 
 const TableTile = {} as {
-  Takeaway: React.FC<{ children: Table; onClick?: () => void }>;
-  Delivery: React.FC<{ children: Table; onClick?: () => void }>;
-  OnSite: React.FC<{ children: Table; onClick?: () => void }>;
+  Takeaway: React.FC<{ table: Table }>;
+  Delivery: React.FC<{ table: Table }>;
+  OnSite: React.FC<{ table: Table }>;
 };
 
-TableTile.Takeaway = ({ children: table, onClick }) => {
+TableTile.Takeaway = ({ table }) => {
   return (
-    <Tile highlighted={!isEmpty(table.orders)} onClick={onClick}>
+    <Tile highlighted={!isEmpty(table.orders)}>
       <div className="flex flex-1 flex-col">
         <div className="flex items-center space-x-1">
           <FaBagShopping />
@@ -48,9 +50,9 @@ TableTile.Takeaway = ({ children: table, onClick }) => {
   );
 };
 
-TableTile.Delivery = ({ children: table, onClick }) => {
+TableTile.Delivery = ({ table }) => {
   return (
-    <Tile highlighted={!isEmpty(table.orders)} onClick={onClick}>
+    <Tile highlighted={!isEmpty(table.orders)}>
       <div className="flex flex-1 flex-col">
         <div className="flex items-center space-x-1">
           <FaTruckFast />
@@ -62,11 +64,30 @@ TableTile.Delivery = ({ children: table, onClick }) => {
   );
 };
 
-TableTile.OnSite = ({ children: table, onClick }) => {
+TableTile.OnSite = ({ table }) => {
   const hasOrders = !isEmpty(table.orders);
+  const navigate = useNavigate();
 
   return (
-    <Tile highlighted={hasOrders} onClick={onClick}>
+    <Tile
+      highlighted={hasOrders}
+      onClick={() => {
+        if (isEmpty(table.orders)) return; // TODO: Handle create at-counter order creation flow later
+
+        const order = table.orders[0];
+        const title: BreadcrumbEntry[] = [
+          {
+            text: table.zoneName,
+            nav: { path: "/menu-table" },
+          },
+          { text: table.name },
+        ];
+
+        navigate("/order-details", {
+          state: { order, title },
+        });
+      }}
+    >
       <div className="flex flex-1 flex-col justify-between">
         <div className="text-sm font-semibold">{table.name}</div>
         <div className="flex items-center justify-between">

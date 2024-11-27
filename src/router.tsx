@@ -6,6 +6,7 @@ import ProductListPage from "@/pages/catalog/product-list";
 import HomePage from "@/pages/home";
 import LoginPage from "@/pages/login";
 import MenuTable from "@/pages/menu-table";
+import OrderDetailsPage from "@/pages/order-details";
 import ProfilePage from "@/pages/profile";
 import SearchPage from "@/pages/search";
 import { getBasePath } from "@/utils/zma";
@@ -81,8 +82,7 @@ const router = createBrowserRouter(
           path: "/login",
           element: <LoginPage />,
           handle: {
-            title: "",
-            back: false,
+            headerless: true,
           },
         },
         {
@@ -94,10 +94,18 @@ const router = createBrowserRouter(
             user: true,
           },
         },
+        {
+          path: "/order-details",
+          element: <OrderDetailsPage />,
+          handle: {
+            back: true,
+            footerless: true,
+          },
+        },
       ],
     },
   ],
-  { basename: getBasePath() }
+  { basename: getBasePath() },
 );
 
 export default router;

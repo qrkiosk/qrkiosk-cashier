@@ -20,3 +20,11 @@ export enum Tab {
   COUNTER = "counter",
   STORE = "store",
 }
+
+export interface BreadcrumbEntry {
+  text: string | null;
+  nav?: {
+    path: string;
+    params?: Record<string, string>;
+  };
+}

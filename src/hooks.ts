@@ -166,6 +166,8 @@ export function useRouteHandle() {
       logo?: boolean;
       back?: boolean;
       user?: boolean;
+      headerless?: boolean;
+      footerless?: boolean;
       scrollRestoration?: number;
     }
   >[];

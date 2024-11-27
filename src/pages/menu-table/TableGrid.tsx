@@ -40,11 +40,11 @@ TableGrid.All = () => {
             {(function () {
               switch (table.type) {
                 case TableType.TAKE_AWAY:
-                  return <TableTile.Takeaway>{table}</TableTile.Takeaway>;
+                  return <TableTile.Takeaway table={table} />;
                 case TableType.DELIVERY:
-                  return <TableTile.Delivery>{table}</TableTile.Delivery>;
+                  return <TableTile.Delivery table={table} />;
                 case TableType.ON_SITE:
-                  return <TableTile.OnSite>{table}</TableTile.OnSite>;
+                  return <TableTile.OnSite table={table} />;
                 default:
                   return null; // just for completeness of the switch statement, not possible in reality
               }
@@ -72,7 +72,7 @@ TableGrid.Empty = () => {
       <Grid>
         {tables.map((table) => (
           <div key={table.id} className="col-span-1">
-            <TableTile.OnSite>{table}</TableTile.OnSite>
+            <TableTile.OnSite table={table} />
           </div>
         ))}
       </Grid>
@@ -96,7 +96,7 @@ TableGrid.InUse = () => {
       <Grid>
         {tables.map((table) => (
           <div key={table.id} className="col-span-1">
-            <TableTile.OnSite>{table}</TableTile.OnSite>
+            <TableTile.OnSite table={table} />
           </div>
         ))}
       </Grid>
@@ -120,7 +120,7 @@ TableGrid.Waiting = () => {
       <Grid>
         {tables.map((table) => (
           <div key={table.id} className="col-span-1">
-            <TableTile.OnSite>{table}</TableTile.OnSite>
+            <TableTile.OnSite table={table} />
           </div>
         ))}
       </Grid>

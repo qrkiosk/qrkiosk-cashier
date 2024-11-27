@@ -12,7 +12,6 @@ import ConfigProvider from "./config-provider";
 import Footer from "./footer";
 import Header from "./header";
 import OpenShiftModal from "./open-shift-modal";
-import OrderSocket from "./order-socket";
 import { PageSkeleton } from "./skeleton";
 
 const InnerLayout = () => {
@@ -44,7 +43,7 @@ const InnerLayout = () => {
           top: "calc(50% - 24px)",
         }}
       />
-      <OrderSocket />
+      {/* <OrderSocket /> */}
       <OpenShiftModal />
       {/* <ScrollRestoration /> */}
     </div>

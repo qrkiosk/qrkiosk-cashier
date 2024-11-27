@@ -17,14 +17,14 @@ const Profile = () => {
         <img className="h-[32px] w-[32px]" src={userSVG} />
         <p className="text-sm">{user?.name}</p>
       </div>
-      <button
+      {/* <button
         onClick={() => {
           logout();
           navigate("/login", { replace: true });
         }}
       >
         Logout
-      </button>
+      </button> */}
     </div>
   );
 };
