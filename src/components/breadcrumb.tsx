@@ -9,15 +9,20 @@ const Breadcrumb = ({ entries }: { entries: BreadcrumbEntry[] }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center space-x-2 px-4 py-3">
+    <div className="flex items-center space-x-1 py-3">
       {entries.map((entry, index) => {
         const isLast = index === entries.length - 1;
-        const isClickable = !isEmpty(entry.nav);
-        const onClick = isClickable
-          ? () => {
-              if (!isEmpty(entry.nav)) navigate(entry.nav.path);
-            }
-          : undefined;
+        const hasLink = !isEmpty(entry.nav);
+        const onClick =
+          hasLink && !isLast
+            ? () => {
+                if (!isEmpty(entry.nav)) {
+                  navigate(entry.nav.path, {
+                    state: { title: entries.slice(0, index + 1) },
+                  });
+                }
+              }
+            : undefined;
 
         return (
           <Fragment key={`breadcrumb-${index}`}>
@@ -25,15 +30,14 @@ const Breadcrumb = ({ entries }: { entries: BreadcrumbEntry[] }) => {
               className={classNames("text-sm", {
                 "font-normal text-subtitle": !isLast,
                 "font-semibold": isLast,
-                "cursor-pointer": isClickable,
+                "cursor-pointer": hasLink && !isLast,
               })}
-              onClick={onClick}
             >
               {entry.text}
             </span>
             {!isLast && (
               <FaAngleRight
-                fontSize={14}
+                fontSize={12}
                 fontWeight={300}
                 color="rgb(109, 109, 109)"
               />

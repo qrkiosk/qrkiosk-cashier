@@ -18,10 +18,12 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import toast from "react-hot-toast";
 import { UIMatch, useMatches, useNavigate } from "react-router-dom";
+import { useBoolean } from "usehooks-ts";
 import { openChat, purchase } from "zmp-sdk";
 
 export function useRealHeight(
@@ -233,4 +235,32 @@ export const useCheckUserSession = () => {
       navigate("/login", { replace: true });
     }
   }, [isAuthenticated]);
+};
+
+export const useFocusedInputRef = <
+  T extends HTMLInputElement | HTMLTextAreaElement,
+>(
+  shouldFocus = true,
+) => {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    if (!shouldFocus) return;
+
+    setTimeout(() => {
+      ref.current?.focus();
+    }, 0);
+  }, [shouldFocus]);
+
+  return ref;
+};
+
+export const useDisclosure = (initialValue = false) => {
+  const {
+    value: isOpen,
+    setTrue: on,
+    setFalse: off,
+    toggle,
+  } = useBoolean(initialValue);
+
+  return [isOpen, { on, off, toggle }] as const;
 };

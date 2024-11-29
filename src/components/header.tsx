@@ -45,7 +45,7 @@ export default function Header() {
 
   if (handle?.user === true) {
     return (
-      <div className="z-50 flex h-14 w-full items-center border-b-[1px] border-b-black/5 px-2 py-2">
+      <div className="z-50 flex h-14 w-full items-center border-b-[1px] border-b-black/5 p-2">
         <Profile />
       </div>
     );

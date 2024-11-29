@@ -27,6 +27,7 @@
     "@tanstack/query-core": "^5.60.6",
     "@tanstack/react-query": "^5.61.0",
     "@use-gesture/react": "^10.3.1",
+    "autosize": "^6.0.1",
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
@@ -46,6 +47,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
+    "usehooks-ts": "^3.1.0",
     "zmp-sdk": "^2.43.0",
     "zmp-ui": "^1.11.5"
   },

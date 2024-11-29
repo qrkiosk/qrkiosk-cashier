@@ -45,6 +45,7 @@ const MenuTable = () => {
                 Lỗi: Không thể tải dữ liệu.
               </p>
               <Button
+                variant="secondary"
                 onClick={async () => {
                   try {
                     await refetch();

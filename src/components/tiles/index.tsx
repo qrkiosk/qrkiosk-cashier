@@ -1,7 +1,9 @@
+import { currentOrderAtom } from "@/state";
 import { BreadcrumbEntry } from "@/types/common";
 import { Table } from "@/types/company";
 import { withThousandSeparators } from "@/utils/number";
 import classNames from "classnames";
+import { useSetAtom } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import React from "react";
 import { FaBagShopping, FaFileLines, FaTruckFast } from "react-icons/fa6";
@@ -67,6 +69,7 @@ TableTile.Delivery = ({ table }) => {
 TableTile.OnSite = ({ table }) => {
   const hasOrders = !isEmpty(table.orders);
   const navigate = useNavigate();
+  const setCurrentOrder = useSetAtom(currentOrderAtom);
 
   return (
     <Tile
@@ -76,15 +79,13 @@ TableTile.OnSite = ({ table }) => {
 
         const order = table.orders[0];
         const title: BreadcrumbEntry[] = [
-          {
-            text: table.zoneName,
-            nav: { path: "/menu-table" },
-          },
+          { text: table.zoneName },
           { text: table.name },
         ];
 
+        setCurrentOrder(order);
         navigate("/order-details", {
-          state: { order, title },
+          state: { title },
         });
       }}
     >

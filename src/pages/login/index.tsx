@@ -1,12 +1,9 @@
 import { authenticate } from "@/api/login";
 import Button from "@/components/button";
+import FormControl from "@/components/form/form-control";
+import FormError from "@/components/form/form-error";
 import { authResultAtom } from "@/state";
-import {
-  Container,
-  FormControl,
-  FormErrorMessage,
-  useBoolean,
-} from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import classNames from "classnames";
 import { useSetAtom } from "jotai";
@@ -16,7 +13,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { Button as IconButton } from "zmp-ui";
+import { useBoolean } from "usehooks-ts";
 
 enum FormFields {
   USERNAME = "username",
@@ -25,7 +22,7 @@ enum FormFields {
 
 const LoginForm = () => {
   const navigate = useNavigate();
-  const [isPasswordVisible, { toggle }] = useBoolean();
+  const { value: isPasswordVisible, toggle } = useBoolean();
   const {
     handleSubmit,
     register,
@@ -55,7 +52,7 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col justify-center space-y-6 p-5">
-        <FormControl isInvalid={!isEmpty(errors[FormFields.PASSWORD])}>
+        <FormControl>
           <label
             htmlFor={FormFields.USERNAME}
             className="mb-2 block font-semibold"
@@ -70,23 +67,20 @@ const LoginForm = () => {
             className={classNames(
               "h-12 w-full rounded-lg bg-section pl-4 pr-3 text-lg normal-case outline-none placeholder:text-inactive",
               {
-                "border border-2 border-red-500": !isEmpty(
+                "border-2 border-red-500": !isEmpty(
                   errors[FormFields.USERNAME],
                 ),
               },
             )}
             {...register(FormFields.USERNAME, {
-              required: "Đây là trường bắt buộc",
-              minLength: { value: 5, message: "Tối thiểu 5 ký tự" },
+              required: "Đây là trường bắt buộc.",
+              minLength: { value: 5, message: "Tối thiểu 5 ký tự." },
             })}
           />
-          <FormErrorMessage>
-            {!isEmpty(errors[FormFields.USERNAME]) &&
-              (errors[FormFields.USERNAME].message as string)}
-          </FormErrorMessage>
+          <FormError error={errors[FormFields.USERNAME]} />
         </FormControl>
 
-        <FormControl isInvalid={!isEmpty(errors[FormFields.PASSWORD])}>
+        <FormControl>
           <label
             htmlFor={FormFields.PASSWORD}
             className="mx-0 mb-2 block font-semibold"
@@ -102,37 +96,38 @@ const LoginForm = () => {
               className={classNames(
                 "h-12 w-full rounded-lg bg-section pl-4 pr-3 text-lg outline-none placeholder:text-inactive",
                 {
-                  "border border-2 border-red-500": !isEmpty(
+                  "border-2 border-red-500": !isEmpty(
                     errors[FormFields.PASSWORD],
                   ),
                 },
               )}
               {...register(FormFields.PASSWORD, {
-                required: "Đây là trường bắt buộc",
-                minLength: { value: 5, message: "Tối thiểu 5 ký tự" },
+                required: "Đây là trường bắt buộc.",
+                minLength: { value: 5, message: "Tối thiểu 5 ký tự." },
               })}
             />
-            <IconButton
-              className="absolute right-4 top-1/2 -translate-y-1/2"
-              type="neutral"
-              variant="secondary"
-              icon={
-                isPasswordVisible ? (
-                  <FaEyeSlash fontSize={20} />
-                ) : (
-                  <FaEye fontSize={18} />
-                )
-              }
+            <Button
+              variant="text"
+              type="button"
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full !p-0"
               onClick={toggle}
-            />
+            >
+              {isPasswordVisible ? (
+                <FaEyeSlash fontSize={18} />
+              ) : (
+                <FaEye fontSize={18} />
+              )}
+            </Button>
           </div>
-          <FormErrorMessage>
-            {!isEmpty(errors[FormFields.PASSWORD]) &&
-              (errors[FormFields.PASSWORD].message as string)}
-          </FormErrorMessage>
+          <FormError error={errors[FormFields.PASSWORD]} />
         </FormControl>
 
-        <Button large primary type="submit" disabled={isSubmitting}>
+        <Button
+          size="lg"
+          variant="primary"
+          type="submit"
+          disabled={isSubmitting}
+        >
           Đăng nhập
         </Button>
       </div>

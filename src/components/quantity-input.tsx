@@ -1,4 +1,3 @@
-import Button from "./button";
 import { MinusIcon, PlusIcon } from "./vectors";
 
 export interface QuantityInputProps {
@@ -11,7 +10,7 @@ export default function QuantityInput(props: QuantityInputProps) {
   return (
     <div className="flex items-center">
       <button
-        className="p-1 bg-secondary rounded"
+        className="rounded bg-secondary p-1"
         onClick={() =>
           props.onChange(Math.max(props.minValue ?? 0, props.value - 1))
         }
@@ -20,18 +19,18 @@ export default function QuantityInput(props: QuantityInputProps) {
       </button>
       <input
         style={{ width: `calc(${String(props.value).length}ch + 16px)` }}
-        className="px-2 text-xs focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="px-2 text-xs focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         value={props.value}
         type="number"
         inputMode="numeric"
         onChange={(e) =>
           props.onChange(
-            Math.max(props.minValue ?? 0, Number(e.currentTarget.value))
+            Math.max(props.minValue ?? 0, Number(e.currentTarget.value)),
           )
         }
       />
       <button
-        className="p-1 bg-secondary rounded"
+        className="rounded bg-secondary p-1"
         onClick={() => props.onChange(props.value + 1)}
       >
         <PlusIcon width={10} height={10} />

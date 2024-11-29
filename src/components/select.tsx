@@ -1,7 +1,6 @@
-import { ReactNode, useEffect, useState } from "react";
-import { ChevronDown } from "./vectors";
+import { ReactNode, useState } from "react";
 import { Picker } from "zmp-ui";
-import "zmp-ui/zaui.css";
+import { ChevronDown } from "./vectors";
 
 export interface SelectProps<T> {
   renderTitle: (selectedItem?: T) => ReactNode;
@@ -14,18 +13,18 @@ export interface SelectProps<T> {
 
 export default function Select<T>(props: SelectProps<T>) {
   const [localValue, setLocalValue] = useState(
-    props.value ? props.renderItemKey(props.value) : ""
+    props.value ? props.renderItemKey(props.value) : "",
   );
 
   const flush = () => {
     const selectedItem = props.items.find(
-      (item) => props.renderItemKey(item) === localValue
+      (item) => props.renderItemKey(item) === localValue,
     );
     props.onChange(selectedItem);
   };
 
   return (
-    <div className="flex-none h-8 border border-black/15 rounded-full relative [&>.zaui-picker-input]:absolute [&>.zaui-picker-input]:inset-0 [&>.zaui-picker-input]:opacity-0">
+    <div className="relative h-8 flex-none rounded-full border border-black/15 [&>.zaui-picker-input]:absolute [&>.zaui-picker-input]:inset-0 [&>.zaui-picker-input]:opacity-0">
       <Picker
         mask
         maskClosable
@@ -55,7 +54,7 @@ export default function Select<T>(props: SelectProps<T>) {
           },
         }}
       />
-      <div className="h-full relative flex justify-center items-center px-3 space-x-1.5 pointer-events-none">
+      <div className="pointer-events-none relative flex h-full items-center justify-center space-x-1.5 px-3">
         <div className="text-xs">
           {props.renderTitle
             ? props.renderTitle(props.value)

@@ -29,7 +29,7 @@ const CompleteOrder = () => {
 
   return (
     <>
-      <Button primary onClick={onOpen} className="!px-4">
+      <Button variant="primary" onClick={onOpen} className="!px-4">
         Thanh toán
       </Button>
 
@@ -157,8 +157,10 @@ const CompleteOrder = () => {
           </ModalBody>
 
           <ModalFooter className="space-x-2">
-            <Button onClick={onClose}>Hủy</Button>
-            <Button primary onClick={onSubmit}>
+            <Button variant="secondary" onClick={onClose}>
+              Hủy
+            </Button>
+            <Button variant="primary" onClick={onSubmit}>
               Thanh toán
             </Button>
           </ModalFooter>

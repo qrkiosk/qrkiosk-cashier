@@ -35,7 +35,7 @@ export default function ProductDetailPage() {
   }, [selectedSize, selectedColor]);
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="flex h-full w-full flex-col">
       <div className="flex-1 overflow-y-auto">
         <div className="w-full px-4">
           <div className="py-2">
@@ -43,7 +43,7 @@ export default function ProductDetailPage() {
               key={product.id}
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover rounded-lg"
+              className="h-full w-full rounded-lg object-cover"
               style={{
                 viewTransitionName: `product-image-${product.id}`,
               }}
@@ -57,7 +57,7 @@ export default function ProductDetailPage() {
               {formatPrice(product.price)}
             </div>
           )}
-          <div className="text-sm mt-1">{product.name}</div>
+          <div className="mt-1 text-sm">{product.name}</div>
           <div className="py-2">
             <ShareButton product={product} />
           </div>
@@ -69,12 +69,12 @@ export default function ProductDetailPage() {
               onChange={(color) => setSelectedColor(color)}
               renderVariant={(variant, selected) => (
                 <div
-                  className={"w-full h-full rounded-full ".concat(
-                    selected ? "border-2 border-primary p-0.5" : ""
+                  className={"h-full w-full rounded-full".concat(
+                    selected ? "border-2 border-primary p-0.5" : "",
                   )}
                 >
                   <div
-                    className="w-full h-full rounded-full"
+                    className="h-full w-full rounded-full"
                     style={{ backgroundColor: variant?.hex }}
                   />
                 </div>
@@ -90,8 +90,8 @@ export default function ProductDetailPage() {
               onChange={(size) => setSelectedSize(size)}
               renderVariant={(variant, selected) => (
                 <div
-                  className={"w-full h-full flex justify-center items-center ".concat(
-                    selected ? "bg-primary text-white" : ""
+                  className={"flex h-full w-full items-center justify-center".concat(
+                    selected ? "bg-primary text-white" : "",
                   )}
                 >
                   <div className="truncate">{variant}</div>
@@ -102,22 +102,23 @@ export default function ProductDetailPage() {
         </div>
         {product.details && (
           <>
-            <div className="bg-section h-2 w-full"></div>
+            <div className="h-2 w-full bg-section"></div>
             <Collapse items={product.details} />
           </>
         )}
-        <div className="bg-section h-2 w-full"></div>
-        <div className="font-medium py-2 px-4">
-          <div className="pt-2 pb-2.5">Sản phẩm khác</div>
+        <div className="h-2 w-full bg-section"></div>
+        <div className="px-4 py-2 font-medium">
+          <div className="pb-2.5 pt-2">Sản phẩm khác</div>
           <HorizontalDivider />
         </div>
         <RelatedProducts currentProductId={product.id} />
       </div>
 
       <HorizontalDivider />
-      <div className="flex-none grid grid-cols-2 gap-2 py-3 px-4">
+      <div className="grid flex-none grid-cols-2 gap-2 px-4 py-3">
         <Button
-          large
+          size="lg"
+          variant="secondary"
           onClick={() => {
             addToCart(1);
             toast.success("Đã thêm vào giỏ hàng");
@@ -126,8 +127,8 @@ export default function ProductDetailPage() {
           Thêm vào giỏ
         </Button>
         <Button
-          large
-          primary
+          size="lg"
+          variant="primary"
           onClick={() => {
             addToCart(1);
             navigate("/cart");

@@ -10,6 +10,7 @@ import router from "@/router";
 import "@/css/tailwind.scss";
 // Your stylesheet
 import "@/css/app.scss";
+import "zmp-ui/zaui.css";
 
 // Expose app configuration
 import appConfig from "../app-config.json";

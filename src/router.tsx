@@ -11,6 +11,7 @@ import ProfilePage from "@/pages/profile";
 import SearchPage from "@/pages/search";
 import { getBasePath } from "@/utils/zma";
 import { createBrowserRouter } from "react-router-dom";
+import ChooseOrderCustomer from "./pages/choose-order-customer";
 
 const router = createBrowserRouter(
   [
@@ -97,6 +98,14 @@ const router = createBrowserRouter(
         {
           path: "/order-details",
           element: <OrderDetailsPage />,
+          handle: {
+            back: true,
+            footerless: true,
+          },
+        },
+        {
+          path: "/choose-order-customer",
+          element: <ChooseOrderCustomer />,
           handle: {
             back: true,
             footerless: true,

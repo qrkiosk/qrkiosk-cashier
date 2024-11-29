@@ -1,26 +1,22 @@
-import React from "react";
-import { FaAngleRight, FaPlus, FaXmark } from "react-icons/fa6";
+import FloatingButton from "@/components/floating-button";
 import {
   Box,
   Drawer,
-  DrawerOverlay,
   DrawerContent,
+  DrawerOverlay,
   IconButton,
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { FaAngleRight, FaXmark } from "react-icons/fa6";
 
 const ProductPicker = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <IconButton
-        isRound
-        size="sm"
-        variant="ghost"
-        aria-label="Add product"
-        icon={<FaPlus fontSize={24} />}
+      <FloatingButton
+        className="bottom-[100px] right-5 bg-gray-700 hover:bg-gray-800"
         onClick={onOpen}
       />
       <Drawer

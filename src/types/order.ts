@@ -37,7 +37,7 @@ export interface Order extends CreateUpdateTrace {
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   isActive: boolean;
-  note: ""; // not used, always empty
+  note: string;
   details: Array<{
     id: string;
     productId: string;

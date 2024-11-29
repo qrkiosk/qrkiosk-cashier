@@ -20,11 +20,11 @@ import { getUserInfo } from "zmp-sdk";
 export const userState = atom(() =>
   getUserInfo({
     avatarType: "normal",
-  })
+  }),
 );
 
 export const bannersState = atom(() =>
-  requestWithFallback<string[]>("/banners", [])
+  requestWithFallback<string[]>("/banners", []),
 );
 
 export const tabsState = atom(["Tất cả", "Nam", "Nữ", "Trẻ em"]);
@@ -32,12 +32,12 @@ export const tabsState = atom(["Tất cả", "Nam", "Nữ", "Trẻ em"]);
 export const selectedTabIndexState = atom(0);
 
 export const categoriesState = atom(() =>
-  requestWithFallback<Category[]>("/categories", [])
+  requestWithFallback<Category[]>("/categories", []),
 );
 
 export const categoriesStateUpwrapped = unwrap(
   categoriesState,
-  (prev) => prev ?? []
+  (prev) => prev ?? [],
 );
 
 export const productsState = atom(async (get) => {
@@ -48,7 +48,7 @@ export const productsState = atom(async (get) => {
   return products.map((product) => ({
     ...product,
     category: categories.find(
-      (category) => category.id === product.categoryId
+      (category) => category.id === product.categoryId,
     )!,
   }));
 });
@@ -86,7 +86,7 @@ export const productState = atomFamily((id: number) =>
   atom(async (get) => {
     const products = await get(productsState);
     return products.find((product) => product.id === id);
-  })
+  }),
 );
 
 export const cartState = atom<Cart>([]);
@@ -105,7 +105,7 @@ export const cartTotalState = atom((get) => {
     totalItems: items.length,
     totalAmount: items.reduce(
       (total, item) => total + item.product.price * item.quantity,
-      0
+      0,
     ),
   };
 });
@@ -117,7 +117,7 @@ export const searchResultState = atom(async (get) => {
   const products = await get(productsState);
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return products.filter((product) =>
-    product.name.toLowerCase().includes(keyword.toLowerCase())
+    product.name.toLowerCase().includes(keyword.toLowerCase()),
   );
 });
 
@@ -127,7 +127,7 @@ export const authResultAtom = atomWithStorage<AuthResult | null>(
   "cachedAuthResult",
   null,
   undefined,
-  { getOnInit: true }
+  { getOnInit: true },
 );
 
 export const isAuthenticatedAtom = atom((get) => !!get(authResultAtom));
@@ -162,11 +162,11 @@ export const ordersAtom = atomWithQuery<
 export const allOrdersAtom = atom((get) => get(ordersAtom).data);
 
 export const ongoingOrdersAtom = atom((get) =>
-  get(allOrdersAtom).filter((o) => o.status === OrderStatus.PROCESS)
+  get(allOrdersAtom).filter((o) => o.status === OrderStatus.PROCESS),
 );
 
 export const unpaidOrdersAtom = atom((get) =>
-  get(allOrdersAtom).filter((o) => o.paymentStatus === PaymentStatus.UNPAID)
+  get(allOrdersAtom).filter((o) => o.paymentStatus === PaymentStatus.UNPAID),
 );
 
 export const activeTabAtom = atom<Tab>(Tab.TABLE);
@@ -226,7 +226,7 @@ export const tablesAtom = atomWithQuery<
         pageSize: 100,
         page: 0,
       },
-      token
+      token,
     );
 
     return response.data.data.data;
@@ -242,11 +242,11 @@ export const addWsOrderToLocalTablesAtom = atom(
     const newTables = tables.map((table) =>
       table.id === wsOrder.tableId
         ? { ...table, orders: [...table.orders, wsOrder] }
-        : table
+        : table,
     );
 
     set(localTablesAtom, newTables);
-  }
+  },
 );
 
 export const emptyTablesAtom = atom((get) =>
@@ -255,7 +255,7 @@ export const emptyTablesAtom = atom((get) =>
     const noOrders = isEmpty(item.orders);
 
     return isOnSiteTable && noOrders;
-  })
+  }),
 );
 export const inUseTablesAtom = atom((get) =>
   get(localTablesAtom).filter((item) => {
@@ -263,18 +263,18 @@ export const inUseTablesAtom = atom((get) =>
     const hasOrder = !isEmpty(item.orders);
 
     return isOnSiteTable && hasOrder;
-  })
+  }),
 );
 export const waitingTablesAtom = atom((get) =>
   get(localTablesAtom).filter((item) => {
     const isOnSiteTable = item.type === TableType.ON_SITE;
     const hasOrder = !isEmpty(item.orders);
     const allOrdersInProcess = item.orders.some(
-      (order) => order.status === OrderStatus.WAIT
+      (order) => order.status === OrderStatus.WAIT,
     );
 
     return isOnSiteTable && hasOrder && allOrdersInProcess;
-  })
+  }),
 );
 
 export const zonedTablesAtom = atom((get) => {
@@ -321,7 +321,7 @@ export const allZonesAtom = atom((get) => {
       if (!zoneId || !zoneName) return acc;
       return [...acc, { value: zoneId.toString(), text: zoneName }];
     },
-    [{ value: ALL_ZONES, text: "Tất cả khu vực" }]
+    [{ value: ALL_ZONES, text: "Tất cả khu vực" }],
   );
 
   return uniqBy(zones, "value");
@@ -341,7 +341,20 @@ export const has401FromAnyQueryAtom = atom((get) => {
 });
 
 export const has401Atom = atom(
-  (get) => get(hasOngoing401ErrorAtom) || get(has401FromAnyQueryAtom)
+  (get) => get(hasOngoing401ErrorAtom) || get(has401FromAnyQueryAtom),
 );
 
 export const currentMenuTableTabIndexAtom = atom(0);
+
+export const currentOrderAtom = atom<Order | null>(null);
+
+export const orderNoteAtom = atom(
+  (get) => get(currentOrderAtom)?.note ?? "",
+  (get, set, note: string) => {
+    const order = get(currentOrderAtom);
+
+    if (order) {
+      set(currentOrderAtom, { ...order, note });
+    }
+  },
+);

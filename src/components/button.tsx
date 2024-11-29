@@ -1,27 +1,56 @@
+import classNames from "classnames";
 import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 
-export interface ButtonProps
+type ButtonVariant = "primary" | "secondary" | "text";
+type ButtonSize = "sm" | "md" | "lg";
+
+interface ButtonProps
   extends PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> {
-  primary?: boolean;
-  small?: boolean;
-  large?: boolean;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
 }
 
-export default function Button({
-  className,
-  primary,
-  small,
-  large,
+const getVariantStyle = (variant: ButtonVariant) => {
+  switch (variant) {
+    case "secondary":
+      return "bg-secondary";
+    case "text":
+      return "bg-none";
+    case "primary":
+    default:
+      return "bg-primary text-white";
+  }
+};
+
+const getSizeStyle = (size: ButtonSize) => {
+  switch (size) {
+    case "sm":
+      return "px-3 py-[7px]";
+    case "lg":
+      return "px-6 py-3.5";
+    case "md":
+    default:
+      return "px-6 py-2.5";
+  }
+};
+
+const Button = ({
+  className = "",
+  variant = "primary",
+  size = "md",
+  type = "button",
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   return (
     <button
-      className={`${
-        primary ? "bg-primary text-white" : "bg-secondary"
-      } text-base font-medium rounded-lg ${
-        large ? "px-6 py-3.5" : small ? "px-3 py-[7px]" : "px-6 py-2.5"
-      } disabled:opacity-50 ${className ?? ""}`}
+      type={type}
+      className={classNames(
+        className,
+        `rounded-lg text-base font-medium disabled:opacity-50 ${getVariantStyle(variant)} ${getSizeStyle(size)}`,
+      )}
       {...props}
     />
   );
-}
+};
+
+export default Button;
