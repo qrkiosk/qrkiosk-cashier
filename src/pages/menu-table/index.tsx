@@ -8,8 +8,8 @@ import { currentMenuTableTabIndexAtom, tablesAtom } from "@/state";
 import { useAtom, useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
-import TableGrid from "./TableGrid";
-import ZoneList from "./ZoneList";
+import TableGrid from "./table-grid";
+import ZoneList from "./zone-list";
 
 const MENU_TABLE_TABS = ["Tất cả", "Chờ xác nhận", "Đang sử dụng", "Còn trống"];
 
