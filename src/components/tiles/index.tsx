@@ -120,7 +120,7 @@ TableTile.OnSite = ({ table }) => {
 
       <Modal title={`Bàn ${table.name}`} visible={isOpen} onClose={onClose}>
         <div className="space-y-3">
-          <p>Chọn một đơn hàng để xử lý:</p>
+          <p className="text-sm">Chọn đơn hàng để xử lý:</p>
 
           <div className="space-y-2">
             {table.orders.map((order) => (
