@@ -1,7 +1,12 @@
+import { currentOrderAtom } from "@/state";
 import { Grid, GridItem } from "@chakra-ui/react";
+import { useAtomValue } from "jotai";
 import OrderItem from "./order-item";
 
 const Products = () => {
+  const order = useAtomValue(currentOrderAtom);
+  const products = order?.details ?? [];
+
   return (
     <div className="bg-[--zmp-background-white] px-4 py-3">
       <Grid templateColumns="repeat(3, 1fr)">
@@ -11,7 +16,10 @@ const Products = () => {
           </div>
         </GridItem>
 
-        <OrderItem>
+        {products.map((item) => (
+          <OrderItem key={item.id} item={item} />
+        ))}
+        {/* <OrderItem>
           {{
             uniqIdentifier: "x1",
             quantity: 1,
@@ -46,7 +54,7 @@ const Products = () => {
             options: [{ id: "o5" }, { id: "o6" }],
             note: "another note",
           }}
-        </OrderItem>
+        </OrderItem> */}
       </Grid>
     </div>
   );

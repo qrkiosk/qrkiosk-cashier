@@ -1,6 +1,6 @@
+import { selectedTabIndexState, tabsState } from "@/state";
 import { useAtom, useAtomValue } from "jotai";
 import Tabs from "./tabs";
-import { selectedTabIndexState, tabsState } from "@/state";
 
 export default function CategoryTabs() {
   const tabs = useAtomValue(tabsState);

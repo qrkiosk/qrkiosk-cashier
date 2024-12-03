@@ -1,10 +1,10 @@
-import CartList from "./cart-list";
-import ApplyVoucher from "./apply-voucher";
-import CartSummary from "./cart-summary";
 import HorizontalDivider from "@/components/horizontal-divider";
-import { useAtomValue } from "jotai";
-import { cartState } from "@/state";
 import { EmptyBoxIcon } from "@/components/vectors";
+import { cartState } from "@/state";
+import { useAtomValue } from "jotai";
+import ApplyVoucher from "./apply-voucher";
+import CartList from "./cart-list";
+import CartSummary from "./cart-summary";
 import SelectAll from "./select-all";
 
 export default function CartPage() {
@@ -12,16 +12,16 @@ export default function CartPage() {
 
   if (!cart.length) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center space-y-8">
+      <div className="flex h-full w-full flex-col items-center justify-center space-y-8">
         <EmptyBoxIcon />
-        <div className="text-2xs text-inactive text-center">
+        <div className="text-center text-2xs text-inactive">
           Không có sản phẩm trong giỏ hàng
         </div>
       </div>
     );
   }
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="flex h-full w-full flex-col">
       <SelectAll />
       <HorizontalDivider />
       <CartList />

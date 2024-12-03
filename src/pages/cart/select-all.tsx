@@ -1,13 +1,13 @@
-import { useAtom } from "jotai";
-import { cartState, selectedCartItemIdsState } from "@/state";
-import { RemoveIcon } from "@/components/vectors";
 import Checkbox from "@/components/checkbox";
+import { RemoveIcon } from "@/components/vectors";
+import { cartState, selectedCartItemIdsState } from "@/state";
+import { useAtom } from "jotai";
 
 export default function SelectAll() {
   const [cart, setCart] = useAtom(cartState);
 
   const [selectedItemIds, setSelectedItemIds] = useAtom(
-    selectedCartItemIdsState
+    selectedCartItemIdsState,
   );
   const checkedAll =
     selectedItemIds.length > 0 &&
@@ -20,12 +20,12 @@ export default function SelectAll() {
   };
 
   return (
-    <div className="px-4 py-3 flex items-center space-x-4">
+    <div className="flex items-center space-x-4 px-4 py-3">
       <Checkbox
         checked={checkedAll}
         onChange={checkedAll ? uncheckAll : checkAll}
       />
-      <div className="text-sm font-medium flex-1">Tất cả</div>
+      <div className="flex-1 text-sm font-medium">Tất cả</div>
       {selectedItemIds.length > 0 && (
         <RemoveIcon
           className="cursor-pointer"

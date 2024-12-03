@@ -3,13 +3,13 @@ import SearchBar from "@/components/search-bar";
 import Section from "@/components/section";
 import { ProductItemSkeleton } from "@/components/skeleton";
 import { SearchIconLarge } from "@/components/vectors";
-import { useAtom, useAtomValue } from "jotai";
-import { Suspense, useEffect, useRef, useState } from "react";
 import {
   keywordState,
   recommendedProductsState,
   searchResultState,
 } from "@/state";
+import { useAtom, useAtomValue } from "jotai";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 export function SearchResult() {
   const searchResult = useAtomValue(searchResultState);
@@ -18,7 +18,7 @@ export function SearchResult() {
     <div className="w-full space-y-2 bg-section">
       <Section title={`Kết quả (${searchResult.length})`}>
         {searchResult.length ? (
-          <div className="py-2 px-4 grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 px-4 py-2">
             {searchResult.map((product) => (
               <ProductItem key={product.id} product={product} />
             ))}
@@ -34,9 +34,9 @@ export function SearchResult() {
 
 export function EmptySearchResult() {
   return (
-    <div className="p-6 space-y-4 flex flex-col items-center">
+    <div className="flex flex-col items-center space-y-4 p-6">
       <SearchIconLarge />
-      <div className="text-inactive text-center text-2xs">
+      <div className="text-center text-2xs text-inactive">
         Không có sản phẩm bạn tìm kiếm
       </div>
     </div>
@@ -46,7 +46,7 @@ export function EmptySearchResult() {
 export function SearchResultSkeleton() {
   return (
     <Section title={`Kết quả`}>
-      <div className="py-2 px-4 grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 px-4 py-2">
         <ProductItemSkeleton />
         <ProductItemSkeleton />
         <ProductItemSkeleton />
@@ -61,7 +61,7 @@ export function RecommendedProducts() {
 
   return (
     <Section title="Gợi ý sản phẩm">
-      <div className="py-2 px-4 flex space-x-2 overflow-x-auto">
+      <div className="flex space-x-2 overflow-x-auto px-4 py-2">
         {recommendedProducts.map((product) => (
           <div
             className="flex-none"

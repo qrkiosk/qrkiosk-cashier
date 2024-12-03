@@ -17,7 +17,7 @@ export default function CartItem(props: CartItemProps) {
   const { addToCart } = useAddToCart(props.product, props.id);
 
   const [selectedItemIds, setSelectedItemIds] = useAtom(
-    selectedCartItemIdsState
+    selectedCartItemIdsState,
   );
 
   const displayOptions = useMemo(
@@ -29,7 +29,7 @@ export default function CartItem(props: CartItemProps) {
         .filter(([_, value]) => value !== undefined)
         .map(([key, value]) => `${key}: ${value}`)
         .join(" | "),
-    [props.options]
+    [props.options],
   );
 
   // update cart
@@ -57,14 +57,14 @@ export default function CartItem(props: CartItemProps) {
       bounds: { left: -100, right: 0, top: 0, bottom: 0 },
       rubberband: true,
       preventScroll: true,
-    }
+    },
   );
 
   return (
     <div className="relative">
-      <div className="absolute right-0 top-0 bottom-0 w-20 border-t-[0.5px] border-b-[0.5px] border-black/10">
+      <div className="absolute bottom-0 right-0 top-0 w-20 border-b-[0.5px] border-t-[0.5px] border-black/10">
         <div
-          className="bg-danger text-white/95 w-full h-full flex flex-col space-y-1 justify-center items-center cursor-pointer"
+          className="flex h-full w-full cursor-pointer flex-col items-center justify-center space-y-1 bg-danger text-white/95"
           onClick={() => addToCart(0)}
         >
           <RemoveIcon />
@@ -75,7 +75,7 @@ export default function CartItem(props: CartItemProps) {
       <animated.div
         {...bind()}
         style={{ x }}
-        className="bg-white pl-4 flex items-center space-x-4 relative"
+        className="relative flex items-center space-x-4 bg-white pl-4"
       >
         <Checkbox
           checked={selectedItemIds.includes(props.id)}
@@ -84,24 +84,24 @@ export default function CartItem(props: CartItemProps) {
               setSelectedItemIds([...selectedItemIds, props.id]);
             } else {
               setSelectedItemIds(
-                selectedItemIds.filter((id) => id !== props.id)
+                selectedItemIds.filter((id) => id !== props.id),
               );
             }
           }}
         />
-        <img src={props.product.image} className="w-14 h-14 rounded-lg" />
-        <div className="py-4 pr-4 flex-1 border-b-[0.5px] border-black/10">
+        <img src={props.product.image} className="h-14 w-14 rounded-lg" />
+        <div className="flex-1 border-b-[0.5px] border-black/10 py-4 pr-4">
           <div className="text-sm">{props.product.name}</div>
           {displayOptions && (
-            <div className="text-xs text-subtitle mt-0.5">{displayOptions}</div>
+            <div className="mt-0.5 text-xs text-subtitle">{displayOptions}</div>
           )}
-          <div className="flex items-center py-2 space-x-2">
-            <div className="flex-1 flex flex-wrap items-center space-x-0.5">
+          <div className="flex items-center space-x-2 py-2">
+            <div className="flex flex-1 flex-wrap items-center space-x-0.5">
               <div className="text-xs font-medium text-primary">
                 {formatPrice(props.product.price)}
               </div>
               {props.product.originalPrice && (
-                <div className="line-through text-subtitle text-3xs">
+                <div className="text-3xs text-subtitle line-through">
                   {formatPrice(props.product.originalPrice)}
                 </div>
               )}

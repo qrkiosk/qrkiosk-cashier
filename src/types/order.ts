@@ -1,15 +1,39 @@
 import { CreateUpdateTrace } from "./common";
 import { PaymentStatus, PaymentType } from "./payment";
-
-export enum ShippingType {
-  ON_SITE = "ON_SITE",
-}
+import { ShippingType } from "./shipping";
 
 export enum OrderStatus {
   NEW,
   WAIT,
   PROCESS,
   DONE,
+}
+
+export interface OrderDetail {
+  id: string;
+  productId: string;
+  productName: string;
+  productPrice: number;
+  quantity: number;
+  price: number;
+  amount: number;
+  tax: number;
+  taxAmount: number;
+  discountAmount: number;
+  discountPercentage: number;
+  discountVoucher: number;
+  totalAmount: number;
+  isActive: boolean;
+  note: string;
+  variants: Array<{
+    id: string;
+    productVariantId: string;
+    productOptionId: string;
+    poName: string;
+    productOptionDetailId: string;
+    podName: string;
+    podPrice: number;
+  }>;
 }
 
 export interface Order extends CreateUpdateTrace {
@@ -44,32 +68,7 @@ export interface Order extends CreateUpdateTrace {
   paymentStatus: PaymentStatus;
   isActive: boolean;
   note: string;
-  details: Array<{
-    id: string;
-    productId: string;
-    productName: string;
-    productPrice: number;
-    quantity: number;
-    price: number;
-    amount: number;
-    tax: number;
-    taxAmount: number;
-    discountAmount: number;
-    discountPercentage: number;
-    discountVoucher: number;
-    totalAmount: number;
-    isActive: boolean;
-    note: string;
-    variants: Array<{
-      id: string;
-      productVariantId: string;
-      productOptionId: string;
-      poName: string;
-      productOptionDetailId: string;
-      podName: string;
-      podPrice: number;
-    }>;
-  }>;
+  details: OrderDetail[];
 }
 
 export interface OrderReqBody {
@@ -89,10 +88,10 @@ export interface OrderReqBody {
   discountPercentage: number;
   serviceFee: number;
   serviceFeePercentage: number;
-  details: OrderDetail[];
+  details: OrderDetailReqBody[];
 }
 
-export interface OrderDetail {
+export interface OrderDetailReqBody {
   productId: string;
   productName: string;
   productPrice: number;

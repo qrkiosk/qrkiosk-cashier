@@ -1,8 +1,7 @@
+import { Order } from "@/types/order";
 import { atomEffect } from "jotai-effect";
 import SockJS from "sockjs-client/dist/sockjs";
 import Stomp from "stompjs";
-
-import { Order } from "../types/order";
 import { localTablesAtom, storeIdAtom, tokenAtom } from "../state";
 
 export default atomEffect((get, set) => {
@@ -12,7 +11,7 @@ export default atomEffect((get, set) => {
   if (!token || !storeId) return;
 
   const socket = new SockJS(
-    `https://ws.greendragonlog.com.vn/socket?token=${token}`
+    `https://ws.greendragonlog.com.vn/socket?token=${token}`,
   );
   const stompClient = Stomp.over(socket);
 
@@ -29,11 +28,11 @@ export default atomEffect((get, set) => {
         const newTables = tables.map((table) =>
           table.id === wsOrder.tableId
             ? { ...table, orders: [...table.orders, wsOrder] }
-            : table
+            : table,
         );
 
         set(localTablesAtom, newTables);
-      }
+      },
     );
 
     const disconnectFromServer = () => {

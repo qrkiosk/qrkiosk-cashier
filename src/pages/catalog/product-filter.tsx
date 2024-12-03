@@ -17,7 +17,7 @@ export default function ProductFilter() {
   const [color, setColor] = useAtom(selectedColorState);
 
   return (
-    <div className="flex px-4 py-3 space-x-2 overflow-x-auto">
+    <div className="flex space-x-2 overflow-x-auto px-4 py-3">
       <Suspense fallback={<SelectSkeleton width={110} />}>
         <Select
           items={sizes}
@@ -43,7 +43,7 @@ export default function ProductFilter() {
       </Suspense>
       {(color !== undefined || size !== undefined) && (
         <button
-          className="bg-primary text-white rounded-full h-8 flex-none px-3"
+          className="h-8 flex-none rounded-full bg-primary px-3 text-white"
           onClick={() => {
             setColor(undefined);
             setSize(undefined);

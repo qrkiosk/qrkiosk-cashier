@@ -1,8 +1,8 @@
-import ProductFilter from "./product-filter";
 import HorizontalDivider from "@/components/horizontal-divider";
 import ProductGrid from "@/components/product-grid";
-import { useAtomValue } from "jotai";
 import { productsState } from "@/state";
+import { useAtomValue } from "jotai";
+import ProductFilter from "./product-filter";
 
 export default function ProductListPage() {
   const products = useAtomValue(productsState);
@@ -11,7 +11,7 @@ export default function ProductListPage() {
     <>
       <ProductFilter />
       <HorizontalDivider />
-      <ProductGrid products={products} className="pt-4 pb-[13px]" />
+      <ProductGrid products={products} className="pb-[13px] pt-4" />
     </>
   );
 }

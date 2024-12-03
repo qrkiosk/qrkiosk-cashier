@@ -6,6 +6,7 @@ import { currentOrderQueryAtom, tokenAtom } from "@/state";
 import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { Spinner } from "zmp-ui";
 import Customer from "./customer";
 import OrderFooter from "./order-footer";
@@ -15,6 +16,7 @@ import Products from "./products";
 import ServiceFee from "./service-fee";
 
 const OrderDetailsPage = () => {
+  const navigate = useNavigate();
   const token = useAtomValue(tokenAtom);
   const { data, isLoading, error, refetch } = useAtomValue(
     currentOrderQueryAtom,
@@ -77,7 +79,10 @@ const OrderDetailsPage = () => {
         <Divider />
         <Products />
 
-        <FloatingButton className="bottom-[100px] right-5 bg-gray-700 hover:bg-gray-800" />
+        <FloatingButton
+          className="bottom-[100px] right-5 bg-gray-700 hover:bg-gray-800"
+          onClick={() => navigate("/choose-order-products")}
+        />
       </FlexDiv>
 
       <OrderFooter />

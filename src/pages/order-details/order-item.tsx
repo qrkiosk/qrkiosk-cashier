@@ -1,7 +1,8 @@
 import { Box, Button, GridItem, Heading, Stack, Text } from "@chakra-ui/react";
 import isEmpty from "lodash/isEmpty";
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 
+import { OrderDetail } from "@/types/order";
 import { Price } from "../../components/prices";
 import { APP_ACCENT_COLOR } from "../../utils/constants";
 // import { OptionWithSelectedDetail } from "../../../types/product";
@@ -35,11 +36,7 @@ const OrderItemOption = ({
   return null;
 };
 
-const OrderItem = ({
-  children: item,
-}: {
-  // children: CartProductVariant
-}) => {
+const OrderItem = ({ item }: { item: OrderDetail }) => {
   // const removeCartItem = useSetAtom(removeCartItemAtom);
   // const setProductVariant = useSetAtom(productVariantAtom);
   // const setIsEditingCartItem = useSetAtom(isEditingCartItemAtom);
