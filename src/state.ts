@@ -1,10 +1,11 @@
 import { getTables } from "@/api/company";
-import { getOrders } from "@/api/order";
+import { getCustomers } from "@/api/customer";
+import { getOrder } from "@/api/order";
 import { Cart, Category, Color, Product } from "@/types.global";
 import { Tab } from "@/types/common";
 import { Shift, ShiftStatus, Table, TableType } from "@/types/company";
+import { Customer } from "@/types/customer";
 import { Order, OrderStatus } from "@/types/order";
-import { PaymentStatus } from "@/types/payment";
 import { AuthResult } from "@/types/user";
 import { ALL_ZONES } from "@/utils/constants";
 import { requestWithFallback } from "@/utils/request";
@@ -142,40 +143,13 @@ export const logoutAtom = atom(null, (_get, set) => {
 
 export const currentShiftAtom = atom<Shift | null>(null);
 
-export const ordersAtom = atomWithQuery<
-  Order[],
-  Error,
-  Order[],
-  [string, string, number | null, number | null]
->((get) => ({
-  initialData: [],
-  retry: false,
-  queryKey: ["order", get(tokenAtom), get(storeIdAtom), get(companyIdAtom)],
-  queryFn: async ({ queryKey: [, token, storeId, companyId] }) => {
-    if (!token || storeId == null || companyId == null) return [];
-
-    const response = await getOrders({ token, storeId, companyId });
-    return response.data.data;
-  },
-}));
-
-export const allOrdersAtom = atom((get) => get(ordersAtom).data);
-
-export const ongoingOrdersAtom = atom((get) =>
-  get(allOrdersAtom).filter((o) => o.status === OrderStatus.PROCESS),
-);
-
-export const unpaidOrdersAtom = atom((get) =>
-  get(allOrdersAtom).filter((o) => o.paymentStatus === PaymentStatus.UNPAID),
-);
-
 export const activeTabAtom = atom<Tab>(Tab.TABLE);
 
 export const currentZoneAtom = atom<string>(ALL_ZONES);
 
 export const openShiftModalAtom = atom(false);
 
-export const tablesAtom = atomWithQuery<
+export const tablesQueryAtom = atomWithQuery<
   Table[],
   Error,
   Table[],
@@ -184,7 +158,7 @@ export const tablesAtom = atomWithQuery<
   initialData: [],
   retry: false,
   queryKey: [
-    "table",
+    "tables",
     get(tokenAtom),
     get(storeIdAtom),
     get(companyIdAtom),
@@ -331,8 +305,9 @@ export const hasOngoing401ErrorAtom = atom(false);
 
 export const has401FromAnyQueryAtom = atom((get) => {
   const errors = compact([
-    get(tablesAtom).error,
-    get(ordersAtom).error,
+    get(tablesQueryAtom).error,
+    get(currentOrderQueryAtom).error,
+    get(customersQueryAtom).error,
   ]) as AxiosError[];
 
   if (isEmpty(errors)) return false;
@@ -346,15 +321,55 @@ export const has401Atom = atom(
 
 export const currentMenuTableTabIndexAtom = atom(0);
 
-export const currentOrderAtom = atom<Order | null>(null);
+export const currentOrderIdAtom = atom<string | null>(null);
 
-export const orderNoteAtom = atom(
-  (get) => get(currentOrderAtom)?.note ?? "",
-  (get, set, note: string) => {
-    const order = get(currentOrderAtom);
+export const currentOrderQueryAtom = atomWithQuery<
+  Order | null,
+  Error,
+  Order | null,
+  [string, string | null]
+>((get) => ({
+  staleTime: 0,
+  queryKey: ["currentOrderDetails", get(currentOrderIdAtom)],
+  queryFn: async ({ queryKey: [, orderId] }) => {
+    if (!orderId) return null;
 
-    if (order) {
-      set(currentOrderAtom, { ...order, note });
-    }
+    const response = await getOrder(orderId);
+    return response.data.data;
   },
+}));
+
+export const currentOrderAtom = atom<Order | null>(
+  (get) => get(currentOrderQueryAtom).data ?? null,
 );
+
+export const customersQueryAtom = atomWithQuery<
+  Customer[],
+  Error,
+  Customer[],
+  [string, string, number | null, number | null]
+>((get) => ({
+  initialData: [],
+  retry: false,
+  queryKey: ["customers", get(tokenAtom), get(storeIdAtom), get(companyIdAtom)],
+  queryFn: async ({ queryKey: [, token, storeId, companyId] }) => {
+    if (!token || storeId == null || companyId == null) {
+      return [];
+    }
+
+    const response = await getCustomers(
+      {
+        filtered: [
+          { id: "companyId", value: companyId },
+          { id: "storeId", value: storeId },
+          { id: "name", value: "" },
+        ],
+        sorted: [{ id: "name", asc: true }],
+        pageSize: 1000,
+        page: 0,
+      },
+      token,
+    );
+    return response.data.data;
+  },
+}));

@@ -23,7 +23,6 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import { UIMatch, useMatches, useNavigate } from "react-router-dom";
-import { useBoolean } from "usehooks-ts";
 import { openChat, purchase } from "zmp-sdk";
 
 export function useRealHeight(
@@ -248,19 +247,8 @@ export const useFocusedInputRef = <
 
     setTimeout(() => {
       ref.current?.focus();
-    }, 0);
+    });
   }, [shouldFocus]);
 
   return ref;
-};
-
-export const useDisclosure = (initialValue = false) => {
-  const {
-    value: isOpen,
-    setTrue: on,
-    setFalse: off,
-    toggle,
-  } = useBoolean(initialValue);
-
-  return [isOpen, { on, off, toggle }] as const;
 };

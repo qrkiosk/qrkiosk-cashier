@@ -1,6 +1,10 @@
 import { CreateUpdateTrace } from "./common";
 import { PaymentStatus, PaymentType } from "./payment";
 
+export enum ShippingType {
+  ON_SITE = "ON_SITE",
+}
+
 export enum OrderStatus {
   NEW,
   WAIT,
@@ -22,9 +26,10 @@ export interface Order extends CreateUpdateTrace {
   shiftEmployeeId: null;
   tableId: number;
   tableName: string;
+  customerId: string;
   customerName: string;
   paymentType: PaymentType | null;
-  sourceType: "ON_SITE";
+  sourceType: ShippingType;
   amount: number;
   taxAmount: number;
   discountAmount: number;
@@ -32,6 +37,7 @@ export interface Order extends CreateUpdateTrace {
   discountVoucher: number;
   deliveryFee: number;
   serviceFee: number;
+  serviceFeePercentage: number;
   totalAmount: number;
   totalQuantity: number;
   status: OrderStatus;
@@ -64,4 +70,45 @@ export interface Order extends CreateUpdateTrace {
       podPrice: number;
     }>;
   }>;
+}
+
+export interface OrderReqBody {
+  id: string;
+  companyId: number;
+  storeId: number;
+  customer: {
+    id: string;
+    name: string;
+  };
+  paymentType: PaymentType | null;
+  sourceType: ShippingType;
+  tableId: number;
+  tableName: string;
+  note: string;
+  discountAmount: number;
+  discountPercentage: number;
+  serviceFee: number;
+  serviceFeePercentage: number;
+  details: OrderDetail[];
+}
+
+export interface OrderDetail {
+  productId: string;
+  productName: string;
+  productPrice: number;
+  quantity: number;
+  price: number;
+  amount: number;
+  totalAmount: number;
+  note: string;
+  variants: OrderProductVariant[];
+}
+
+export interface OrderProductVariant {
+  productVariantId: string;
+  productOptionId: string;
+  poName: string;
+  productOptionDetailId: string;
+  podName: string;
+  podPrice: number;
 }

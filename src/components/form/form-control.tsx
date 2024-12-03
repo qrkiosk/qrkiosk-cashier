@@ -1,7 +1,15 @@
-import { ReactNode } from "react";
+import classNames from "classnames";
+import { HTMLProps } from "react";
 
-const FormControl = ({ children }: { children: ReactNode }) => {
-  return <div className="form-control relative">{children}</div>;
+const FormControl = ({
+  children,
+  className = "",
+}: HTMLProps<HTMLDivElement>) => {
+  return (
+    <div className={classNames(className, "form-control relative")}>
+      {children}
+    </div>
+  );
 };
 
 export default FormControl;

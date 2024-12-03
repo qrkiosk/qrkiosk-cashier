@@ -1,14 +1,45 @@
+import { updateCustomer as updateCustomerApi } from "@/api/customer";
 import Button from "@/components/button";
+import { use401ErrorFlag } from "@/hooks";
+import { customersQueryAtom, tokenAtom } from "@/state";
 import { Customer } from "@/types/customer";
+import { withErrorStatusCodeHandler } from "@/utils/error";
+import { useAtomValue } from "jotai";
+import toast from "react-hot-toast";
 import { Modal } from "zmp-ui";
 import CustomerForm from "./form";
 import { useEditModal } from "./local-state";
 
+const useUpdateCustomerWith401Handler = () => {
+  const { escalate: escalate401Error } = use401ErrorFlag();
+  return withErrorStatusCodeHandler(updateCustomerApi, [
+    { statusCode: 401, handler: escalate401Error },
+  ]);
+};
+
 const EditCustomerModal = ({ customer }: { customer: Customer }) => {
+  console.log(customer);
   const { isOpen, onClose } = useEditModal();
-  const onSubmit = async (values) => {
-    // call API asynchronously here;
-    onClose(); // close modal after all
+  const token = useAtomValue(tokenAtom);
+  const updateCustomer = useUpdateCustomerWith401Handler();
+  const { refetch } = useAtomValue(customersQueryAtom);
+
+  const onSubmit = async (values: { name: string; phoneNumber: string }) => {
+    try {
+      await updateCustomer(
+        {
+          id: customer.id,
+          companyId: customer.companyId,
+          storeId: customer.storeId,
+          ...values,
+        },
+        token,
+      );
+      await refetch();
+      onClose();
+    } catch (error) {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
   };
 
   return (
@@ -21,7 +52,10 @@ const EditCustomerModal = ({ customer }: { customer: Customer }) => {
       <CustomerForm
         isOpen={isOpen}
         onSubmit={onSubmit}
-        initialValues={{ name: customer.name, phone: customer.phone }}
+        initialValues={{
+          name: customer.name,
+          phoneNumber: customer.phoneNumber,
+        }}
         secondaryAction={
           <Button variant="secondary" onClick={onClose}>
             Hủy

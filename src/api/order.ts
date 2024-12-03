@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { Order, OrderStatus } from "../types/order";
+import { Order, OrderReqBody, OrderStatus } from "../types/order";
 import { PaymentStatus } from "../types/payment";
-import { BASE_URL } from "./constants";
 import { Response } from "./common";
+import { BASE_URL } from "./constants";
 
 export const getOrders = ({
   token,
@@ -33,8 +33,20 @@ export const getOrders = ({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
+};
+
+export const getOrder = (id: string) => {
+  return axios.get<Response<Order>>(`${BASE_URL}/order/${id}`);
+};
+
+export const updateOrder = (body: OrderReqBody, token: string) => {
+  return axios.put<Response<unknown>>(`${BASE_URL}/order/update`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const updateOrderStatus = ({
@@ -55,7 +67,7 @@ export const updateOrderStatus = ({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 };
 
@@ -77,6 +89,6 @@ export const updateOrderPaymentStatus = ({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 };

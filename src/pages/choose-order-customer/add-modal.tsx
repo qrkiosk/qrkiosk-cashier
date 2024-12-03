@@ -1,27 +1,46 @@
+import { createCustomer as createCustomerApi } from "@/api/customer";
 import Button from "@/components/button";
 import FloatingButton from "@/components/floating-button";
+import { use401ErrorFlag } from "@/hooks";
+import { currentOrderAtom, customersQueryAtom, tokenAtom } from "@/state";
+import { withErrorStatusCodeHandler } from "@/utils/error";
+import { useAtomValue } from "jotai";
+import toast from "react-hot-toast";
 import { Modal } from "zmp-ui";
 import CustomerForm from "./form";
 import { useAddModal } from "./local-state";
 
+const useCreateCustomerWith401Handler = () => {
+  const { escalate: escalate401Error } = use401ErrorFlag();
+  return withErrorStatusCodeHandler(createCustomerApi, [
+    { statusCode: 401, handler: escalate401Error },
+  ]);
+};
+
 const AddCustomerModal = () => {
   const { isOpen, onOpen, onClose } = useAddModal();
-  const onSubmit = async (values) => {
-    // try {
-    //   const authResult = await authenticate(values);
-    //   setAuthResult(authResult.data.data);
-    //   navigate("/menu-table", { replace: true });
-    // } catch (error) {
-    //   console.log(error);
-    //   if ((error as AxiosError).status === 401) {
-    //     toast.error(
-    //       "Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng kiểm tra và thử lại.",
-    //     );
-    //   } else {
-    //     toast.error("Xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại.");
-    //   }
-    // }
-    onClose();
+  const order = useAtomValue(currentOrderAtom);
+  const token = useAtomValue(tokenAtom);
+  const createCustomer = useCreateCustomerWith401Handler();
+  const { refetch } = useAtomValue(customersQueryAtom);
+
+  const onSubmit = async (values: { name: string; phoneNumber: string }) => {
+    if (!order) return;
+
+    try {
+      await createCustomer(
+        {
+          companyId: order.companyId,
+          storeId: order.storeId,
+          ...values,
+        },
+        token,
+      );
+      await refetch();
+      onClose();
+    } catch (error) {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
   };
 
   return (

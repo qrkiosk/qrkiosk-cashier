@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 
 enum FormFields {
   NAME = "name",
-  PHONE = "phone",
+  PHONE_NUMBER = "phoneNumber",
 }
 
 const CustomerForm = ({
@@ -19,7 +19,7 @@ const CustomerForm = ({
 }: {
   isOpen: boolean;
   onSubmit: (values) => Promise<void>;
-  initialValues?: { name: string; phone: string };
+  initialValues?: { name: string; phoneNumber?: string };
   secondaryAction?: ReactNode;
 }) => {
   const {
@@ -33,7 +33,7 @@ const CustomerForm = ({
   useEffect(() => {
     if (initialValues) {
       setValue(FormFields.NAME, initialValues.name);
-      setValue(FormFields.PHONE, initialValues.phone);
+      setValue(FormFields.PHONE_NUMBER, initialValues.phoneNumber ?? "");
     }
   }, [initialValues]);
 
@@ -65,25 +65,30 @@ const CustomerForm = ({
       </FormControl>
 
       <FormControl>
-        <label htmlFor={FormFields.PHONE} className="mb-2 block font-medium">
+        <label
+          htmlFor={FormFields.PHONE_NUMBER}
+          className="mb-2 block font-medium"
+        >
           Số điện thoại
         </label>
         <input
-          id={FormFields.PHONE}
+          id={FormFields.PHONE_NUMBER}
           type="tel"
           placeholder="Nhập số điện thoại"
           className={classNames(
             "h-10 w-full rounded-lg bg-section pl-4 pr-3 text-sm normal-case outline-none placeholder:text-inactive",
             {
-              "border-2 border-red-500": !isEmpty(errors[FormFields.PHONE]),
+              "border-2 border-red-500": !isEmpty(
+                errors[FormFields.PHONE_NUMBER],
+              ),
             },
           )}
-          {...register(FormFields.PHONE, {
+          {...register(FormFields.PHONE_NUMBER, {
             required: "Đây là trường bắt buộc.",
             minLength: { value: 10, message: "Tối thiểu 10 chữ số." },
           })}
         />
-        <FormError error={errors[FormFields.PHONE]} />
+        <FormError error={errors[FormFields.PHONE_NUMBER]} />
       </FormControl>
 
       <div className="flex justify-end space-x-2">

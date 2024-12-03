@@ -1,4 +1,4 @@
-import { currentOrderAtom } from "@/state";
+import { currentOrderIdAtom } from "@/state";
 import { BreadcrumbEntry } from "@/types/common";
 import { Table } from "@/types/company";
 import { withThousandSeparators } from "@/utils/number";
@@ -69,7 +69,7 @@ TableTile.Delivery = ({ table }) => {
 TableTile.OnSite = ({ table }) => {
   const hasOrders = !isEmpty(table.orders);
   const navigate = useNavigate();
-  const setCurrentOrder = useSetAtom(currentOrderAtom);
+  const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
 
   return (
     <Tile
@@ -83,7 +83,7 @@ TableTile.OnSite = ({ table }) => {
           { text: table.name },
         ];
 
-        setCurrentOrder(order);
+        setCurrentOrderId(order.id);
         navigate("/order-details", {
           state: { title },
         });

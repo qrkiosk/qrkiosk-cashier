@@ -21,7 +21,7 @@ const Customer = () => {
         })
       }
     >
-      <div className="flex h-full items-center justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <span className="font-semibold">Khách hàng</span>
           <span className="text-inactive">{order?.customerName}</span>

@@ -2,12 +2,13 @@ import classNames from "classnames";
 import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 
 type ButtonVariant = "primary" | "secondary" | "text";
-type ButtonSize = "sm" | "md" | "lg";
+type ButtonSize = "xs" | "sm" | "md" | "lg";
 
 interface ButtonProps
   extends PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  loading?: boolean;
 }
 
 const getVariantStyle = (variant: ButtonVariant) => {
@@ -15,7 +16,7 @@ const getVariantStyle = (variant: ButtonVariant) => {
     case "secondary":
       return "bg-secondary";
     case "text":
-      return "bg-none";
+      return "bg-none !p-0";
     case "primary":
     default:
       return "bg-primary text-white";
@@ -24,6 +25,8 @@ const getVariantStyle = (variant: ButtonVariant) => {
 
 const getSizeStyle = (size: ButtonSize) => {
   switch (size) {
+    case "xs":
+      return "px-2.5 py-[4px] text-xs";
     case "sm":
       return "px-3 py-[7px]";
     case "lg":
@@ -39,6 +42,7 @@ const Button = ({
   variant = "primary",
   size = "md",
   type = "button",
+  loading = false,
   ...props
 }: ButtonProps) => {
   return (

@@ -1,13 +1,13 @@
 import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
-import Spinner from "@/components/spinner";
 import Tabs from "@/components/tabs";
 import { syncLocalTablesEffect } from "@/effects";
 import { useRemoveQueriesOnUnmount } from "@/hooks";
-import { currentMenuTableTabIndexAtom, tablesAtom } from "@/state";
+import { currentMenuTableTabIndexAtom, tablesQueryAtom } from "@/state";
 import { useAtom, useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
+import { Spinner } from "zmp-ui";
 import TableGrid from "./table-grid";
 import ZoneList from "./zone-list";
 
@@ -15,10 +15,10 @@ const MENU_TABLE_TABS = ["Tất cả", "Chờ xác nhận", "Đang sử dụng",
 
 const MenuTable = () => {
   const [index, setIndex] = useAtom(currentMenuTableTabIndexAtom);
-  const { data, error, isLoading, refetch } = useAtomValue(tablesAtom);
+  const { data, error, isLoading, refetch } = useAtomValue(tablesQueryAtom);
 
   useAtom(syncLocalTablesEffect);
-  useRemoveQueriesOnUnmount(["table"]);
+  useRemoveQueriesOnUnmount(["tables"]);
 
   return (
     <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">

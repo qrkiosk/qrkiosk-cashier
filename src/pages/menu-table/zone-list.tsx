@@ -1,6 +1,6 @@
 import { allZonesAtom, currentZoneAtom } from "@/state";
 import { ALL_ZONES } from "@/utils/constants";
-import { Box, HStack, useRadio, useRadioGroup } from "@chakra-ui/react";
+import { useRadio, useRadioGroup } from "@chakra-ui/react";
 import { useAtomValue, useSetAtom } from "jotai";
 
 const RadioCard = (props) => {
@@ -9,26 +9,17 @@ const RadioCard = (props) => {
   const checkbox = getRadioProps();
 
   return (
-    <Box as="label">
+    <label>
       <input {...input} style={{ display: "none" }} />
-      <Box
+      <div
         {...checkbox}
-        cursor="pointer"
-        border="none"
-        boxShadow="none"
-        px={3}
-        py={1}
-        _checked={{
-          borderRadius: "md",
-          bg: "var(--primary)",
-          color: "white",
-        }}
+        className="cursor-pointer border-none px-3 py-1 shadow-none data-[checked]:rounded-md data-[checked]:bg-primary data-[checked]:text-white"
       >
         <span className="text-sm font-semibold sm:text-base">
           {props.children}
         </span>
-      </Box>
-    </Box>
+      </div>
+    </label>
   );
 };
 
@@ -42,25 +33,16 @@ const ZoneList = () => {
   });
 
   return (
-    <HStack
+    <div
       {...getRootProps()}
-      overflowX="auto"
-      overflowY="hidden"
-      whiteSpace="nowrap"
-      minH="48px"
-      bgColor="var(--zmp-background-white)"
-      boxShadow="0px 2px 5px rgba(0, 0, 0, 0.1)"
-      zIndex={998}
-      gap={0}
-      px={2}
-      className="scrollbar-hidden"
+      className="scrollbar-hidden z-[998] flex min-h-12 items-center !gap-0 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[1px] border-b-black/10 bg-[--zmp-background-white] px-2"
     >
       {zones.map(({ value, text }) => (
         <RadioCard key={value} {...getRadioProps({ value })}>
           {text}
         </RadioCard>
       ))}
-    </HStack>
+    </div>
   );
 };
 

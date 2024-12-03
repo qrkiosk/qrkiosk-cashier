@@ -6,7 +6,7 @@ const Products = () => {
     <div className="bg-[--zmp-background-white] px-4 py-3">
       <Grid templateColumns="repeat(3, 1fr)">
         <GridItem colSpan={3}>
-          <div className="flex h-full items-center">
+          <div className="flex items-center">
             <p className="font-semibold">Sản phẩm</p>
           </div>
         </GridItem>

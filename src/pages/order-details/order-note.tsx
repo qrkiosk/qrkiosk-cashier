@@ -1,28 +1,51 @@
+import { updateOrder as updateOrderApi } from "@/api/order";
 import Button from "@/components/button";
-import { useFocusedInputRef } from "@/hooks";
-import { orderNoteAtom } from "@/state";
+import { use401ErrorFlag, useFocusedInputRef } from "@/hooks";
+import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
+import { withErrorStatusCodeHandler } from "@/utils/error";
+import { genOrderReqBody } from "@/utils/order";
+import { useDisclosure } from "@chakra-ui/react";
 import autosize from "autosize";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { FaAngleRight } from "react-icons/fa6";
-import { useBoolean } from "usehooks-ts";
 import { Modal } from "zmp-ui";
 
+const useUpdateOrderWith401Handler = () => {
+  const { escalate: escalate401Error } = use401ErrorFlag();
+  return withErrorStatusCodeHandler(updateOrderApi, [
+    { statusCode: 401, handler: escalate401Error },
+  ]);
+};
+
 const OrderNote = () => {
-  const { value: isOpen, setTrue: onOpen, setFalse } = useBoolean();
-  const [orderNote, setOrderNote] = useAtom(orderNoteAtom);
-  const [input, setInput] = useState("");
+  const { isOpen, onOpen, onClose: off } = useDisclosure();
   const ref = useFocusedInputRef<HTMLTextAreaElement>(isOpen);
+  const [input, setInput] = useState("");
+  const order = useAtomValue(currentOrderAtom);
+  const orderNote = order?.note ?? "";
 
   const onClose = useCallback(() => {
     setInput("");
-    setFalse();
+    off();
   }, []);
 
-  const onSubmit = () => {
-    setOrderNote(input.trim());
-    onClose();
+  const token = useAtomValue(tokenAtom);
+  const updateOrder = useUpdateOrderWith401Handler();
+  const { refetch } = useAtomValue(currentOrderQueryAtom);
+
+  const onSubmit = async () => {
+    if (!order) return;
+
+    try {
+      await updateOrder(genOrderReqBody(order, { note: input.trim() }), token);
+      await refetch();
+      onClose();
+    } catch {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
   };
 
   useEffect(() => {
@@ -42,7 +65,7 @@ const OrderNote = () => {
         className="cursor-pointer bg-[--zmp-background-white] p-4"
         onClick={onOpen}
       >
-        <div className="flex h-full items-center justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <span className="font-semibold">Ghi chú đơn</span>
             <span className="text-inactive">{orderNote}</span>
@@ -50,6 +73,7 @@ const OrderNote = () => {
           <FaAngleRight fontSize={16} color="rgb(109, 109, 109)" />
         </div>
       </div>
+
       <Modal maskClosable={false} title="Thêm ghi chú đơn" visible={isOpen}>
         <div className="space-y-4">
           <textarea

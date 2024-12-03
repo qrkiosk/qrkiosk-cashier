@@ -1,8 +1,8 @@
 import { atomEffect } from "jotai-effect";
 
-import { localTablesAtom, tablesAtom } from "../state";
+import { localTablesAtom, tablesQueryAtom } from "../state";
 
 export default atomEffect((get, set) => {
-  const tables = get(tablesAtom).data;
+  const tables = get(tablesQueryAtom).data;
   set(localTablesAtom, tables);
 });
