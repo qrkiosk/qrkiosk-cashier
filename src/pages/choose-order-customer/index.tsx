@@ -3,7 +3,12 @@ import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
 import HorizontalDivider from "@/components/horizontal-divider";
 import { use401ErrorFlag } from "@/hooks";
-import { currentOrderAtom, customersQueryAtom, tokenAtom } from "@/state";
+import {
+  currentOrderAtom,
+  currentOrderQueryAtom,
+  customersQueryAtom,
+  tokenAtom,
+} from "@/state";
 import { Customer } from "@/types/customer";
 import { withErrorStatusCodeHandler } from "@/utils/error";
 import { genOrderReqBody } from "@/utils/order";
@@ -33,11 +38,12 @@ const ChooseOrderCustomer = () => {
   const token = useAtomValue(tokenAtom);
   const order = useAtomValue(currentOrderAtom);
 
+  const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
   const {
     data: customers,
     isLoading,
     error,
-    refetch,
+    refetch: refetchCustomers,
   } = useAtomValue(customersQueryAtom);
 
   const updateOrder = useUpdateOrderWith401Handler();
@@ -58,7 +64,7 @@ const ChooseOrderCustomer = () => {
           variant="secondary"
           onClick={async () => {
             try {
-              await refetch();
+              await refetchCustomers();
             } catch {
               toast.error("Xảy ra lỗi khi tải dữ liệu.");
             }
@@ -80,7 +86,7 @@ const ChooseOrderCustomer = () => {
 
   return (
     <FlexDiv col className="bg-[--zmp-background-white] !p-0">
-      <div className="p-4">
+      <div className="px-4 pb-2 pt-4">
         <div className="relative w-full">
           <input
             placeholder="Tìm kiếm theo tên hoặc SĐT"
@@ -100,7 +106,6 @@ const ChooseOrderCustomer = () => {
               <div
                 className="flex flex-1 cursor-pointer space-x-3 py-4 pl-6"
                 onClick={async () => {
-                  console.log(order);
                   if (!order) return;
 
                   try {
@@ -113,6 +118,7 @@ const ChooseOrderCustomer = () => {
                       }),
                       token,
                     );
+                    refetchOrder();
                     navigate(-1);
                   } catch {
                     toast.error(

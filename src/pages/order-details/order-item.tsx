@@ -1,42 +1,31 @@
-import { Box, Button, GridItem, Heading, Stack, Text } from "@chakra-ui/react";
+import Button from "@/components/button";
+import { Price } from "@/components/prices";
+import { CartItem, CartItemOption } from "@/types/cart";
+import {
+  calcItemTotalAmount,
+  genMultiChoiceOptionDisplayText,
+} from "@/utils/cart";
 import isEmpty from "lodash/isEmpty";
 import { useCallback } from "react";
-
-import { OrderDetail } from "@/types/order";
-import { Price } from "../../components/prices";
-import { APP_ACCENT_COLOR } from "../../utils/constants";
-// import { OptionWithSelectedDetail } from "../../../types/product";
-// import { CartProductVariant } from "../../../types/cart";
 // import {
 //   isEditingCartItemAtom,
 //   productVariantAtom,
 //   removeCartItemAtom,
-// } from "../../../state";
-// import { APP_ACCENT_COLOR } from "../../../utils/constants";
-// import {
-//   calcItemTotalAmount,
-//   genMultiChoiceOptionDisplayText,
-// } from "../../../utils/cart";
-// import { Price } from "../../../components/prices";
+// } from "@/state";
 
-const OrderItemOption = ({
-  children: option,
-}: {
-  // children: OptionWithSelectedDetail;
-}) => {
-  if (true || option.selectedDetail) {
-    // return <Text fontSize="sm">{option.selectedDetail.name}</Text>;
-    return <Text fontSize="sm">Đường đá bình thường</Text>;
+const OrderItemOption = ({ option }: { option: CartItemOption }) => {
+  if (option.selectedDetail) {
+    return <p className="text-xs">{option.selectedDetail.name}</p>;
   }
 
   if (!isEmpty(option.selectedDetails)) {
-    // return <Text fontSize="sm">{genMultiChoiceOptionDisplayText(option)}</Text>;
+    return <p className="text-xs">{genMultiChoiceOptionDisplayText(option)}</p>;
   }
 
   return null;
 };
 
-const OrderItem = ({ item }: { item: OrderDetail }) => {
+const OrderItem = ({ item }: { item: CartItem }) => {
   // const removeCartItem = useSetAtom(removeCartItemAtom);
   // const setProductVariant = useSetAtom(productVariantAtom);
   // const setIsEditingCartItem = useSetAtom(isEditingCartItemAtom);
@@ -52,76 +41,60 @@ const OrderItem = ({ item }: { item: OrderDetail }) => {
 
   return (
     <>
-      <GridItem colSpan={2}>
-        <Box h="100%" w="100%" display="flex" mt={5}>
-          <Box className="clickable-area" onClick={onClickEditItem}>
-            <Button
-              colorScheme={APP_ACCENT_COLOR}
-              variant="outline"
-              size="sm"
-              p={0}
-            >
-              {item.quantity}x
-            </Button>
-          </Box>
-          <Box flexGrow={1}>
-            <Box
-              className="clickable-area"
-              flexGrow={1}
-              ml={2}
+      <div className="col-span-2">
+        <div className="mt-5 flex h-full w-full">
+          <div className="clickable-area" onClick={onClickEditItem}>
+            <div className="flex h-8 w-8 items-center justify-center rounded-md border-[1px] border-primary">
+              <span className="text-sm font-semibold text-primary">
+                {item.quantity}x
+              </span>
+            </div>
+          </div>
+          <div className="flex-1">
+            <div
+              className="clickable-area ml-2 flex-1"
               onClick={onClickEditItem}
             >
-              <Heading size="xs" mb={1}>
-                {item.name}
-              </Heading>
-              <Stack rowGap={1}>
+              <p className="mb-1 text-xs font-semibold">{item.name}</p>
+              <div className="space-y-1">
                 {item.options.map((opt) => (
-                  <OrderItemOption key={opt.id}>{opt}</OrderItemOption>
+                  <OrderItemOption key={opt.id} option={opt} />
                 ))}
                 {item.note && (
-                  <Text fontSize="xs" color="GrayText">
-                    {item.note}
-                  </Text>
+                  <p className="text-xs text-subtitle">{item.note}</p>
                 )}
-              </Stack>
-            </Box>
-            <Box mt={2} display="flex" alignItems="stretch">
+              </div>
+            </div>
+            <div className="ml-2 mt-2 flex items-stretch space-x-3">
               <Button
-                colorScheme={APP_ACCENT_COLOR}
-                variant="ghost"
                 size="xs"
-                _hover={{ bg: "none" }}
+                variant="text"
+                className="text-primary"
                 onClick={onClickEditItem}
               >
                 Sửa
               </Button>
               <Button
-                colorScheme={APP_ACCENT_COLOR}
-                variant="ghost"
                 size="xs"
-                _hover={{ bg: "none" }}
+                variant="text"
+                className="text-primary"
                 onClick={onClickRemoveItem}
               >
                 Xóa
               </Button>
-              <Box
-                flexGrow={1}
-                className="clickable-area"
+              <div
+                className="clickable-area flex-1"
                 onClick={onClickEditItem}
               />
-            </Box>
-          </Box>
-        </Box>
-      </GridItem>
-      <GridItem
-        colSpan={1}
-        className="clickable-area"
-        onClick={onClickEditItem}
-      >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="clickable-area col-span-1" onClick={onClickEditItem}>
         <Price variant="standard" textAlign="right" mt={5}>
-          {30000}
+          {calcItemTotalAmount(item)}
         </Price>
-      </GridItem>
+      </div>
     </>
   );
 };

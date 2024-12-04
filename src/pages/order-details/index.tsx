@@ -58,9 +58,6 @@ const OrderDetailsPage = () => {
     );
   }
 
-  console.log(data); // đoạn này ok r nè
-  console.log(token);
-
   return (
     <>
       <FlexDiv col className="!p-0">
@@ -81,7 +78,7 @@ const OrderDetailsPage = () => {
 
         <FloatingButton
           className="bottom-[100px] right-5 bg-gray-700 hover:bg-gray-800"
-          onClick={() => navigate("/choose-order-products")}
+          onClick={() => navigate("/pick-order-products")}
         />
       </FlexDiv>
 

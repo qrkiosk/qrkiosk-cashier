@@ -46,7 +46,7 @@ const ServiceFee = () => {
   );
 
   const order = useAtomValue(currentOrderAtom);
-  const orderPrice = order?.totalAmount ?? 0;
+  const orderAmount = order?.amount ?? 0;
   const feeAmount = order?.serviceFee ?? 0;
   const feePercentage = order?.serviceFeePercentage ?? 0;
 
@@ -72,7 +72,7 @@ const ServiceFee = () => {
     try {
       const updatedData = usingPercentage
         ? {
-            serviceFee: calcFeeAmount(orderPrice, inputPercentage),
+            serviceFee: calcFeeAmount(orderAmount, inputPercentage),
             serviceFeePercentage: inputPercentage,
           }
         : {
@@ -253,8 +253,8 @@ const ServiceFee = () => {
             <span className="mb-2 block font-medium">
               {withThousandSeparators(
                 usingPercentage
-                  ? calcAppliedPriceByPercentage(orderPrice, inputPercentage)
-                  : calcAppliedPriceByAmount(orderPrice, inputAmount),
+                  ? calcAppliedPriceByPercentage(orderAmount, inputPercentage)
+                  : calcAppliedPriceByAmount(orderAmount, inputAmount),
               )}
             </span>
           </div>

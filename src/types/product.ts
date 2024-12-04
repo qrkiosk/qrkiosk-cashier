@@ -27,7 +27,7 @@ export interface Option extends Base {
 
 export interface OptionWithSelectedDetail extends Option {
   selectedDetail: OptionDetail | null;
-  selectedDetails: OptionDetail[];
+  selectedDetails: OptionDetail[]; // can be empty array
 }
 
 export interface Product extends Base {

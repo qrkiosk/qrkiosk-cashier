@@ -48,7 +48,7 @@ const PriceReduction = () => {
   );
 
   const order = useAtomValue(currentOrderAtom);
-  const orderPrice = order?.totalAmount ?? 0;
+  const orderAmount = order?.amount ?? 0;
   const discountAmount = order?.discountAmount ?? 0;
   const discountPercentage = order?.discountPercentage ?? 0;
 
@@ -77,7 +77,7 @@ const PriceReduction = () => {
     try {
       const updatedData = usingPercentage
         ? {
-            discountAmount: calcReductionAmount(orderPrice, inputPercentage),
+            discountAmount: calcReductionAmount(orderAmount, inputPercentage),
             discountPercentage: inputPercentage,
           }
         : {
@@ -256,8 +256,8 @@ const PriceReduction = () => {
             <span className="mb-2 block font-medium">
               {withThousandSeparators(
                 usingPercentage
-                  ? calcReducedPriceByPercentage(orderPrice, inputPercentage)
-                  : calcReducedPriceByAmount(orderPrice, inputAmount),
+                  ? calcReducedPriceByPercentage(orderAmount, inputPercentage)
+                  : calcReducedPriceByAmount(orderAmount, inputAmount),
               )}
             </span>
           </div>

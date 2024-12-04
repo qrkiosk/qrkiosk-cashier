@@ -88,6 +88,7 @@ export interface OrderReqBody {
   discountPercentage: number;
   serviceFee: number;
   serviceFeePercentage: number;
+  status: OrderStatus;
   details: OrderDetailReqBody[];
 }
 

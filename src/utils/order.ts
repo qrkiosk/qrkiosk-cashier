@@ -36,6 +36,7 @@ export const genOrderReqBody = (
   discountPercentage: order.discountPercentage,
   serviceFee: order.serviceFee,
   serviceFeePercentage: order.serviceFeePercentage,
+  status: order.status,
   details: order.details,
   ...updatedFields,
 });

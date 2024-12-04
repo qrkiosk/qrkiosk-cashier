@@ -1,61 +1,27 @@
-import { currentOrderAtom } from "@/state";
-import { Grid, GridItem } from "@chakra-ui/react";
-import { useAtomValue } from "jotai";
+import { cartAtom, syncCartFromOrderEffect } from "@/state/cart";
+import { useAtom, useAtomValue } from "jotai";
+import isEmpty from "lodash/isEmpty";
 import OrderItem from "./order-item";
 
 const Products = () => {
-  const order = useAtomValue(currentOrderAtom);
-  const products = order?.details ?? [];
+  useAtom(syncCartFromOrderEffect);
+  const cart = useAtomValue(cartAtom);
 
   return (
     <div className="bg-[--zmp-background-white] px-4 py-3">
-      <Grid templateColumns="repeat(3, 1fr)">
-        <GridItem colSpan={3}>
-          <div className="flex items-center">
-            <p className="font-semibold">Sản phẩm</p>
-          </div>
-        </GridItem>
+      <p className="font-semibold">Sản phẩm</p>
 
-        {products.map((item) => (
-          <OrderItem key={item.id} item={item} />
-        ))}
-        {/* <OrderItem>
-          {{
-            uniqIdentifier: "x1",
-            quantity: 1,
-            name: "Cà phê sữa",
-            options: [{ id: "o1" }, { id: "o2" }],
-            note: "note",
-          }}
-        </OrderItem>
-        <OrderItem>
-          {{
-            uniqIdentifier: "x2",
-            quantity: 1,
-            name: "Cà phê sữa",
-            options: [{ id: "o3" }, { id: "o4" }],
-            note: "note",
-          }}
-        </OrderItem>
-        <OrderItem>
-          {{
-            uniqIdentifier: "x3",
-            quantity: 1,
-            name: "Cà phê sữa",
-            options: [{ id: "o5" }, { id: "o6" }],
-            note: "another note",
-          }}
-        </OrderItem>
-        <OrderItem>
-          {{
-            uniqIdentifier: "x4",
-            quantity: 1,
-            name: "Cà phê sữa",
-            options: [{ id: "o5" }, { id: "o6" }],
-            note: "another note",
-          }}
-        </OrderItem> */}
-      </Grid>
+      {isEmpty(cart.items) ? (
+        <p className="py-5 text-center text-sm text-subtitle">
+          Giỏ hàng chưa có sản phẩm nào.
+        </p>
+      ) : (
+        <div className="grid grid-cols-3">
+          {cart.items.map((item) => (
+            <OrderItem key={item.id} item={item} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

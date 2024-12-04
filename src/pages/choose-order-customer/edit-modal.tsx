@@ -18,7 +18,6 @@ const useUpdateCustomerWith401Handler = () => {
 };
 
 const EditCustomerModal = ({ customer }: { customer: Customer }) => {
-  console.log(customer);
   const { isOpen, onClose } = useEditModal();
   const token = useAtomValue(tokenAtom);
   const updateCustomer = useUpdateCustomerWith401Handler();
