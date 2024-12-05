@@ -104,7 +104,6 @@ TableTile.OnSite = ({ table }) => {
             {hasOrders && (
               <>
                 <span className="text-xs">
-                  {table.orders.length}
                   {table.orders[0].totalQuantity} món •{" "}
                   {withThousandSeparators(table.orders[0].totalAmount)}
                 </span>

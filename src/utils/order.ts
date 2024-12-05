@@ -38,5 +38,6 @@ export const genOrderReqBody = (
   serviceFeePercentage: order.serviceFeePercentage,
   status: order.status,
   details: order.details,
+  isActive: order.isActive,
   ...updatedFields,
 });
