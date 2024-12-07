@@ -26,7 +26,6 @@ export default atomEffect((get, set) => {
 
   fetchWith401Handler({ companyId, storeId }, token).then((res) => {
     const shift = res.data.data;
-    console.log(shift);
 
     if (shift == null) {
       set(openShiftModalAtom, true);

@@ -37,8 +37,6 @@ const LoginForm = () => {
       setAuthResult(authResult.data.data);
       navigate("/menu-table", { replace: true });
     } catch (error) {
-      console.log(error);
-
       if ((error as AxiosError).status === 401) {
         toast.error(
           "Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng kiểm tra và thử lại.",

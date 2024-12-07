@@ -13,18 +13,18 @@ const Customer = () => {
   return (
     <div
       className="cursor-pointer bg-[--zmp-background-white] p-4"
-      onClick={() =>
+      onClick={() => {
         navigate("/choose-order-customer", {
           state: {
             title: [...breadcrumb, { text: "Khách hàng" }],
           },
-        })
-      }
+        });
+      }}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <span className="font-semibold">Khách hàng</span>
-          <span className="text-inactive">{order?.customerName}</span>
+          <span className="text-sm text-inactive">{order?.customerName}</span>
         </div>
         <FaAngleRight fontSize={16} color="rgb(109, 109, 109)" />
       </div>

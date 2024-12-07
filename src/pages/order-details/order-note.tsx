@@ -68,7 +68,7 @@ const OrderNote = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <span className="font-semibold">Ghi chú đơn</span>
-            <span className="text-inactive">{orderNote}</span>
+            <span className="text-sm text-inactive">{orderNote}</span>
           </div>
           <FaAngleRight fontSize={16} color="rgb(109, 109, 109)" />
         </div>

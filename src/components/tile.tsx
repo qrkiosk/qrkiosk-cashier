@@ -19,7 +19,7 @@ type TileProps = {
   onClick?: () => void;
 };
 
-const Tile = ({ children, highlighted = false, onClick }: TileProps) => {
+const BaseTile = ({ children, highlighted = false, onClick }: TileProps) => {
   return (
     <div
       onClick={onClick}
@@ -36,15 +36,15 @@ const Tile = ({ children, highlighted = false, onClick }: TileProps) => {
   );
 };
 
-const TableTile = {} as {
+const Tile = {} as {
   Takeaway: React.FC<{ table: Table }>;
   Delivery: React.FC<{ table: Table }>;
   OnSite: React.FC<{ table: Table }>;
 };
 
-TableTile.Takeaway = ({ table }) => {
+Tile.Takeaway = ({ table }) => {
   return (
-    <Tile highlighted={!isEmpty(table.orders)}>
+    <BaseTile highlighted={!isEmpty(table.orders)}>
       <div className="flex flex-1 flex-col">
         <div className="flex items-center space-x-1">
           <FaBagShopping />
@@ -52,13 +52,13 @@ TableTile.Takeaway = ({ table }) => {
         </div>
         <div className="flex-1" />
       </div>
-    </Tile>
+    </BaseTile>
   );
 };
 
-TableTile.Delivery = ({ table }) => {
+Tile.Delivery = ({ table }) => {
   return (
-    <Tile highlighted={!isEmpty(table.orders)}>
+    <BaseTile highlighted={!isEmpty(table.orders)}>
       <div className="flex flex-1 flex-col">
         <div className="flex items-center space-x-1">
           <FaTruckFast />
@@ -66,11 +66,11 @@ TableTile.Delivery = ({ table }) => {
         </div>
         <div className="flex-1" />
       </div>
-    </Tile>
+    </BaseTile>
   );
 };
 
-TableTile.OnSite = ({ table }) => {
+Tile.OnSite = ({ table }) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
@@ -83,7 +83,7 @@ TableTile.OnSite = ({ table }) => {
 
   return (
     <>
-      <Tile
+      <BaseTile
         highlighted={hasOrders}
         onClick={() => {
           if (isEmpty(table.orders)) return; // TODO: Handle create at-counter order creation flow later
@@ -115,13 +115,13 @@ TableTile.OnSite = ({ table }) => {
             )}
           </div>
         </div>
-      </Tile>
+      </BaseTile>
 
       <Modal title={`Bàn ${table.name}`} visible={isOpen} onClose={onClose}>
-        <div className="space-y-3">
+        <div className="space-y-4">
           <p className="text-sm">Chọn đơn hàng để xử lý:</p>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             {table.orders.map((order) => (
               <div
                 key={order.id}
@@ -164,4 +164,4 @@ TableTile.OnSite = ({ table }) => {
   );
 };
 
-export { TableTile };
+export default Tile;

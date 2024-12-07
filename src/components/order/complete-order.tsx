@@ -1,5 +1,4 @@
 import Button from "@/components/button";
-import { Price } from "@/components/prices";
 import {
   Box,
   Grid,
@@ -23,7 +22,7 @@ const CompleteOrder = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [input, setInput] = useState("");
   const onSubmit = () => {
-    console.log(input);
+    // Do something with `input` here
     onClose();
   };
 
@@ -86,7 +85,7 @@ const CompleteOrder = () => {
                   alignItems="center"
                   justifyContent="flex-end"
                 >
-                  <Price variant="standard">{90000}</Price>
+                  {/* <Price variant="standard">{90000}</Price> */}
                 </Box>
               </GridItem>
 
@@ -102,7 +101,7 @@ const CompleteOrder = () => {
                   alignItems="center"
                   justifyContent="flex-end"
                 >
-                  <Price variant="standard">{10000}</Price>
+                  {/* <Price variant="standard">{10000}</Price> */}
                 </Box>
               </GridItem>
 
@@ -118,7 +117,7 @@ const CompleteOrder = () => {
                   alignItems="center"
                   justifyContent="flex-end"
                 >
-                  <Price variant="standard">{5000}</Price>
+                  {/* <Price variant="standard">{5000}</Price> */}
                 </Box>
               </GridItem>
 
@@ -136,7 +135,7 @@ const CompleteOrder = () => {
                   alignItems="center"
                   justifyContent="flex-end"
                 >
-                  <Price variant="total">{65000}</Price>
+                  {/* <Price variant="total">{65000}</Price> */}
                 </Box>
               </GridItem>
             </Grid>

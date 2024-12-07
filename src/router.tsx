@@ -12,6 +12,7 @@ import SearchPage from "@/pages/search";
 import { getBasePath } from "@/utils/zma";
 import { createBrowserRouter } from "react-router-dom";
 import ChooseOrderCustomer from "./pages/choose-order-customer";
+import PickOrderProducts from "./pages/pick-order-products";
 
 const router = createBrowserRouter(
   [
@@ -100,6 +101,7 @@ const router = createBrowserRouter(
           element: <OrderDetailsPage />,
           handle: {
             back: true,
+            backBehavior: "confirm-exit-order",
             footerless: true,
           },
         },
@@ -108,6 +110,15 @@ const router = createBrowserRouter(
           element: <ChooseOrderCustomer />,
           handle: {
             back: true,
+            footerless: true,
+          },
+        },
+        {
+          path: "/pick-order-products",
+          element: <PickOrderProducts />,
+          handle: {
+            back: true,
+            backAppearance: "close",
             footerless: true,
           },
         },

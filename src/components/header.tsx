@@ -1,16 +1,26 @@
 import { useRouteHandle } from "@/hooks";
 import { categoriesStateUpwrapped } from "@/state";
+import { isCartDirtyAtom } from "@/state/cart";
 import headerLogoImage from "@/static/header-logo.svg";
 import { BreadcrumbEntry } from "@/types/common";
+import { useDisclosure } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Modal } from "zmp-ui";
 import Breadcrumb from "./breadcrumb";
 import Profile from "./profile";
-import { BackIcon } from "./vectors";
+import { BackIcon, Xmark } from "./vectors";
 
-export default function Header() {
+const Header = () => {
+  const {
+    isOpen: isExitOrderConfirmVisible,
+    onOpen: onOpenExitOrderConfirm,
+    onClose: onCloseExitOrderConfirm,
+  } = useDisclosure();
+
   const categories = useAtomValue(categoriesStateUpwrapped);
+  const isCartDirty = useAtomValue(isCartDirtyAtom);
   const navigate = useNavigate();
   const location = useLocation();
   const [handle, match] = useRouteHandle();
@@ -30,6 +40,14 @@ export default function Header() {
 
     return handle.title ?? "";
   }, [handle, categories]);
+
+  const onNavigateBack = () => {
+    if (handle?.backBehavior === "confirm-exit-order" && isCartDirty) {
+      onOpenExitOrderConfirm();
+    } else {
+      navigate(-1);
+    }
+  };
 
   const showBack = location.key !== "default" && handle?.back !== false;
 
@@ -52,13 +70,37 @@ export default function Header() {
   }
 
   return (
-    <div className="z-50 flex h-12 w-full items-center space-x-1 border-b-[1px] border-b-black/5 py-2 pl-2 pr-[106px]">
-      {showBack && (
-        <div className="cursor-pointer p-2" onClick={() => navigate(-1)}>
-          <BackIcon />
-        </div>
+    <>
+      <div className="z-50 flex h-12 w-full items-center space-x-1 border-b-[1px] border-b-black/5 py-2 pl-2 pr-[106px]">
+        {showBack && (
+          <div className="cursor-pointer p-2" onClick={onNavigateBack}>
+            {handle?.backAppearance === "close" ? <Xmark /> : <BackIcon />}
+          </div>
+        )}
+        <div className="truncate text-xl font-medium">{title}</div>
+      </div>
+
+      {handle?.backBehavior === "confirm-exit-order" && (
+        <Modal
+          visible={isExitOrderConfirmVisible}
+          onClose={onCloseExitOrderConfirm}
+          title="Lưu ý"
+          description="Vui lòng thực hiện thao tác Lưu & In đơn hàng trước khi rời khỏi đây. Tất cả chi tiết đơn hàng chưa lưu sẽ bị mất sau khi bạn rời khỏi đơn hàng."
+          actions={[
+            { text: "Ở lại", close: true },
+            {
+              text: "Rời khỏi đây",
+              highLight: true,
+              onClick: () => {
+                onCloseExitOrderConfirm();
+                navigate(-1);
+              },
+            },
+          ]}
+        />
       )}
-      <div className="truncate text-xl font-medium">{title}</div>
-    </div>
+    </>
   );
-}
+};
+
+export default Header;

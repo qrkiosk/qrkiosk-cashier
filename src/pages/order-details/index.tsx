@@ -1,23 +1,19 @@
 import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
-import FloatingButton from "@/components/floating-button";
 import Divider from "@/components/section-divider";
-import { currentOrderQueryAtom, tokenAtom } from "@/state";
+import { currentOrderQueryAtom } from "@/state";
 import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { Spinner } from "zmp-ui";
+import OrderFooter from "../../components/order/order-footer";
 import Customer from "./customer";
-import OrderFooter from "./order-footer";
 import OrderNote from "./order-note";
 import PriceReduction from "./price-reduction";
 import Products from "./products";
 import ServiceFee from "./service-fee";
 
 const OrderDetailsPage = () => {
-  const navigate = useNavigate();
-  const token = useAtomValue(tokenAtom);
   const { data, isLoading, error, refetch } = useAtomValue(
     currentOrderQueryAtom,
   );
@@ -76,10 +72,7 @@ const OrderDetailsPage = () => {
         <Divider />
         <Products />
 
-        <FloatingButton
-          className="bottom-[100px] right-5 bg-gray-700 hover:bg-gray-800"
-          onClick={() => navigate("/pick-order-products")}
-        />
+        <Divider />
       </FlexDiv>
 
       <OrderFooter />

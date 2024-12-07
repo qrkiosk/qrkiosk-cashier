@@ -1,4 +1,5 @@
 import { PaymentType } from "./payment";
+import { CartProductVariant } from "./product";
 import { ShippingType } from "./shipping";
 
 export interface CartItemOptionDetail {
@@ -10,22 +11,24 @@ export interface CartItemOptionDetail {
 export interface CartItemOption {
   id: string;
   name: string;
+  details: any[];
   selectedDetail: CartItemOptionDetail | null;
   selectedDetails: CartItemOptionDetail[]; // can be empty array
 }
 
-export interface CartItem {
+export interface CartOrderItem {
   uniqIdentifier: string;
   quantity: number;
   note: string;
   id: string;
   name: string;
   price: number;
+  priceSale: number;
   options: CartItemOption[];
 }
 
 export interface Cart {
-  items: CartItem[];
+  items: Array<CartOrderItem | CartProductVariant>;
   payment?: { paymentType: PaymentType | null };
   shipping?: { shippingType: ShippingType };
 }

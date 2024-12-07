@@ -14,19 +14,6 @@ import toast from "react-hot-toast";
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 import { Modal } from "zmp-ui";
 
-const calcReductionAmount = (orderPrice: number, reductionPercentage: number) =>
-  Math.floor(orderPrice * reductionPercentage);
-
-const calcReducedPriceByPercentage = (
-  orderPrice: number,
-  reductionPercentage: number,
-) => Math.max(Math.floor(orderPrice * (1 - reductionPercentage)), 0);
-
-const calcReducedPriceByAmount = (
-  orderPrice: number,
-  reductionAmount: number,
-) => Math.max(orderPrice - reductionAmount, 0);
-
 const useUpdateOrderWith401Handler = () => {
   const { escalate: escalate401Error } = use401ErrorFlag();
   return withErrorStatusCodeHandler(updateOrderApi, [
@@ -77,7 +64,7 @@ const PriceReduction = () => {
     try {
       const updatedData = usingPercentage
         ? {
-            discountAmount: calcReductionAmount(orderAmount, inputPercentage),
+            discountAmount: Math.floor(orderAmount * inputPercentage),
             discountPercentage: inputPercentage,
           }
         : {
@@ -145,13 +132,13 @@ const PriceReduction = () => {
         {isDiscountApplied && (
           <div className="flex items-center justify-between">
             <div className="h-full flex-1 cursor-pointer" onClick={onOpen}>
-              <span className="h-full text-xs">Giảm giá hóa đơn</span>
+              <span className="h-full text-sm">Giảm giá hóa đơn</span>
             </div>
             <div className="flex items-center space-x-2">
               {isDiscountAmountApplied && (
                 <>
                   <div className="h-full cursor-pointer" onClick={onOpen}>
-                    <span className="font-medium text-green-600">
+                    <span className="text-sm font-medium text-green-600">
                       -{withThousandSeparators(discountAmount)}
                     </span>
                   </div>
@@ -163,7 +150,7 @@ const PriceReduction = () => {
               {isDiscountPercentageApplied && (
                 <>
                   <div className="h-full cursor-pointer" onClick={onOpen}>
-                    <span className="font-medium text-green-600">
+                    <span className="text-sm font-medium text-green-600">
                       -{Math.floor(discountPercentage * 100)}%
                     </span>
                   </div>
@@ -178,10 +165,10 @@ const PriceReduction = () => {
       </div>
 
       <Modal maskClosable={false} title="Giảm giá hóa đơn" visible={isOpen}>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <FormControl>
             <label
-              className="mb-2 block font-medium"
+              className="mb-2 block text-sm font-medium"
               htmlFor={
                 usingPercentage ? "discount-percentage" : "discount-amount"
               }
@@ -250,17 +237,6 @@ const PriceReduction = () => {
               </ButtonGroup>
             </div>
           </FormControl>
-
-          <div className="flex items-center justify-between">
-            <span className="mb-2 block font-medium">Số tiền sau giảm:</span>
-            <span className="mb-2 block font-medium">
-              {withThousandSeparators(
-                usingPercentage
-                  ? calcReducedPriceByPercentage(orderAmount, inputPercentage)
-                  : calcReducedPriceByAmount(orderAmount, inputAmount),
-              )}
-            </span>
-          </div>
 
           <div className="flex justify-end space-x-2">
             <Button variant="secondary" onClick={onClose}>

@@ -14,17 +14,6 @@ import toast from "react-hot-toast";
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 import { Modal } from "zmp-ui";
 
-const calcFeeAmount = (orderPrice: number, feePercentage: number) =>
-  Math.floor(orderPrice * feePercentage);
-
-const calcAppliedPriceByPercentage = (
-  orderPrice: number,
-  feePercentage: number,
-) => Math.floor(orderPrice * (1 + feePercentage));
-
-const calcAppliedPriceByAmount = (orderPrice: number, feeAmount: number) =>
-  orderPrice + feeAmount;
-
 const useUpdateOrderWith401Handler = () => {
   const { escalate: escalate401Error } = use401ErrorFlag();
   return withErrorStatusCodeHandler(updateOrderApi, [
@@ -72,7 +61,7 @@ const ServiceFee = () => {
     try {
       const updatedData = usingPercentage
         ? {
-            serviceFee: calcFeeAmount(orderAmount, inputPercentage),
+            serviceFee: Math.floor(orderAmount * inputPercentage),
             serviceFeePercentage: inputPercentage,
           }
         : {
@@ -140,13 +129,13 @@ const ServiceFee = () => {
         {isFeeApplied && (
           <div className="flex items-center justify-between">
             <div className="h-full flex-1 cursor-pointer" onClick={onOpen}>
-              <span className="h-full text-xs">Phí trên hóa đơn</span>
+              <span className="h-full text-sm">Phí trên hóa đơn</span>
             </div>
             <div className="flex items-center space-x-2">
               {isFeeAmountApplied && (
                 <>
                   <div className="h-full cursor-pointer" onClick={onOpen}>
-                    <span className="font-medium">
+                    <span className="text-sm font-medium">
                       {withThousandSeparators(feeAmount)}
                     </span>
                   </div>
@@ -158,7 +147,7 @@ const ServiceFee = () => {
               {isFeePercentageApplied && (
                 <>
                   <div className="h-full cursor-pointer" onClick={onOpen}>
-                    <span className="font-medium">
+                    <span className="text-sm font-medium">
                       {Math.floor(feePercentage * 100)}%
                     </span>
                   </div>
@@ -173,10 +162,10 @@ const ServiceFee = () => {
       </div>
 
       <Modal maskClosable={false} title="Phí dịch vụ" visible={isOpen}>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <FormControl>
             <label
-              className="mb-2 block font-medium"
+              className="mb-2 block text-sm font-medium"
               htmlFor={usingPercentage ? "fee-percentage" : "fee-amount"}
             >
               Giá trị
@@ -245,19 +234,6 @@ const ServiceFee = () => {
               </ButtonGroup>
             </div>
           </FormControl>
-
-          <div className="flex items-center justify-between">
-            <span className="mb-2 block font-medium">
-              Số tiền sau áp dụng phí:
-            </span>
-            <span className="mb-2 block font-medium">
-              {withThousandSeparators(
-                usingPercentage
-                  ? calcAppliedPriceByPercentage(orderAmount, inputPercentage)
-                  : calcAppliedPriceByAmount(orderAmount, inputAmount),
-              )}
-            </span>
-          </div>
 
           <div className="flex justify-end space-x-2">
             <Button variant="secondary" onClick={onClose}>

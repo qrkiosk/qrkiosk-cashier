@@ -1,6 +1,6 @@
+import { withThousandSeparators } from "@/utils/number";
 import { Box, BoxProps, Text, TextProps } from "@chakra-ui/react";
 import { useMemo } from "react";
-import { withThousandSeparators } from "../../utils/number";
 
 type Size = "sm" | "md" | "lg";
 

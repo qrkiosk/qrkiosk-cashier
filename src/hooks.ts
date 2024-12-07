@@ -7,7 +7,15 @@ import {
   logoutAtom,
   openShiftModalAtom,
 } from "@/state";
+import {
+  productVariantAtom,
+  productVariantEditorAtom,
+  productVariantPickerAtom,
+  selectedProductIdAtom,
+} from "@/state/product";
 import { Cart, CartItem, Product, SelectedOptions } from "@/types.global";
+import { CartOrderItem } from "@/types/cart";
+import { CartProductVariant } from "@/types/product";
 import { getDefaultOptions, isIdentical } from "@/utils/cart";
 import { getConfig } from "@/utils/template";
 import { useQueryClient } from "@tanstack/react-query";
@@ -166,6 +174,8 @@ export function useRouteHandle() {
       title?: string | Function;
       logo?: boolean;
       back?: boolean;
+      backBehavior?: "confirm-exit-order";
+      backAppearance?: "back" | "close";
       user?: boolean;
       headerless?: boolean;
       footerless?: boolean;
@@ -174,7 +184,7 @@ export function useRouteHandle() {
   >[];
   const lastMatch = matches[matches.length - 1];
 
-  return [lastMatch.handle, lastMatch, matches] as const;
+  return [lastMatch.handle ?? {}, lastMatch, matches] as const;
 }
 
 /* ===== */
@@ -251,4 +261,46 @@ export const useFocusedInputRef = <
   }, [shouldFocus]);
 
   return ref;
+};
+
+export const useProductVariantPicker = () => {
+  const [state, setState] = useAtom(productVariantPickerAtom);
+  const setSelectedProductId = useSetAtom(selectedProductIdAtom);
+  const setProductVariant = useSetAtom(productVariantAtom);
+
+  const onOpen = useCallback((productId: string) => {
+    setState(true);
+    setSelectedProductId(productId);
+  }, []);
+
+  const onClose = useCallback(() => {
+    setState(false);
+    setProductVariant(null);
+    setSelectedProductId(null);
+  }, []);
+
+  return { isOpen: state, onOpen, onClose };
+};
+
+export const useProductVariantEditor = () => {
+  const [state, setState] = useAtom(productVariantEditorAtom);
+  const setSelectedProductId = useSetAtom(selectedProductIdAtom);
+  const setProductVariant = useSetAtom(productVariantAtom);
+
+  const onOpen = useCallback(
+    (productId: string, productVariant: CartOrderItem | CartProductVariant) => {
+      setState(true);
+      setProductVariant(productVariant);
+      setSelectedProductId(productId);
+    },
+    [],
+  );
+
+  const onClose = useCallback(() => {
+    setState(false);
+    setProductVariant(null);
+    setSelectedProductId(null);
+  }, []);
+
+  return { isOpen: state, onOpen, onClose };
 };

@@ -1,74 +1,122 @@
-import { Cart, CartItemOption, CartItemOptionDetail } from "@/types/cart";
-import { Order, OrderDetail } from "@/types/order";
+import { Cart, CartItemOption } from "@/types/cart";
+import { Order } from "@/types/order";
 import { PaymentType } from "@/types/payment";
 import { ShippingType } from "@/types/shipping";
+import { isValidDiscountOrFee } from "@/utils/order";
 import { atom } from "jotai";
-import { atomEffect } from "jotai-effect";
-import uniqBy from "lodash/uniqBy";
 import { currentOrderAtom } from ".";
+import { productVariantAtom } from "./product";
 
-const INITIAL_CART_STATE: Cart = {
+export const INITIAL_CART_STATE: Cart = {
   items: [],
   payment: { paymentType: null },
   shipping: { shippingType: ShippingType.ON_SITE },
 };
 
 export const cartAtom = atom<Cart>(INITIAL_CART_STATE);
+export const isCartDirtyAtom = atom(false);
 
 export const cartTotalQtyAtom = atom((get) => {
   const cart = get(cartAtom);
   return cart.items.reduce((acc, item) => acc + item.quantity, 0);
 });
 
-export const cartSubtotalAtom = atom((get) => {
+export const cartSubtotalAmountAtom = atom((get) => {
   const cart = get(cartAtom);
 
   return cart.items.reduce((total, item) => {
     const quantity = item.quantity;
-    const baseItemPrice = item.price;
-    const optionsPrice = item.options.reduce((acc, opt) => {
+    const baseItemPrice = item.priceSale;
+    const opts = item.options as unknown as CartItemOption[];
+
+    const optionsPrice = opts.reduce((acc, opt) => {
       const selectedDetailPrice = opt.selectedDetail?.price ?? 0;
       const selectedDetailsTotalAmount = opt.selectedDetails.reduce(
         (a, d) => a + d.price,
         0,
       );
-
       return acc + selectedDetailPrice + selectedDetailsTotalAmount;
     }, 0);
+
     const itemPrice = (baseItemPrice + optionsPrice) * quantity;
 
     return total + itemPrice;
   }, 0);
 });
 
-// export const addToCartAtom = atom(null, (get, set) => {
-//   const productVariant = get(productVariantAtom);
-//   if (productVariant == null) return;
+const calcDiscountVoucher = (order: Order | null) =>
+  order?.discountVoucher ?? 0;
 
-//   const cart = get(cartAtom);
-//   const isEditingCartItem = get(isEditingCartItemAtom);
+const calcDiscountAmount = (order: Order | null, initialAmount: number) => {
+  const discountAmount = order?.discountAmount ?? 0;
+  const discountPercentage = order?.discountPercentage ?? 0;
 
-//   if (isEditingCartItem) {
-//     set(cartAtom, {
-//       ...cart,
-//       items: cart.items.map((item) =>
-//         item.uniqIdentifier === productVariant.uniqIdentifier
-//           ? { ...productVariant }
-//           : item,
-//       ),
-//     });
-//   } else {
-//     set(cartAtom, {
-//       ...cart,
-//       items: cart.items.concat({
-//         ...productVariant,
-//         uniqIdentifier:
-//           productVariant.uniqIdentifier ??
-//           `${productVariant.id}--${Date.now()}`,
-//       }),
-//     });
-//   }
-// });
+  if (isValidDiscountOrFee(discountPercentage)) {
+    return initialAmount * discountPercentage;
+  }
+
+  return discountAmount;
+};
+
+const calcServiceFee = (order: Order | null, initialAmount: number) => {
+  const serviceFee = order?.serviceFee ?? 0;
+  const serviceFeePercentage = order?.serviceFeePercentage ?? 0;
+
+  if (isValidDiscountOrFee(serviceFeePercentage)) {
+    return initialAmount * serviceFeePercentage;
+  }
+
+  return serviceFee;
+};
+
+export const cartTotalAmountAtom = atom((get) => {
+  const order = get(currentOrderAtom);
+  const isCartDirty = get(isCartDirtyAtom);
+
+  if (!isCartDirty) {
+    return order?.totalAmount ?? 0;
+  }
+
+  const subtotal = get(cartSubtotalAmountAtom);
+  const serviceFee = calcServiceFee(order, subtotal);
+  const discountAmount = calcDiscountAmount(order, subtotal);
+  const discountVoucher = calcDiscountVoucher(order);
+  const totalDiscount = discountAmount + discountVoucher;
+
+  return Math.max(subtotal + serviceFee - totalDiscount, 0);
+});
+
+export const addCartItemAtom = atom(null, (get, set) => {
+  const productVariant = get(productVariantAtom);
+  if (!productVariant) return;
+
+  const cart = get(cartAtom);
+  set(cartAtom, {
+    ...cart,
+    items: cart.items.concat({
+      ...productVariant,
+      uniqIdentifier:
+        productVariant.uniqIdentifier ?? `${productVariant.id}--${Date.now()}`,
+    }),
+  });
+  set(isCartDirtyAtom, true);
+});
+
+export const updateCartItemAtom = atom(null, (get, set) => {
+  const productVariant = get(productVariantAtom);
+  if (!productVariant) return;
+
+  const cart = get(cartAtom);
+  set(cartAtom, {
+    ...cart,
+    items: cart.items.map((item) =>
+      item.uniqIdentifier === productVariant.uniqIdentifier
+        ? { ...productVariant }
+        : item,
+    ),
+  });
+  set(isCartDirtyAtom, true);
+});
 
 export const removeCartItemAtom = atom(
   null,
@@ -81,6 +129,7 @@ export const removeCartItemAtom = atom(
         (item) => item.uniqIdentifier !== uniqIdentifier,
       ),
     });
+    set(isCartDirtyAtom, true);
   },
 );
 
@@ -116,60 +165,4 @@ export const setShippingTypeAtom = atom(
   },
 );
 
-export const convertOrderVarsToItemOptions = (
-  variants: OrderDetail["variants"],
-) => {
-  const opts = uniqBy(variants, "productOptionId").map<CartItemOption>(
-    (variant) => {
-      const { productOptionId: poId, poName } = variant;
-      const selectedDetails = variants.reduce<CartItemOptionDetail[]>(
-        (acc, v) => {
-          if (v.productOptionId === poId) {
-            return [
-              ...acc,
-              {
-                id: v.productOptionDetailId,
-                name: v.podName,
-                price: v.podPrice,
-              },
-            ];
-          }
-
-          return acc;
-        },
-        [],
-      );
-      const isMultiChoiceOpt = selectedDetails.length > 1;
-
-      return {
-        id: poId,
-        name: poName,
-        selectedDetail: isMultiChoiceOpt ? null : selectedDetails[0],
-        selectedDetails: isMultiChoiceOpt ? selectedDetails : [],
-      };
-    },
-  );
-
-  return opts;
-};
-
-export const convertOrderToCart = (order: Order): Cart => ({
-  items: order.details.map((od) => ({
-    uniqIdentifier: `${od.id}--${Date.now()}`,
-    id: od.productId,
-    name: od.productName,
-    price: od.price,
-    quantity: od.quantity,
-    note: od.note,
-    options: convertOrderVarsToItemOptions(od.variants),
-  })),
-  payment: { paymentType: order.paymentType },
-});
-
-export const syncCartFromOrderEffect = atomEffect((get, set) => {
-  const order = get(currentOrderAtom);
-
-  if (!order) return;
-
-  set(cartAtom, convertOrderToCart(order));
-});
+export const isPreservingCartAtom = atom(false);

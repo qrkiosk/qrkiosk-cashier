@@ -1,5 +1,5 @@
 import FlexDiv from "@/components/flex-div";
-import { TableTile } from "@/components/tiles";
+import Tile from "@/components/tile";
 import {
   zonedEmptyTablesAtom,
   zonedInUseTablesAtom,
@@ -40,11 +40,11 @@ TableGrid.All = () => {
             {(function () {
               switch (table.type) {
                 case TableType.TAKE_AWAY:
-                  return <TableTile.Takeaway table={table} />;
+                  return <Tile.Takeaway table={table} />;
                 case TableType.DELIVERY:
-                  return <TableTile.Delivery table={table} />;
+                  return <Tile.Delivery table={table} />;
                 case TableType.ON_SITE:
-                  return <TableTile.OnSite table={table} />;
+                  return <Tile.OnSite table={table} />;
                 default:
                   return null; // just for completeness of the switch statement, not possible in reality
               }
@@ -72,7 +72,7 @@ TableGrid.Empty = () => {
       <Grid>
         {tables.map((table) => (
           <div key={table.id} className="col-span-1">
-            <TableTile.OnSite table={table} />
+            <Tile.OnSite table={table} />
           </div>
         ))}
       </Grid>
@@ -96,7 +96,7 @@ TableGrid.InUse = () => {
       <Grid>
         {tables.map((table) => (
           <div key={table.id} className="col-span-1">
-            <TableTile.OnSite table={table} />
+            <Tile.OnSite table={table} />
           </div>
         ))}
       </Grid>
@@ -120,7 +120,7 @@ TableGrid.Waiting = () => {
       <Grid>
         {tables.map((table) => (
           <div key={table.id} className="col-span-1">
-            <TableTile.OnSite table={table} />
+            <Tile.OnSite table={table} />
           </div>
         ))}
       </Grid>
