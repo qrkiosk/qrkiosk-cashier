@@ -6,7 +6,7 @@ import MainMenu from "./main-menu";
 const PickOrderProducts = () => {
   return (
     <>
-      <FlexDiv col className="bg-[--zmp-background-white] !p-0">
+      <FlexDiv col className="p-0">
         <MainMenu />
         <ProductVariantPicker />
       </FlexDiv>

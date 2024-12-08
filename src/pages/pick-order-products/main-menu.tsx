@@ -7,7 +7,7 @@ const MainMenu = () => {
   const { data: categoriesWProducts } = useAtomValue(productsQueryAtom);
 
   return (
-    <div>
+    <div className="flex-1 bg-[--zmp-background-color]">
       {categoriesWProducts.map((cat) => (
         <CategoryItem
           key={cat.id}

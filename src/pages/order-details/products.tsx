@@ -44,7 +44,7 @@ const Products = () => {
       </div>
 
       <FloatingButton
-        className="bottom-[100px] right-5 bg-gray-700 hover:bg-gray-800"
+        className="bottom-[115px] right-4 bg-gray-700 hover:bg-gray-800"
         onClick={() => {
           navigate("/pick-order-products", {
             state: {

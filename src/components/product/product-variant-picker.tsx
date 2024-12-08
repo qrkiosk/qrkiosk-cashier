@@ -54,7 +54,7 @@ const PickerBody = () => {
   if (isLoading || !productVariant) return <PageSkeleton />;
 
   return (
-    <Box h="100%" display="flex" flexDir="column">
+    <div className="flex flex-1 flex-col">
       <Box flexGrow={1} overflowY="auto" bgColor="var(--zmp-background-color)">
         <Image
           src={productVariant.url}
@@ -152,7 +152,7 @@ const PickerBody = () => {
           </div>
         </Button>
       </Box>
-    </Box>
+    </div>
   );
 };
 
@@ -173,7 +173,7 @@ const ProductVariantPicker = () => {
           isRound={true}
           autoFocus={false}
           position="absolute"
-          top="var(--zaui-safe-area-inset-top, 16px)"
+          top="calc(var(--zaui-safe-area-inset-top, 16px) + 12px)"
           left={3} // 12px
           variant="outline"
           aria-label="Close"

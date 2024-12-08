@@ -57,7 +57,7 @@ const EditorBody = () => {
   const enrichedProductVariant = productVariant as CartProductVariant;
 
   return (
-    <Box h="100%" display="flex" flexDir="column">
+    <div className="flex flex-1 flex-col">
       <Box flexGrow={1} overflowY="auto" bgColor="var(--zmp-background-color)">
         <Image
           src={enrichedProductVariant.url}
@@ -175,7 +175,7 @@ const EditorBody = () => {
           </Button>
         )}
       </Box>
-    </Box>
+    </div>
   );
 };
 
@@ -196,7 +196,7 @@ const ProductVariantEditor = () => {
           isRound={true}
           autoFocus={false}
           position="absolute"
-          top="var(--zaui-safe-area-inset-top, 16px)"
+          top="calc(var(--zaui-safe-area-inset-top, 16px) + 12px)"
           left={3} // 12px
           variant="outline"
           aria-label="Close"
