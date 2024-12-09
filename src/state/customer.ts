@@ -1,6 +1,9 @@
 import { getCustomers } from "@/api/customer";
 import { Customer } from "@/types/customer";
+import { searchCustomers } from "@/utils/search";
+import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
+import isEmpty from "lodash/isEmpty";
 import { companyIdAtom, storeIdAtom, tokenAtom } from ".";
 
 export const customersQueryAtom = atomWithQuery<
@@ -33,3 +36,14 @@ export const customersQueryAtom = atomWithQuery<
     return response.data.data;
   },
 }));
+
+export const searchProductQueryAtom = atom<string>("");
+
+export const searchProductResultsAtom = atom<Customer[]>((get) => {
+  const searchQuery = get(searchProductQueryAtom);
+  const customers = get(customersQueryAtom).data;
+
+  if (isEmpty(searchQuery)) return customers;
+
+  return searchCustomers(searchQuery, customers);
+});

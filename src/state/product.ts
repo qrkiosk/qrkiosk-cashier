@@ -6,7 +6,8 @@ import {
   OptionDetail,
   ProductWithOptions,
 } from "@/types/product";
-import { searchProducts, toTuples } from "@/utils/product";
+import { toTuples } from "@/utils/product";
+import { searchProducts } from "@/utils/search";
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import compact from "lodash/compact";
