@@ -6,10 +6,11 @@ import {
   OptionDetail,
   ProductWithOptions,
 } from "@/types/product";
-import { toTuples } from "@/utils/product";
+import { searchProducts, toTuples } from "@/utils/product";
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import compact from "lodash/compact";
+import isEmpty from "lodash/isEmpty";
 import { companyIdAtom, storeIdAtom } from ".";
 
 export const productsQueryAtom = atomWithQuery<
@@ -239,3 +240,14 @@ export const setVariantSelectedDetailsAtom = atom(
 
 export const productVariantPickerAtom = atom(false);
 export const productVariantEditorAtom = atom(false);
+
+export const searchProductQueryAtom = atom<string>("");
+
+export const searchProductResultsAtom = atom<CategoryWithProducts[]>((get) => {
+  const searchQuery = get(searchProductQueryAtom);
+  const products = get(productsQueryAtom).data;
+
+  if (isEmpty(searchQuery)) return products;
+
+  return searchProducts(searchQuery, products);
+});

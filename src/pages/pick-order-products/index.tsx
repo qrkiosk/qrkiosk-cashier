@@ -1,17 +1,18 @@
-import FlexDiv from "@/components/flex-div";
 import OrderFooter from "@/components/order/order-footer";
 import ProductVariantPicker from "@/components/product/product-variant-picker";
-import CategoryList from "./category-list";
 import MainMenu from "./main-menu";
+import SearchResult from "./search-result";
+import TopStickyHeader from "./top-sticky-header";
 
 const PickOrderProducts = () => {
   return (
     <>
-      <CategoryList />
-      <FlexDiv col className="p-0">
+      <TopStickyHeader />
+      <div className="flex flex-1 flex-col overflow-auto bg-[--zmp-background-color]">
         <MainMenu />
-        <ProductVariantPicker />
-      </FlexDiv>
+        <SearchResult />
+      </div>
+      <ProductVariantPicker />
       <OrderFooter />
     </>
   );

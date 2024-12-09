@@ -1,3 +1,7 @@
+import { CategoryWithProducts } from "@/types/product";
+import Fuse from "fuse.js";
+import sortBy from "lodash/sortBy";
+
 export function toTuples<T>(arr: T[]): Array<[T, T] | [T]> {
   const lastIndex = arr.length - 1;
 
@@ -11,4 +15,22 @@ export function toTuples<T>(arr: T[]): Array<[T, T] | [T]> {
 
     return result;
   }, []);
+}
+
+export function searchProducts(
+  searchQuery: string,
+  dataSet: CategoryWithProducts[],
+) {
+  const fuse = new Fuse(dataSet, {
+    includeScore: true,
+    includeMatches: true,
+    shouldSort: true,
+    threshold: 0.3,
+    keys: [
+      { name: "products.name", weight: 2 },
+      { name: "name", weight: 1 },
+    ],
+  });
+  const raw = fuse.search(searchQuery).map((result) => result.item);
+  return sortBy(raw, "seq");
 }

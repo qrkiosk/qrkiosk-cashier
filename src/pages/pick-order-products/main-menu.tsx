@@ -1,13 +1,20 @@
 import CategoryItem from "@/components/product/category-item";
-import { productsQueryAtom } from "@/state/product";
+import { productsQueryAtom, searchProductQueryAtom } from "@/state/product";
 import { CategoryTemplate } from "@/types/product";
+import classNames from "classnames";
 import { useAtomValue } from "jotai";
+import isEmpty from "lodash/isEmpty";
 
 const MainMenu = () => {
   const { data: categoriesWProducts } = useAtomValue(productsQueryAtom);
+  const searchQuery = useAtomValue(searchProductQueryAtom);
 
   return (
-    <div className="flex-1 bg-[--zmp-background-color]">
+    <div
+      className={classNames("flex-1 overflow-y-auto", {
+        hidden: !isEmpty(searchQuery),
+      })}
+    >
       {categoriesWProducts.map((cat) => (
         <CategoryItem
           key={cat.id}
