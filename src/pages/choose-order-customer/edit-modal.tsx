@@ -1,7 +1,8 @@
 import { updateCustomer as updateCustomerApi } from "@/api/customer";
 import Button from "@/components/button";
 import { use401ErrorFlag } from "@/hooks";
-import { customersQueryAtom, tokenAtom } from "@/state";
+import { tokenAtom } from "@/state";
+import { customersQueryAtom } from "@/state/customer";
 import { Customer } from "@/types/customer";
 import { withErrorStatusCodeHandler } from "@/utils/error";
 import { useAtomValue } from "jotai";

@@ -2,8 +2,8 @@ import { AxiosError } from "axios";
 import { atom } from "jotai";
 import compact from "lodash/compact";
 import isEmpty from "lodash/isEmpty";
-
-import { currentOrderQueryAtom, customersQueryAtom, tablesQueryAtom } from ".";
+import { currentOrderQueryAtom, tablesQueryAtom } from ".";
+import { customersQueryAtom } from "./customer";
 import { productsQueryAtom, singleProductQueryAtom } from "./product";
 
 export const hasOngoing401ErrorAtom = atom(false);

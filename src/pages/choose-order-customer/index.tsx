@@ -3,12 +3,8 @@ import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
 import HorizontalDivider from "@/components/horizontal-divider";
 import { use401ErrorFlag } from "@/hooks";
-import {
-  currentOrderAtom,
-  currentOrderQueryAtom,
-  customersQueryAtom,
-  tokenAtom,
-} from "@/state";
+import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
+import { customersQueryAtom } from "@/state/customer";
 import { Customer } from "@/types/customer";
 import { withErrorStatusCodeHandler } from "@/utils/error";
 import { genOrderReqBody } from "@/utils/order";
