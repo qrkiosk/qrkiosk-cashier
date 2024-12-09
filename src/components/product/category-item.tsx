@@ -58,7 +58,7 @@ const CategoryItem = ({
   // }, [mainContentRef?.current?.clientHeight, headerRef?.current?.clientHeight]);
 
   return (
-    <div /* ref={observeIntersectionRef} */>
+    <div /* ref={observeIntersectionRef} */ id={category.id}>
       {(function () {
         switch (template) {
           case CategoryTemplate.BANNER:

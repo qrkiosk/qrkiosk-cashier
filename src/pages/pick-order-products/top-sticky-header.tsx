@@ -1,14 +1,12 @@
 import { categoryTuplesAtom, searchProductQueryAtom } from "@/state/product";
 import classNames from "classnames";
 import useEmblaCarousel from "embla-carousel-react";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
 import { useEffect, useMemo, useState } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import "./embla.css";
-
-const inputAtom = atom("");
 
 const TopStickyHeader = () => {
   const [emblaRef] = useEmblaCarousel({ loop: false, dragFree: true });
@@ -48,15 +46,20 @@ const TopStickyHeader = () => {
       >
         <div className="embla__container space-x-1.5">
           {categoryTuples.map((catTuple, index) => (
-            <div className="embla__slide space-y-1.5" key={index}>
-              <div
-                className={classNames("embla__slide__inner", {
-                  active: index === 1,
-                })}
-              >
-                {catTuple[0]}
-              </div>
-              <div className="embla__slide__inner">{catTuple[1]}</div>
+            <div className="embla__slide space-y-1.5" key={catTuple[0].value}>
+              {catTuple.map((cat) => (
+                <div
+                  key={`${cat.value}--${index}`}
+                  className="embla__slide__inner"
+                  onClick={() => {
+                    setTimeout(() => {
+                      document.getElementById(cat.value)?.scrollIntoView();
+                    });
+                  }}
+                >
+                  {cat.text}
+                </div>
+              ))}
             </div>
           ))}
         </div>

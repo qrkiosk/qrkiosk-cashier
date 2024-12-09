@@ -37,10 +37,10 @@ export const customersQueryAtom = atomWithQuery<
   },
 }));
 
-export const searchProductQueryAtom = atom<string>("");
+export const searchCustomerQueryAtom = atom<string>("");
 
-export const searchProductResultsAtom = atom<Customer[]>((get) => {
-  const searchQuery = get(searchProductQueryAtom);
+export const searchCustomerResultsAtom = atom<Customer[]>((get) => {
+  const searchQuery = get(searchCustomerQueryAtom);
   const customers = get(customersQueryAtom).data;
 
   if (isEmpty(searchQuery)) return customers;

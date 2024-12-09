@@ -4,13 +4,18 @@ import FlexDiv from "@/components/flex-div";
 import HorizontalDivider from "@/components/horizontal-divider";
 import { use401ErrorFlag } from "@/hooks";
 import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
-import { customersQueryAtom } from "@/state/customer";
+import {
+  customersQueryAtom,
+  searchCustomerQueryAtom,
+  searchCustomerResultsAtom,
+} from "@/state/customer";
 import { Customer } from "@/types/customer";
 import { withErrorStatusCodeHandler } from "@/utils/error";
 import { genOrderReqBody } from "@/utils/order";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
+import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaMagnifyingGlass, FaPenToSquare } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +31,21 @@ const useUpdateOrderWith401Handler = () => {
   ]);
 };
 
+const useDebouncedCustomerSearch = () => {
+  const [input, setInput] = useState("");
+  const setSearchQuery = useSetAtom(searchCustomerQueryAtom);
+  const setSearchQueryDebounced = useMemo(
+    () => debounce(setSearchQuery, 500),
+    [],
+  );
+
+  useEffect(() => {
+    setSearchQueryDebounced(input.trim());
+  }, [input]);
+
+  return [input, setInput] as const;
+};
+
 const ChooseOrderCustomer = () => {
   const navigate = useNavigate();
   const { onOpen } = useEditModal();
@@ -33,16 +53,16 @@ const ChooseOrderCustomer = () => {
 
   const token = useAtomValue(tokenAtom);
   const order = useAtomValue(currentOrderAtom);
-
+  const updateOrder = useUpdateOrderWith401Handler();
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
+
   const {
-    data: customers,
     isLoading,
     error,
     refetch: refetchCustomers,
   } = useAtomValue(customersQueryAtom);
-
-  const updateOrder = useUpdateOrderWith401Handler();
+  const searchResults = useAtomValue(searchCustomerResultsAtom);
+  const [input, setInput] = useDebouncedCustomerSearch();
 
   if (isLoading) {
     return (
@@ -72,7 +92,7 @@ const ChooseOrderCustomer = () => {
     );
   }
 
-  if (isEmpty(customers)) {
+  if (isEmpty(searchResults)) {
     return (
       <FlexDiv row center>
         <p className="text-sm text-subtitle">Không có dữ liệu.</p>
@@ -85,6 +105,8 @@ const ChooseOrderCustomer = () => {
       <div className="px-4 pb-2 pt-4">
         <div className="relative w-full">
           <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
             placeholder="Tìm kiếm theo tên hoặc SĐT"
             className="h-10 w-full rounded-lg bg-section pl-4 pr-3 text-lg normal-case outline-none placeholder:text-sm placeholder:text-inactive"
           />
@@ -96,7 +118,7 @@ const ChooseOrderCustomer = () => {
       </div>
 
       <div>
-        {customers.map((customer) => (
+        {searchResults.map((customer) => (
           <Fragment key={customer.id}>
             <div className="flex items-center justify-between pr-3">
               <div
