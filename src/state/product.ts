@@ -6,6 +6,7 @@ import {
   OptionDetail,
   ProductWithOptions,
 } from "@/types/product";
+import { toTuples } from "@/utils/product";
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import compact from "lodash/compact";
@@ -37,6 +38,11 @@ export const productsQueryAtom = atomWithQuery<
     );
   },
 }));
+
+export const categoryTuplesAtom = atom((get) => {
+  const categoryNames = get(productsQueryAtom).data.map((cat) => cat.name);
+  return toTuples(categoryNames);
+});
 
 export const selectedProductIdAtom = atom<string | null>(null);
 
