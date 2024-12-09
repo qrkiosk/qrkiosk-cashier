@@ -9,11 +9,9 @@ import { Order, OrderStatus } from "@/types/order";
 import { AuthResult } from "@/types/user";
 import { ALL_ZONES } from "@/utils/constants";
 import { requestWithFallback } from "@/utils/request";
-import { AxiosError } from "axios";
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { atomFamily, atomWithStorage, RESET, unwrap } from "jotai/utils";
-import compact from "lodash/compact";
 import isEmpty from "lodash/isEmpty";
 import uniqBy from "lodash/uniqBy";
 import { getUserInfo } from "zmp-sdk";
@@ -300,24 +298,6 @@ export const allZonesAtom = atom((get) => {
 
   return uniqBy(zones, "value");
 });
-
-export const hasOngoing401ErrorAtom = atom(false);
-
-export const has401FromAnyQueryAtom = atom((get) => {
-  const errors = compact([
-    get(tablesQueryAtom).error,
-    get(currentOrderQueryAtom).error,
-    get(customersQueryAtom).error,
-  ]) as AxiosError[];
-
-  if (isEmpty(errors)) return false;
-
-  return errors.some((error) => error.status === 401);
-});
-
-export const has401Atom = atom(
-  (get) => get(hasOngoing401ErrorAtom) || get(has401FromAnyQueryAtom),
-);
 
 export const currentMenuTableTabIndexAtom = atom(0);
 

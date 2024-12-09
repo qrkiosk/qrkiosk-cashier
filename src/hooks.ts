@@ -1,12 +1,11 @@
 import {
   cartState,
   cartTotalState,
-  has401Atom,
-  hasOngoing401ErrorAtom,
   isAuthenticatedAtom,
   logoutAtom,
   openShiftModalAtom,
 } from "@/state";
+import { has401Atom, hasOngoing401ErrorAtom } from "@/state/error-handling";
 import {
   productVariantAtom,
   productVariantEditorAtom,

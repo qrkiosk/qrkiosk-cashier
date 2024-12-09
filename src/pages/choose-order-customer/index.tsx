@@ -16,7 +16,7 @@ import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import { Fragment, useState } from "react";
 import toast from "react-hot-toast";
-import { FaPenToSquare } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaPenToSquare } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "zmp-ui";
 import AddCustomerModal from "./add-modal";
@@ -86,7 +86,7 @@ const ChooseOrderCustomer = () => {
 
   return (
     <FlexDiv col className="bg-[--zmp-background-white] !p-0">
-      {/* <div className="px-4 pb-2 pt-4">
+      <div className="px-4 pb-2 pt-4">
         <div className="relative w-full">
           <input
             placeholder="Tìm kiếm theo tên hoặc SĐT"
@@ -97,7 +97,7 @@ const ChooseOrderCustomer = () => {
             className="absolute right-4 top-1/2 -translate-y-1/2 text-inactive"
           />
         </div>
-      </div> */}
+      </div>
 
       <div>
         {customers.map((customer) => (

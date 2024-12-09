@@ -2,11 +2,11 @@ import { checkIsShiftOpen } from "@/api/company";
 import {
   companyIdAtom,
   currentShiftAtom,
-  hasOngoing401ErrorAtom,
   openShiftModalAtom,
   storeIdAtom,
   tokenAtom,
 } from "@/state";
+import { hasOngoing401ErrorAtom } from "@/state/error-handling";
 import { withErrorStatusCodeHandler } from "@/utils/error";
 import { atomEffect } from "jotai-effect";
 
