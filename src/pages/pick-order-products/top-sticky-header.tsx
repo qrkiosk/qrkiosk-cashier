@@ -1,3 +1,4 @@
+import Button from "@/components/button";
 import { categoryTuplesAtom, searchProductQueryAtom } from "@/state/product";
 import classNames from "classnames";
 import useEmblaCarousel from "embla-carousel-react";
@@ -5,7 +6,7 @@ import { useAtom, useAtomValue } from "jotai";
 import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
 import { useEffect, useMemo, useState } from "react";
-import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaXmark } from "react-icons/fa6";
 import "./embla.css";
 
 const TopStickyHeader = () => {
@@ -33,6 +34,13 @@ const TopStickyHeader = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
+          <Button
+            variant="text"
+            className="absolute right-7 top-1/2 -translate-y-1/2 !p-2 text-subtitle"
+            onClick={() => setInput("")}
+          >
+            <FaXmark />
+          </Button>
           <FaMagnifyingGlass
             fontSize={14}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-inactive"
