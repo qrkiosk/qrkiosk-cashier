@@ -57,6 +57,7 @@ const ChooseOrderCustomer = () => {
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
 
   const {
+    data,
     isLoading,
     error,
     refetch: refetchCustomers,
@@ -92,7 +93,7 @@ const ChooseOrderCustomer = () => {
     );
   }
 
-  if (isEmpty(searchResults)) {
+  if (isEmpty(data)) {
     return (
       <FlexDiv row center>
         <p className="text-sm text-subtitle">Không có dữ liệu.</p>
@@ -101,8 +102,8 @@ const ChooseOrderCustomer = () => {
   }
 
   return (
-    <FlexDiv col className="bg-[--zmp-background-white] !p-0">
-      <div className="px-4 pb-2 pt-4">
+    <FlexDiv col className="!p-0">
+      <div className="bg-[--zmp-background-white] p-4">
         <div className="relative w-full">
           <input
             value={input}
@@ -117,56 +118,62 @@ const ChooseOrderCustomer = () => {
         </div>
       </div>
 
-      <div>
-        {searchResults.map((customer) => (
-          <Fragment key={customer.id}>
-            <div className="flex items-center justify-between pr-3">
-              <div
-                className="flex flex-1 cursor-pointer space-x-3 py-4 pl-6"
-                onClick={async () => {
-                  if (!order) return;
+      {isEmpty(searchResults) ? (
+        <p className="py-6 text-center text-sm text-subtitle">
+          Không tìm thấy khách hàng.
+        </p>
+      ) : (
+        <div className="bg-[--zmp-background-white]">
+          {searchResults.map((customer) => (
+            <Fragment key={customer.id}>
+              <div className="flex items-center justify-between pr-3">
+                <div
+                  className="flex flex-1 cursor-pointer space-x-3 py-4 pl-6"
+                  onClick={async () => {
+                    if (!order) return;
 
-                  try {
-                    await updateOrder(
-                      genOrderReqBody(order, {
-                        customer: {
-                          id: customer.id,
-                          name: customer.name,
-                        },
-                      }),
-                      token,
-                    );
-                    refetchOrder();
-                    navigate(-1);
-                  } catch {
-                    toast.error(
-                      "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
-                    );
-                  }
-                }}
-              >
-                <span className="text-sm font-medium">{customer.name}</span>
-                {customer.phoneNumber && (
-                  <span className="text-sm text-inactive">
-                    {customer.phoneNumber}
-                  </span>
-                )}
+                    try {
+                      await updateOrder(
+                        genOrderReqBody(order, {
+                          customer: {
+                            id: customer.id,
+                            name: customer.name,
+                          },
+                        }),
+                        token,
+                      );
+                      refetchOrder();
+                      navigate(-1);
+                    } catch {
+                      toast.error(
+                        "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
+                      );
+                    }
+                  }}
+                >
+                  <span className="text-sm font-medium">{customer.name}</span>
+                  {customer.phoneNumber && (
+                    <span className="text-sm text-inactive">
+                      {customer.phoneNumber}
+                    </span>
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  variant="text"
+                  onClick={() => {
+                    setCustomer(customer);
+                    onOpen();
+                  }}
+                >
+                  <FaPenToSquare className="text-subtitle" fontSize={16} />
+                </Button>
               </div>
-              <Button
-                size="sm"
-                variant="text"
-                onClick={() => {
-                  setCustomer(customer);
-                  onOpen();
-                }}
-              >
-                <FaPenToSquare className="text-subtitle" fontSize={16} />
-              </Button>
-            </div>
-            <HorizontalDivider />
-          </Fragment>
-        ))}
-      </div>
+              <HorizontalDivider />
+            </Fragment>
+          ))}
+        </div>
+      )}
 
       <AddCustomerModal />
       {customer != null && <EditCustomerModal customer={customer} />}
