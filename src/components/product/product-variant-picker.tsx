@@ -54,8 +54,8 @@ const PickerBody = () => {
   if (isLoading || !productVariant) return <PageSkeleton />;
 
   return (
-    <div className="flex flex-1 flex-col">
-      <Box flexGrow={1} overflowY="auto" bgColor="var(--zmp-background-color)">
+    <div className="flex flex-1 flex-col overflow-auto">
+      <div className="flex-1 overflow-y-auto bg-[--zmp-background-color]">
         <Image
           src={productVariant.url}
           alt=""
@@ -127,11 +127,10 @@ const PickerBody = () => {
           </HStack>
         </Box>
         <Divider />
-      </Box>
+      </div>
 
       <Box
-        className="sticky bottom-0 left-0 right-0 p-3"
-        bgColor="var(--zmp-background-white)"
+        className="sticky bottom-0 left-0 right-0 bg-[--zmp-background-white] p-3"
         boxShadow="0px -4px 6px rgba(0, 0, 0, 0.1)"
       >
         <Button
@@ -168,7 +167,7 @@ const ProductVariantPicker = () => {
       onClose={onClose}
     >
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent className="pb-[max(16px,env(safe-area-inset-bottom))]">
         <IconButton
           isRound={true}
           autoFocus={false}

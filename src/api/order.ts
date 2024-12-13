@@ -1,7 +1,6 @@
+import { Order, OrderReqBody, OrderStatus } from "@/types/order";
+import { PaymentStatus } from "@/types/payment";
 import axios from "axios";
-
-import { Order, OrderReqBody, OrderStatus } from "../types/order";
-import { PaymentStatus } from "../types/payment";
 import { Response } from "./common";
 import { BASE_URL } from "./constants";
 
