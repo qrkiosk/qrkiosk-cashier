@@ -2,16 +2,16 @@ import { AxiosError } from "axios";
 import isEmpty from "lodash/isEmpty";
 
 export const withErrorStatusCodeHandler =
-  <TApi extends (...args: any[]) => Promise<any>>(
-    api: TApi,
+  <T extends (...args: any[]) => Promise<any>>(
+    api: T,
     handlers: Array<{ statusCode: number; handler: () => void }>,
   ) =>
-  async (...args: Parameters<TApi>): Promise<Awaited<ReturnType<TApi>>> => {
+  async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
     try {
       const res = await api(...args);
       return res;
     } catch (error) {
-      const axiosError = error as AxiosError<Awaited<ReturnType<TApi>>>;
+      const axiosError = error as AxiosError<Awaited<ReturnType<T>>>;
 
       if (!isEmpty(handlers)) {
         handlers

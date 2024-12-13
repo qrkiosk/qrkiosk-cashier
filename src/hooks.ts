@@ -16,6 +16,7 @@ import { Cart, CartItem, Product, SelectedOptions } from "@/types.global";
 import { CartOrderItem } from "@/types/cart";
 import { CartProductVariant } from "@/types/product";
 import { getDefaultOptions, isIdentical } from "@/utils/cart";
+import { withErrorStatusCodeHandler } from "@/utils/error";
 import { getConfig } from "@/utils/template";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
@@ -302,4 +303,15 @@ export const useProductVariantEditor = () => {
   }, []);
 
   return { isOpen: state, onOpen, onClose };
+};
+
+export const useAuthorizedApi = <T extends (...args: any[]) => Promise<any>>(
+  api: T,
+): ((...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>>) => {
+  const { escalate } = use401ErrorFlag();
+  return useMemo(
+    () =>
+      withErrorStatusCodeHandler(api, [{ statusCode: 401, handler: escalate }]),
+    [],
+  );
 };

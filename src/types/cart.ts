@@ -4,6 +4,7 @@ import { ShippingType } from "./shipping";
 
 export interface CartItemOptionDetail {
   id: string;
+  productVariantId: string;
   name: string;
   price: number;
 }

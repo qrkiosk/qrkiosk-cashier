@@ -49,6 +49,14 @@ export const updateOrder = (body: OrderReqBody, token: string) => {
   });
 };
 
+export const updateOrderDetails = (body: OrderReqBody, token: string) => {
+  return axios.put<Response<unknown>>(`${BASE_URL}/order/update-detail`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export const updateOrderStatus = ({
   token,
   id,

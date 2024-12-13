@@ -60,6 +60,7 @@ export const convertOrderVarsToItemOptions = (
                 id: v.productOptionDetailId,
                 name: v.podName,
                 price: v.podPrice,
+                productVariantId: v.productVariantId,
               },
             ];
           }

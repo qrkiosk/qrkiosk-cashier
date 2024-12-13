@@ -9,6 +9,16 @@ export enum OrderStatus {
   DONE,
 }
 
+export interface OrderProductVariant {
+  id: string;
+  productVariantId: string;
+  productOptionId: string;
+  poName: string;
+  productOptionDetailId: string;
+  podName: string;
+  podPrice: number;
+}
+
 export interface OrderDetail {
   id: string;
   productId: string;
@@ -25,15 +35,7 @@ export interface OrderDetail {
   totalAmount: number;
   isActive: boolean;
   note: string;
-  variants: Array<{
-    id: string;
-    productVariantId: string;
-    productOptionId: string;
-    poName: string;
-    productOptionDetailId: string;
-    podName: string;
-    podPrice: number;
-  }>;
+  variants: OrderProductVariant[];
 }
 
 export interface Order extends CreateUpdateTrace {
@@ -71,6 +73,25 @@ export interface Order extends CreateUpdateTrace {
   details: OrderDetail[];
 }
 
+export interface OrderDetailForOrderReqBody {
+  productId: string;
+  productName: string;
+  productPrice: number;
+  quantity: number;
+  price: number;
+  amount: number;
+  totalAmount: number;
+  note: string;
+  variants: Array<{
+    productVariantId: string;
+    productOptionId: string;
+    poName: string;
+    productOptionDetailId: string;
+    podName: string;
+    podPrice: number;
+  }>;
+}
+
 export interface OrderReqBody {
   id: string;
   companyId: number;
@@ -90,26 +111,5 @@ export interface OrderReqBody {
   serviceFeePercentage: number;
   status: OrderStatus;
   isActive: boolean;
-  details: [];
-}
-
-export interface OrderDetailReqBody {
-  productId: string;
-  productName: string;
-  productPrice: number;
-  quantity: number;
-  price: number;
-  amount: number;
-  totalAmount: number;
-  note: string;
-  variants: OrderProductVariant[];
-}
-
-export interface OrderProductVariant {
-  productVariantId: string;
-  productOptionId: string;
-  poName: string;
-  productOptionDetailId: string;
-  podName: string;
-  podPrice: number;
+  details: OrderDetailForOrderReqBody[];
 }
