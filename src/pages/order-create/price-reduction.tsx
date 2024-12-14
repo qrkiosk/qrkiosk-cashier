@@ -1,25 +1,16 @@
-import { updateOrder as updateOrderApi } from "@/api/order";
 import Button from "@/components/button";
 import FormControl from "@/components/form/form-control";
-import { use401ErrorFlag, useFocusedInputRef } from "@/hooks";
-import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
-import { withErrorStatusCodeHandler } from "@/utils/error";
+import { useFocusedInputRef } from "@/hooks";
+import { draftOrderAtom } from "@/state";
+import { cartSubtotalAmountAtom } from "@/state/cart";
 import { withThousandSeparators } from "@/utils/number";
-import { genOrderReqBody, isValidDiscountOrFee } from "@/utils/order";
+import { isValidDiscountOrFee } from "@/utils/order";
 import { ButtonGroup, useDisclosure } from "@chakra-ui/react";
 import classNames from "classnames";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 import { Modal } from "zmp-ui";
-
-const useUpdateOrderWith401Handler = () => {
-  const { escalate: escalate401Error } = use401ErrorFlag();
-  return withErrorStatusCodeHandler(updateOrderApi, [
-    { statusCode: 401, handler: escalate401Error },
-  ]);
-};
 
 const PriceReduction = () => {
   const { isOpen, onOpen, onClose: off } = useDisclosure();
@@ -34,8 +25,8 @@ const PriceReduction = () => {
     isOpen && usingPercentage,
   );
 
-  const order = useAtomValue(currentOrderAtom);
-  const orderAmount = order?.amount ?? 0;
+  const [order, setOrder] = useAtom(draftOrderAtom);
+  const orderAmount = useAtomValue(cartSubtotalAmountAtom);
   const discountAmount = order?.discountAmount ?? 0;
   const discountPercentage = order?.discountPercentage ?? 0;
 
@@ -54,47 +45,27 @@ const PriceReduction = () => {
     off();
   }, []);
 
-  const token = useAtomValue(tokenAtom);
-  const updateOrder = useUpdateOrderWith401Handler();
-  const { refetch } = useAtomValue(currentOrderQueryAtom);
+  const onSubmit = () => {
+    const data = usingPercentage
+      ? {
+          discountAmount: Math.floor(orderAmount * inputPercentage),
+          discountPercentage: inputPercentage,
+        }
+      : {
+          discountAmount: inputAmount,
+          discountPercentage: 0,
+        };
 
-  const onSubmit = async () => {
-    if (!order) return;
-
-    try {
-      const updatedData = usingPercentage
-        ? {
-            discountAmount: Math.floor(orderAmount * inputPercentage),
-            discountPercentage: inputPercentage,
-          }
-        : {
-            discountAmount: inputAmount,
-            discountPercentage: 0,
-          };
-
-      await updateOrder(genOrderReqBody(order, updatedData), token);
-      await refetch();
-      onClose();
-    } catch {
-      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
-    }
+    setOrder((prev) => ({ ...prev, ...data }));
+    onClose();
   };
 
   const onRemoveDiscount = async () => {
-    if (!order) return;
-
-    try {
-      await updateOrder(
-        genOrderReqBody(order, {
-          discountAmount: 0,
-          discountPercentage: 0,
-        }),
-        token,
-      );
-      await refetch();
-    } catch {
-      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
-    }
+    setOrder((prev) => ({
+      ...prev,
+      discountAmount: 0,
+      discountPercentage: 0,
+    }));
   };
 
   useEffect(() => {
@@ -135,30 +106,17 @@ const PriceReduction = () => {
               <span className="h-full text-sm">Giảm giá hóa đơn</span>
             </div>
             <div className="flex items-center space-x-2">
-              {isDiscountAmountApplied && (
-                <>
-                  <div className="h-full cursor-pointer" onClick={onOpen}>
-                    <span className="text-sm font-medium text-green-600">
-                      -{withThousandSeparators(discountAmount)}
-                    </span>
-                  </div>
-                  <Button size="sm" variant="text" onClick={onRemoveDiscount}>
-                    <FaCircleMinus className="text-xl text-red-600" />
-                  </Button>
-                </>
-              )}
-              {isDiscountPercentageApplied && (
-                <>
-                  <div className="h-full cursor-pointer" onClick={onOpen}>
-                    <span className="text-sm font-medium text-green-600">
-                      -{Math.floor(discountPercentage * 100)}%
-                    </span>
-                  </div>
-                  <Button size="sm" variant="text" onClick={onRemoveDiscount}>
-                    <FaCircleMinus className="text-xl text-red-600" />
-                  </Button>
-                </>
-              )}
+              <div className="h-full cursor-pointer" onClick={onOpen}>
+                <span className="text-sm font-medium text-green-600">
+                  -
+                  {isDiscountAmountApplied
+                    ? withThousandSeparators(discountAmount)
+                    : `${Math.floor(discountPercentage * 100)}%`}
+                </span>
+              </div>
+              <Button size="sm" variant="text" onClick={onRemoveDiscount}>
+                <FaCircleMinus className="text-xl text-red-600" />
+              </Button>
             </div>
           </div>
         )}

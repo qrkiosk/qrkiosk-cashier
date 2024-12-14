@@ -1,6 +1,6 @@
 import FlexDiv from "@/components/flex-div";
+import OrderFooter from "@/components/order/order-footer";
 import Divider from "@/components/section-divider";
-import OrderFooter from "../../components/order/order-footer";
 import Customer from "./customer";
 import OrderNote from "./order-note";
 import PriceReduction from "./price-reduction";
