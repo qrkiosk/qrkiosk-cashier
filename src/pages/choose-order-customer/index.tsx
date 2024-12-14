@@ -3,7 +3,12 @@ import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
 import HorizontalDivider from "@/components/horizontal-divider";
 import { use401ErrorFlag } from "@/hooks";
-import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
+import {
+  currentOrderAtom,
+  currentOrderQueryAtom,
+  draftOrderAtom,
+  tokenAtom,
+} from "@/state";
 import {
   customersQueryAtom,
   searchCustomerQueryAtom,
@@ -18,7 +23,7 @@ import isEmpty from "lodash/isEmpty";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { FaMagnifyingGlass, FaPenToSquare } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "zmp-ui";
 import AddCustomerModal from "./add-modal";
 import EditCustomerModal from "./edit-modal";
@@ -47,14 +52,17 @@ const useDebouncedCustomerSearch = () => {
 };
 
 const ChooseOrderCustomer = () => {
+  const location = useLocation();
+  const isCreatingOrder = location.state?.isCreatingOrder === true;
   const navigate = useNavigate();
   const { onOpen } = useEditModal();
   const [customer, setCustomer] = useState<Customer | null>(null);
 
   const token = useAtomValue(tokenAtom);
-  const order = useAtomValue(currentOrderAtom);
+  const existingOrder = useAtomValue(currentOrderAtom);
   const updateOrder = useUpdateOrderWith401Handler();
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
+  const setDraftOrder = useSetAtom(draftOrderAtom);
 
   const {
     data,
@@ -130,24 +138,32 @@ const ChooseOrderCustomer = () => {
                 <div
                   className="flex flex-1 cursor-pointer space-x-3 py-4 pl-6"
                   onClick={async () => {
-                    if (!order) return;
-
-                    try {
-                      await updateOrder(
-                        genOrderReqBody(order, {
-                          customer: {
-                            id: customer.id,
-                            name: customer.name,
-                          },
-                        }),
-                        token,
-                      );
-                      refetchOrder();
-                      navigate(-1);
-                    } catch {
-                      toast.error(
-                        "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
-                      );
+                    if (isCreatingOrder) {
+                      setDraftOrder((prev) => ({
+                        ...prev,
+                        customer: {
+                          id: customer.id,
+                          name: customer.name,
+                        },
+                      }));
+                    } else if (existingOrder) {
+                      try {
+                        await updateOrder(
+                          genOrderReqBody(existingOrder, {
+                            customer: {
+                              id: customer.id,
+                              name: customer.name,
+                            },
+                          }),
+                          token,
+                        );
+                        refetchOrder();
+                        navigate(-1);
+                      } catch {
+                        toast.error(
+                          "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
+                        );
+                      }
                     }
                   }}
                 >

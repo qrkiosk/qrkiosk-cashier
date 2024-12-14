@@ -68,7 +68,7 @@ const OrderFooter = () => {
               }
             }}
           >
-            Lưu & In
+            Lưu
           </Button>
           <CompleteOrder />
         </div>
