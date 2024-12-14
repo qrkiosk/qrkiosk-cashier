@@ -1,30 +1,19 @@
-import { updateOrder as updateOrderApi } from "@/api/order";
 import Button from "@/components/button";
-import { use401ErrorFlag, useFocusedInputRef } from "@/hooks";
-import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
-import { withErrorStatusCodeHandler } from "@/utils/error";
-import { genOrderReqBody } from "@/utils/order";
+import { useFocusedInputRef } from "@/hooks";
+import { draftOrderAtom } from "@/state";
 import { useDisclosure } from "@chakra-ui/react";
 import autosize from "autosize";
-import { useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import { useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { FaAngleRight } from "react-icons/fa6";
 import { Modal } from "zmp-ui";
-
-const useUpdateOrderWith401Handler = () => {
-  const { escalate: escalate401Error } = use401ErrorFlag();
-  return withErrorStatusCodeHandler(updateOrderApi, [
-    { statusCode: 401, handler: escalate401Error },
-  ]);
-};
 
 const OrderNote = () => {
   const { isOpen, onOpen, onClose: off } = useDisclosure();
   const ref = useFocusedInputRef<HTMLTextAreaElement>(isOpen);
   const [input, setInput] = useState("");
-  const order = useAtomValue(currentOrderAtom);
+  const [order, setOrder] = useAtom(draftOrderAtom);
   const orderNote = order?.note ?? "";
 
   const onClose = useCallback(() => {
@@ -32,20 +21,8 @@ const OrderNote = () => {
     off();
   }, []);
 
-  const token = useAtomValue(tokenAtom);
-  const updateOrder = useUpdateOrderWith401Handler();
-  const { refetch } = useAtomValue(currentOrderQueryAtom);
-
   const onSubmit = async () => {
-    if (!order) return;
-
-    try {
-      await updateOrder(genOrderReqBody(order, { note: input.trim() }), token);
-      await refetch();
-      onClose();
-    } catch {
-      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
-    }
+    setOrder((prev) => ({ ...prev, note: input.trim() }));
   };
 
   useEffect(() => {

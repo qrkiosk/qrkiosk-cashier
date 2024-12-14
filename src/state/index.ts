@@ -3,7 +3,7 @@ import { getOrder } from "@/api/order";
 import { Cart, Category, Color, Product } from "@/types.global";
 import { Tab } from "@/types/common";
 import { Shift, ShiftStatus, Table, TableType } from "@/types/company";
-import { Order, OrderStatus } from "@/types/order";
+import { Order, OrderReqBody, OrderStatus } from "@/types/order";
 import { AuthResult } from "@/types/user";
 import { ALL_ZONES } from "@/utils/constants";
 import { requestWithFallback } from "@/utils/request";
@@ -322,3 +322,5 @@ export const currentOrderAtom = atom<Order | null>(
 );
 
 export const currentTableAtom = atom<Table | null>(null);
+
+export const draftOrderAtom = atom<Partial<OrderReqBody>>({});
