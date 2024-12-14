@@ -1,5 +1,5 @@
 import Button from "@/components/button";
-import { currentOrderIdAtom } from "@/state";
+import { currentOrderIdAtom, currentTableAtom } from "@/state";
 import { BreadcrumbEntry } from "@/types/common";
 import { Table } from "@/types/company";
 import { withThousandSeparators } from "@/utils/number";
@@ -73,28 +73,36 @@ Tile.Delivery = ({ table }) => {
 Tile.OnSite = ({ table }) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const setCurrentTable = useSetAtom(currentTableAtom);
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
-
   const hasOrders = !isEmpty(table.orders);
-  const title: BreadcrumbEntry[] = [
-    { text: table.zoneName },
-    { text: table.name },
-  ];
+
+  const navigateToOrder = (orderId: string) => {
+    const title: BreadcrumbEntry[] = [
+      { text: table.zoneName },
+      { text: table.name },
+    ];
+    setCurrentTable(table);
+    setCurrentOrderId(orderId);
+    navigate("/order-details", {
+      state: { title },
+    });
+  };
 
   return (
     <>
       <BaseTile
         highlighted={hasOrders}
         onClick={() => {
-          if (isEmpty(table.orders)) return; // TODO: Handle create at-counter order creation flow later
+          if (isEmpty(table.orders)) {
+            // TODO: Handle flow to create order by cashier here
+            return;
+          }
 
           if (table.orders.length > 1) {
             onOpen();
           } else {
-            setCurrentOrderId(table.orders[0].id);
-            navigate("/order-details", {
-              state: { title },
-            });
+            navigateToOrder(table.orders[0].id);
           }
         }}
       >
@@ -126,12 +134,7 @@ Tile.OnSite = ({ table }) => {
               <div
                 key={order.id}
                 className="flex cursor-pointer rounded-lg bg-[--zmp-background-color] p-3"
-                onClick={() => {
-                  setCurrentOrderId(order.id);
-                  navigate("/order-details", {
-                    state: { title },
-                  });
-                }}
+                onClick={() => navigateToOrder(order.id)}
               >
                 <div className="flex-1">
                   <p className="text-sm font-semibold">

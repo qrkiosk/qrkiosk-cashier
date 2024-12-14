@@ -1,16 +1,47 @@
-import { useRouteHandle } from "@/hooks";
-import { categoriesStateUpwrapped } from "@/state";
-import { isCartDirtyAtom } from "@/state/cart";
+import { updateOrderDetails as updateOrderDetailsApi } from "@/api/order";
+import { useAuthorizedApi, useRouteHandle } from "@/hooks";
+import {
+  categoriesStateUpwrapped,
+  currentOrderAtom,
+  currentOrderQueryAtom,
+  tokenAtom,
+} from "@/state";
+import { cartAtom, isCartDirtyAtom } from "@/state/cart";
 import headerLogoImage from "@/static/header-logo.svg";
 import { BreadcrumbEntry } from "@/types/common";
+import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
 import { useDisclosure } from "@chakra-ui/react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useMemo } from "react";
+import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Modal } from "zmp-ui";
 import Breadcrumb from "./breadcrumb";
 import Profile from "./profile";
 import { BackIcon, Xmark } from "./vectors";
+
+const useUpdateOrderDetailsCallback = () => {
+  const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
+  const token = useAtomValue(tokenAtom);
+  const cart = useAtomValue(cartAtom);
+  const order = useAtomValue(currentOrderAtom);
+  const setIsCartDirty = useSetAtom(isCartDirtyAtom);
+  const { refetch } = useAtomValue(currentOrderQueryAtom);
+
+  return async () => {
+    if (!order) return;
+
+    const details = buildOrderDetails(cart);
+    try {
+      await updateOrderDetails(genOrderReqBody(order, { details }), token);
+      // TODO: Notify kitchen
+      await refetch();
+      setIsCartDirty(false);
+    } catch {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
+  };
+};
 
 const Header = () => {
   const {
@@ -24,6 +55,8 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [handle, match] = useRouteHandle();
+
+  const updateOrderDetails = useUpdateOrderDetailsCallback();
 
   const title = useMemo(() => {
     if (location.state?.title && Array.isArray(location.state?.title)) {
@@ -85,13 +118,22 @@ const Header = () => {
           visible={isExitOrderConfirmVisible}
           onClose={onCloseExitOrderConfirm}
           title="Lưu ý"
-          description="Vui lòng thực hiện thao tác Lưu & In đơn hàng trước khi rời khỏi đây. Tất cả chi tiết đơn hàng chưa lưu sẽ bị mất sau khi bạn rời khỏi đơn hàng."
+          description="Bạn có muốn lưu thay đổi với bar/bếp trước khi rời khỏi đơn không?"
           actions={[
-            { text: "Ở lại", close: true },
             {
-              text: "Rời khỏi đây",
+              text: "Không",
+              onClick: async () => {
+                await updateOrderDetails();
+                onCloseExitOrderConfirm();
+                navigate(-1);
+              },
+            },
+            {
+              text: "Có",
               highLight: true,
-              onClick: () => {
+              onClick: async () => {
+                await updateOrderDetails();
+                // TODO: Notify kitchen
                 onCloseExitOrderConfirm();
                 navigate(-1);
               },

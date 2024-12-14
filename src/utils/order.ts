@@ -88,6 +88,7 @@ export const buildOrderDetails = (cart: Cart): OrderDetailForOrderReqBody[] => {
     }, []);
 
     return {
+      id: item.originalOrderDetailId,
       productId: item.id,
       productName: item.name,
       productPrice,
@@ -96,7 +97,40 @@ export const buildOrderDetails = (cart: Cart): OrderDetailForOrderReqBody[] => {
       amount,
       totalAmount,
       note: item.note ?? "",
+      isActive: item.isActive,
+      isDone: item.isDone,
+      serviceTaskId: item.serviceTaskId,
       variants,
     };
   });
+};
+
+export const calcServiceFee = (order: Order, initialAmount: number) => {
+  const serviceFee = order.serviceFee;
+  const serviceFeePercentage = order.serviceFeePercentage;
+
+  if (isValidDiscountOrFee(serviceFeePercentage)) {
+    return initialAmount * serviceFeePercentage;
+  }
+
+  return serviceFee;
+};
+
+export const calcDiscountVoucher = (order: Order) => {
+  return order.discountVoucher ?? 0;
+};
+
+export const calcDiscountAmount = (order: Order, initialAmount: number) => {
+  const discountAmount = order.discountAmount;
+  const discountPercentage = order.discountPercentage;
+
+  if (isValidDiscountOrFee(discountPercentage)) {
+    return initialAmount * discountPercentage;
+  }
+
+  return discountAmount;
+};
+
+export const calcTotalDiscount = (order: Order, initialAmount: number) => {
+  return calcDiscountVoucher(order) + calcDiscountAmount(order, initialAmount);
 };

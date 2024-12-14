@@ -25,6 +25,10 @@ export interface CartOrderItem {
   name: string;
   price: number;
   priceSale: number;
+  isActive: boolean;
+  isDone: boolean;
+  serviceTaskId: string | null;
+  originalOrderDetailId: string | null;
   options: CartItemOption[];
 }
 

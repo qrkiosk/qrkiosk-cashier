@@ -320,3 +320,5 @@ export const currentOrderQueryAtom = atomWithQuery<
 export const currentOrderAtom = atom<Order | null>(
   (get) => get(currentOrderQueryAtom).data ?? null,
 );
+
+export const currentTableAtom = atom<Table | null>(null);

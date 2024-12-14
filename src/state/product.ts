@@ -126,6 +126,10 @@ export const prepareProductVariantAtom = atom(
     set(productVariantAtom, {
       ...productDetails,
       uniqIdentifier: `${productDetails.id}--${Date.now()}`,
+      isActive: true,
+      isDone: false,
+      serviceTaskId: null,
+      originalOrderDetailId: null,
       quantity: 1,
       options: productDetails.options.map((opt) =>
         opt.isMandatory
@@ -147,12 +151,16 @@ export const prepareProductVariantAtom = atom(
 export const enrichProductVariantAtom = atom(
   null,
   (get, set, productDetails: ProductWithOptions) => {
-    const productVariant = get(productVariantAtom) as CartOrderItem | null;
+    const productVariant = get(productVariantAtom);
     if (productVariant == null) return;
 
     set(productVariantAtom, {
       ...productDetails,
       ...productVariant,
+      isActive: true,
+      isDone: false,
+      serviceTaskId: productVariant.serviceTaskId ?? null,
+      originalOrderDetailId: productVariant.originalOrderDetailId ?? null,
       options: productDetails.options.map((opt) => {
         const existingOpt = productVariant.options.find(
           ({ id }) => id === opt.id,

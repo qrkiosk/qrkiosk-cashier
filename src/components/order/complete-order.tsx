@@ -1,8 +1,24 @@
+import { updateOrderDetails as updateOrderDetailsApi } from "@/api/order";
+import { createPaymentTransaction as createPaymentTransactionApi } from "@/api/payment";
 import Button from "@/components/button";
+import { useAuthorizedApi } from "@/hooks";
 import {
-  Box,
-  Grid,
-  GridItem,
+  currentOrderAtom,
+  currentOrderQueryAtom,
+  currentTableAtom,
+  tablesQueryAtom,
+  tokenAtom,
+} from "@/state";
+import { cartAtom, isCartDirtyAtom } from "@/state/cart";
+import { PaymentReqBody, PaymentType } from "@/types/payment";
+import { withThousandSeparators } from "@/utils/number";
+import {
+  buildOrderDetails,
+  calcServiceFee,
+  calcTotalDiscount,
+  genOrderReqBody,
+} from "@/utils/order";
+import {
   Modal,
   ModalBody,
   ModalContent,
@@ -12,18 +28,90 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import dayjs from "dayjs";
+import { useAtom, useAtomValue } from "jotai";
+import { isNil } from "lodash";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FaCalendar, FaChair, FaClock } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
+
+const DEFAULT_PAYMENT_TYPE = PaymentType.COD;
 
 const CompleteOrder = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [input, setInput] = useState("");
-  const onSubmit = () => {
-    // Do something with `input` here
-    onClose();
+  const navigate = useNavigate();
+  const { isOpen, onOpen: on, onClose: off } = useDisclosure();
+  const [paymentType, setPaymentType] = useState(DEFAULT_PAYMENT_TYPE);
+  const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
+  const createPaymentTransaction = useAuthorizedApi(
+    createPaymentTransactionApi,
+  );
+
+  const token = useAtomValue(tokenAtom);
+  const table = useAtomValue(currentTableAtom);
+  const cart = useAtomValue(cartAtom);
+  const order = useAtomValue(currentOrderAtom);
+  const [isCartDirty, setIsCartDirty] = useAtom(isCartDirtyAtom);
+  const { refetch: refetchCurrentOrder } = useAtomValue(currentOrderQueryAtom);
+  const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
+
+  const saveOrderChanges = async () => {
+    if (!order) return;
+
+    const details = buildOrderDetails(cart);
+    try {
+      await updateOrderDetails(genOrderReqBody(order, { details }), token);
+      // TODO: Notify kitchen
+      await refetchCurrentOrder();
+      setIsCartDirty(false);
+    } catch {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
+  };
+
+  const onOpen = async () => {
+    if (false) {
+      // TODO: (await) If order is non-existent, create one right here w/ POST /order/create
+      // TODO: (await) Fetch the new order to sync to currentOrderAtom
+    } else if (isCartDirty) {
+      await saveOrderChanges();
+    }
+
+    on();
+  };
+
+  const onClose = () => {
+    // TODO: If order creation flow, cancel the newly created in onOpen order here w/ PUT /order/delete
+    off();
+  };
+
+  const onSubmit = async () => {
+    if (!table || !order) return;
+
+    const data: PaymentReqBody = {
+      data: {
+        amount: order.totalAmount,
+        method: paymentType,
+      },
+      info: {
+        companyId: table.companyId,
+        storeId: table.storeId,
+        orderId: order.id,
+        orderCode: order.code,
+      },
+    };
+
+    try {
+      await createPaymentTransaction(data, token);
+      await refetchTables();
+      toast.success("Đơn hàng đã được hoàn tất.");
+      onClose();
+      navigate(-1);
+    } catch {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
   };
 
   return (
@@ -43,114 +131,107 @@ const CompleteOrder = () => {
         <ModalContent>
           <ModalHeader>Thanh toán</ModalHeader>
 
-          <ModalBody p={0}>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              px={6}
-            >
-              <Box display="flex" alignItems="center" className="space-x-1">
+          <ModalBody className="!p-0">
+            <div className="flex items-center justify-between px-6">
+              <div className="flex items-center space-x-1">
                 <FaChair />
-                <Text fontSize="sm" fontWeight="semibold">
-                  Tầng trệt, Bàn số 1
-                </Text>
-              </Box>
-              <Box display="flex" alignItems="center" className="space-x-1">
-                <Box display="flex" alignItems="center" className="space-x-1">
+                <span className="text-sm font-semibold">
+                  {[table?.zoneName, table?.name].join(", ")}
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1">
                   <FaCalendar />
-                  <Text fontSize="sm" fontWeight="semibold">
-                    08/11/2024
-                  </Text>
-                </Box>
-                <Box display="flex" alignItems="center" className="space-x-1">
+                  <span className="text-sm font-semibold">
+                    {dayjs().format("DD/MM/YYYY")}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-1">
                   <FaClock />
-                  <Text fontSize="sm" fontWeight="semibold">
-                    10:11
-                  </Text>
-                </Box>
-              </Box>
-            </Box>
+                  <span className="text-sm font-semibold">
+                    {dayjs().format("HH:mm")}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-            <Grid templateColumns="repeat(2, 1fr)" rowGap={2} px={6} py={3}>
-              <GridItem colSpan={1}>
-                <Box h="100%" display="flex" alignItems="center">
-                  <Text fontSize="sm">Tổng tiền hàng</Text>
-                </Box>
-              </GridItem>
-              <GridItem colSpan={1}>
-                <Box
-                  h="100%"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="flex-end"
-                >
-                  {/* <Price variant="standard">{90000}</Price> */}
-                </Box>
-              </GridItem>
+            {!isNil(order) && (
+              <div className="grid grid-cols-2 gap-y-4 px-6 py-3">
+                <div className="col-span-1">
+                  <div className="flex h-full items-center">
+                    <span className="text-sm">Tổng tiền hàng</span>
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <div className="flex h-full items-center justify-end">
+                    <span className="text-sm">
+                      {withThousandSeparators(order.amount ?? 0)}
+                    </span>
+                  </div>
+                </div>
 
-              <GridItem colSpan={1}>
-                <Box h="100%" display="flex" alignItems="center">
-                  <Text fontSize="sm">Giảm giá</Text>
-                </Box>
-              </GridItem>
-              <GridItem colSpan={1}>
-                <Box
-                  h="100%"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="flex-end"
-                >
-                  {/* <Price variant="standard">{10000}</Price> */}
-                </Box>
-              </GridItem>
+                <div className="col-span-1">
+                  <div className="flex h-full items-center">
+                    <span className="text-sm">Giảm giá</span>
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <div className="flex h-full items-center justify-end">
+                    <span className="text-sm">
+                      {withThousandSeparators(
+                        calcTotalDiscount(order, order.amount),
+                      )}
+                    </span>
+                  </div>
+                </div>
 
-              <GridItem colSpan={1}>
-                <Box h="100%" display="flex" alignItems="center">
-                  <Text fontSize="sm">Phí dịch vụ</Text>
-                </Box>
-              </GridItem>
-              <GridItem colSpan={1}>
-                <Box
-                  h="100%"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="flex-end"
-                >
-                  {/* <Price variant="standard">{5000}</Price> */}
-                </Box>
-              </GridItem>
+                <div className="col-span-1">
+                  <div className="flex h-full items-center">
+                    <span className="text-sm">Phí dịch vụ</span>
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <div className="flex h-full items-center justify-end">
+                    <span className="text-sm">
+                      {withThousandSeparators(
+                        calcServiceFee(order, order.amount),
+                      )}
+                    </span>
+                  </div>
+                </div>
 
-              <GridItem colSpan={1}>
-                <Box h="100%" display="flex" alignItems="center">
-                  <Text fontSize="sm" fontWeight="bold">
-                    Khách cần trả
-                  </Text>
-                </Box>
-              </GridItem>
-              <GridItem colSpan={1}>
-                <Box
-                  h="100%"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="flex-end"
-                >
-                  {/* <Price variant="total">{65000}</Price> */}
-                </Box>
-              </GridItem>
-            </Grid>
+                <div className="col-span-1">
+                  <div className="flex h-full items-center">
+                    <span className="text-sm font-bold">Khách cần trả</span>
+                  </div>
+                </div>
+                <div className="col-span-1">
+                  <div className="flex h-full items-center justify-end">
+                    <span className="text-sm font-bold">
+                      {withThousandSeparators(order.totalAmount ?? 0)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
-            <Box bgColor="var(--zmp-background-color)">
-              <Text fontSize="xs" color="GrayText" px={6} pt={3} pb={1}>
+            <div className="bg-[--zmp-background-color]">
+              <p className="px-6 pb-1 pt-3 text-xs text-subtitle">
                 PHƯƠNG THỨC THANH TOÁN
-              </Text>
-            </Box>
+              </p>
+            </div>
 
-            <RadioGroup defaultValue="pm1" px={6} py={2} size="sm">
-              <Stack direction="column" spacing={1}>
-                <Radio value="pm1">Tiền mặt</Radio>
-                <Radio value="pm2">Thẻ</Radio>
-                <Radio value="pm3">Chuyển khoản</Radio>
+            <RadioGroup
+              size="sm"
+              className="px-6 py-2"
+              defaultValue={PaymentType.COD}
+              value={paymentType}
+              onChange={(v: PaymentType) => setPaymentType(v)}
+            >
+              <Stack direction="column" spacing={1.5}>
+                <Radio value={PaymentType.COD}>Tiền mặt</Radio>
+                <Radio value={PaymentType.BANK}>Chuyển khoản</Radio>
+                <Radio value={PaymentType.MOMO}>Ví Momo</Radio>
               </Stack>
             </RadioGroup>
           </ModalBody>

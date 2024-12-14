@@ -45,7 +45,7 @@ export const calcItemTotalAmount = (
 export const genMultiChoiceOptionDisplayText = (option: CartItemOption) =>
   option.selectedDetails.map((d) => d.name).join(", ");
 
-export const convertOrderVarsToItemOptions = (
+export const convertOrderVariantsToOptions = (
   variants: OrderDetail["variants"],
 ) => {
   const opts = uniqBy(variants, "productOptionId").map<CartItemOption>(
@@ -93,7 +93,11 @@ export const convertOrderToCart = (order: Order): Cart => ({
     priceSale: od.price,
     quantity: od.quantity,
     note: od.note,
-    options: convertOrderVarsToItemOptions(od.variants),
+    isActive: od.isActive,
+    isDone: od.isDone ?? false,
+    serviceTaskId: od.serviceTaskId ?? null,
+    originalOrderDetailId: od.id,
+    options: convertOrderVariantsToOptions(od.variants),
   })),
   payment: { paymentType: order.paymentType },
 });

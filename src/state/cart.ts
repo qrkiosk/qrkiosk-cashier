@@ -1,8 +1,7 @@
 import { Cart, CartItemOption } from "@/types/cart";
-import { Order } from "@/types/order";
 import { PaymentType } from "@/types/payment";
 import { ShippingType } from "@/types/shipping";
-import { isValidDiscountOrFee } from "@/utils/order";
+import { calcServiceFee, calcTotalDiscount } from "@/utils/order";
 import { atom } from "jotai";
 import { currentOrderAtom } from ".";
 import { productVariantAtom } from "./product";
@@ -17,14 +16,16 @@ export const cartAtom = atom<Cart>(INITIAL_CART_STATE);
 export const isCartDirtyAtom = atom(false);
 
 export const cartTotalQtyAtom = atom((get) => {
-  const cart = get(cartAtom);
-  return cart.items.reduce((acc, item) => acc + item.quantity, 0);
+  return get(cartAtom).items.reduce((acc, item) => {
+    if (!item.isActive) return acc;
+    return acc + item.quantity;
+  }, 0);
 });
 
 export const cartSubtotalAmountAtom = atom((get) => {
-  const cart = get(cartAtom);
+  return get(cartAtom).items.reduce((total, item) => {
+    if (!item.isActive) return total;
 
-  return cart.items.reduce((total, item) => {
     const quantity = item.quantity;
     const baseItemPrice = item.priceSale;
     const opts = item.options as unknown as CartItemOption[];
@@ -44,44 +45,18 @@ export const cartSubtotalAmountAtom = atom((get) => {
   }, 0);
 });
 
-const calcDiscountVoucher = (order: Order | null) =>
-  order?.discountVoucher ?? 0;
-
-const calcDiscountAmount = (order: Order | null, initialAmount: number) => {
-  const discountAmount = order?.discountAmount ?? 0;
-  const discountPercentage = order?.discountPercentage ?? 0;
-
-  if (isValidDiscountOrFee(discountPercentage)) {
-    return initialAmount * discountPercentage;
-  }
-
-  return discountAmount;
-};
-
-const calcServiceFee = (order: Order | null, initialAmount: number) => {
-  const serviceFee = order?.serviceFee ?? 0;
-  const serviceFeePercentage = order?.serviceFeePercentage ?? 0;
-
-  if (isValidDiscountOrFee(serviceFeePercentage)) {
-    return initialAmount * serviceFeePercentage;
-  }
-
-  return serviceFee;
-};
-
 export const cartTotalAmountAtom = atom((get) => {
   const order = get(currentOrderAtom);
-  const isCartDirty = get(isCartDirtyAtom);
 
-  if (!isCartDirty) {
-    return order?.totalAmount ?? 0;
+  if (!order) return 0;
+
+  if (!get(isCartDirtyAtom)) {
+    return order.totalAmount;
   }
 
   const subtotal = get(cartSubtotalAmountAtom);
   const serviceFee = calcServiceFee(order, subtotal);
-  const discountAmount = calcDiscountAmount(order, subtotal);
-  const discountVoucher = calcDiscountVoucher(order);
-  const totalDiscount = discountAmount + discountVoucher;
+  const totalDiscount = calcTotalDiscount(order, subtotal);
 
   return Math.max(subtotal + serviceFee - totalDiscount, 0);
 });
@@ -125,9 +100,26 @@ export const removeCartItemAtom = atom(
 
     set(cartAtom, {
       ...cart,
-      items: cart.items.filter(
-        (item) => item.uniqIdentifier !== uniqIdentifier,
-      ),
+      items: cart.items.reduce((acc, item) => {
+        if (item.uniqIdentifier !== uniqIdentifier) {
+          return [...acc, item];
+        }
+
+        if (item.originalOrderDetailId != null) {
+          return [
+            ...acc,
+            {
+              ...item,
+              isActive: false,
+              isDone: false,
+              serviceTaskId: item.serviceTaskId ?? null,
+              originalOrderDetailId: item.originalOrderDetailId,
+            },
+          ];
+        }
+
+        return acc;
+      }, []),
     });
     set(isCartDirtyAtom, true);
   },

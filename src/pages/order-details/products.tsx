@@ -36,9 +36,15 @@ const Products = () => {
           </p>
         ) : (
           <div className="grid-g grid grid-cols-3 gap-y-4">
-            {cart.items.map((item) => (
-              <OrderItem key={item.uniqIdentifier} item={item} />
-            ))}
+            {cart.items.reduce((acc, item) => {
+              if (item.isActive) {
+                return [
+                  ...acc,
+                  <OrderItem key={item.uniqIdentifier} item={item} />,
+                ];
+              }
+              return acc;
+            }, [])}
           </div>
         )}
       </div>

@@ -67,6 +67,7 @@ const OrderItem = ({ item }: { item: CartOrderItem | CartProductVariant }) => {
               size="xs"
               variant="text"
               className="text-primary"
+              disabled={item.isDone}
               onClick={onClickEditItem}
             >
               Sửa
@@ -75,6 +76,7 @@ const OrderItem = ({ item }: { item: CartOrderItem | CartProductVariant }) => {
               size="xs"
               variant="text"
               className="text-primary"
+              disabled={item.isDone}
               onClick={onClickRemoveItem}
             >
               Xóa

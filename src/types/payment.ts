@@ -9,3 +9,16 @@ export enum PaymentStatus {
   UNPAID,
   PAID,
 }
+
+export interface PaymentReqBody {
+  data: {
+    amount: number;
+    method: PaymentType;
+  };
+  info: {
+    companyId: number;
+    storeId: number;
+    orderId: string;
+    orderCode: string;
+  };
+}

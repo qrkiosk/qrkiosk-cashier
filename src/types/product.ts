@@ -69,5 +69,8 @@ export interface BaseProductVariant extends Product {
 export interface CartProductVariant extends BaseProductVariant {
   uniqIdentifier: string;
   quantity: number;
+  isDone: boolean;
+  serviceTaskId: string | null;
+  originalOrderDetailId: string | null;
   note?: string;
 }

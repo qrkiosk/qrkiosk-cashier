@@ -34,6 +34,8 @@ export interface OrderDetail {
   discountVoucher: number;
   totalAmount: number;
   isActive: boolean;
+  isDone: boolean;
+  serviceTaskId: string;
   note: string;
   variants: OrderProductVariant[];
 }
@@ -74,6 +76,7 @@ export interface Order extends CreateUpdateTrace {
 }
 
 export interface OrderDetailForOrderReqBody {
+  id: string | null;
   productId: string;
   productName: string;
   productPrice: number;
@@ -82,6 +85,9 @@ export interface OrderDetailForOrderReqBody {
   amount: number;
   totalAmount: number;
   note: string;
+  isActive: boolean;
+  isDone: boolean;
+  serviceTaskId: string | null;
   variants: Array<{
     productVariantId: string;
     productOptionId: string;
