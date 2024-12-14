@@ -77,7 +77,19 @@ Tile.OnSite = ({ table }) => {
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
   const hasOrders = !isEmpty(table.orders);
 
-  const navigateToOrder = (orderId: string) => {
+  const navigateToOrderCreate = () => {
+    const title: BreadcrumbEntry[] = [
+      { text: table.zoneName },
+      { text: `${table.name} (Đơn mới)` },
+    ];
+    setCurrentTable(table);
+    setCurrentOrderId(null);
+    navigate("/order-create", {
+      state: { title },
+    });
+  };
+
+  const navigateToOrderDetails = (orderId: string | null) => {
     const title: BreadcrumbEntry[] = [
       { text: table.zoneName },
       { text: table.name },
@@ -95,14 +107,11 @@ Tile.OnSite = ({ table }) => {
         highlighted={hasOrders}
         onClick={() => {
           if (isEmpty(table.orders)) {
-            // TODO: Handle flow to create order by cashier here
-            return;
-          }
-
-          if (table.orders.length > 1) {
-            onOpen();
+            navigateToOrderCreate(); // empty table, create new order
+          } else if (table.orders.length === 1) {
+            navigateToOrderDetails(table.orders[0].id); // table with 1 order, jump to that order
           } else {
-            navigateToOrder(table.orders[0].id);
+            onOpen(); // table with multiple orders, open modal to choose one
           }
         }}
       >
@@ -134,7 +143,7 @@ Tile.OnSite = ({ table }) => {
               <div
                 key={order.id}
                 className="flex cursor-pointer rounded-lg bg-[--zmp-background-color] p-3"
-                onClick={() => navigateToOrder(order.id)}
+                onClick={() => navigateToOrderDetails(order.id)}
               >
                 <div className="flex-1">
                   <p className="text-sm font-semibold">
