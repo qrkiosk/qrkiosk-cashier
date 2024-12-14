@@ -7,7 +7,7 @@ export const createPaymentTransaction = (
   body: PaymentReqBody,
   token: string,
 ) => {
-  return axios.put<Response<unknown>>(`${BASE_URL}/payment/create`, body, {
+  return axios.post<Response<unknown>>(`${BASE_URL}/payment/create`, body, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
