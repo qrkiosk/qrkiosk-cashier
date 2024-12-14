@@ -1,11 +1,9 @@
 import FloatingButton from "@/components/floating-button";
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
-import { currentOrderAtom } from "@/state";
-import { cartAtom, isCartDirtyAtom } from "@/state/cart";
+import { cartAtom, INITIAL_CART_STATE, isCartDirtyAtom } from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
-import { convertOrderToCart } from "@/utils/cart";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -14,16 +12,22 @@ const Products = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const breadcrumb = location.state?.title as BreadcrumbEntry[];
-  const order = useAtomValue(currentOrderAtom);
   const [cart, setCart] = useAtom(cartAtom);
-  const [isCartDirty, setIsCartDirty] = useAtom(isCartDirtyAtom);
+  const setIsCartDirty = useSetAtom(isCartDirtyAtom);
+
+  const navigateToProductPicker = () => {
+    navigate("/pick-order-products", {
+      state: {
+        title: [...breadcrumb, { text: "Thêm món" }],
+      },
+    });
+  };
 
   useEffect(() => {
-    if (!isCartDirty && order) {
-      setIsCartDirty(false);
-      setCart(convertOrderToCart(order));
-    }
-  }, [order]);
+    setIsCartDirty(false);
+    setCart(INITIAL_CART_STATE);
+    navigateToProductPicker();
+  }, []);
 
   return (
     <>
@@ -51,13 +55,7 @@ const Products = () => {
 
       <FloatingButton
         className="bottom-[115px] right-4 bg-gray-700 hover:bg-gray-800"
-        onClick={() => {
-          navigate("/pick-order-products", {
-            state: {
-              title: [...breadcrumb, { text: "Thêm món" }],
-            },
-          });
-        }}
+        onClick={navigateToProductPicker}
       />
       <ProductVariantEditor />
     </>
