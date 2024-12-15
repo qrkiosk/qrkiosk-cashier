@@ -1,5 +1,5 @@
-import OrderFooter from "@/components/order/order-footer";
 import ProductVariantPicker from "@/components/product/product-variant-picker";
+import Footer from "./footer";
 import MainMenu from "./main-menu";
 import SearchResult from "./search-result";
 import TopStickyHeader from "./top-sticky-header";
@@ -13,7 +13,7 @@ const PickOrderProducts = () => {
         <SearchResult />
       </div>
       <ProductVariantPicker />
-      <OrderFooter />
+      <Footer />
     </>
   );
 };
