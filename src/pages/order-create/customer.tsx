@@ -26,9 +26,9 @@ const Customer = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <span className="font-semibold">Khách hàng</span>
-          {!!customerName && (
-            <span className="text-sm text-inactive">{customerName}</span>
-          )}
+          <span className="text-sm text-inactive">
+            {customerName ?? "Khách lẻ"}
+          </span>
         </div>
         <FaAngleRight fontSize={16} color="rgb(109, 109, 109)" />
       </div>

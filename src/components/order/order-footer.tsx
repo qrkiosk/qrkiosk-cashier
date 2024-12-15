@@ -11,7 +11,6 @@ import {
 import { withThousandSeparators } from "@/utils/number";
 import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import CompleteOrder from "./complete-order";
@@ -27,10 +26,6 @@ const OrderFooter = () => {
   const cart = useAtomValue(cartAtom);
   const setIsCartDirty = useSetAtom(isCartDirtyAtom);
   const { refetch } = useAtomValue(currentOrderQueryAtom);
-
-  useEffect(() => {
-    console.log(cart.items);
-  }, [cart.items]);
 
   return (
     <div className="sticky bottom-0 left-0 right-0 z-50 border-t-[1px] border-t-black/5 bg-[--zmp-background-white] pb-[max(16px,env(safe-area-inset-bottom))]">
@@ -50,7 +45,6 @@ const OrderFooter = () => {
               if (!order) return;
 
               const details = buildOrderDetails(cart);
-              console.log(details);
 
               try {
                 await updateOrderDetails(

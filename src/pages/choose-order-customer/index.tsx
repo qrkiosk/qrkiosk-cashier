@@ -146,6 +146,7 @@ const ChooseOrderCustomer = () => {
                           name: customer.name,
                         },
                       }));
+                      navigate(-1);
                     } else if (existingOrder) {
                       try {
                         await updateOrder(

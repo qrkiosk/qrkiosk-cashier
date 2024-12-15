@@ -23,6 +23,7 @@ const OrderNote = () => {
 
   const onSubmit = async () => {
     setOrder((prev) => ({ ...prev, note: input.trim() }));
+    off();
   };
 
   useEffect(() => {

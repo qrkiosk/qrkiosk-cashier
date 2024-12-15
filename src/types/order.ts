@@ -99,13 +99,10 @@ export interface OrderDetailForOrderReqBody {
 }
 
 export interface OrderReqBody {
-  id: string;
+  id: string | null; // for create order case
   companyId: number;
   storeId: number;
-  customer: {
-    id: string;
-    name: string;
-  };
+  customer: { id: string; name: string } | null;
   paymentType: PaymentType | null;
   sourceType: ShippingType;
   tableId: number;
@@ -113,6 +110,7 @@ export interface OrderReqBody {
   note: string;
   discountAmount: number;
   discountPercentage: number;
+  discountVoucher?: number;
   serviceFee: number;
   serviceFeePercentage: number;
   status: OrderStatus;

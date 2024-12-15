@@ -3,7 +3,8 @@ import { PaymentType } from "@/types/payment";
 import { ShippingType } from "@/types/shipping";
 import { calcServiceFee, calcTotalDiscount } from "@/utils/order";
 import { atom } from "jotai";
-import { currentOrderAtom } from ".";
+import isEmpty from "lodash/isEmpty";
+import { currentOrderAtom, draftOrderAtom } from ".";
 import { productVariantAtom } from "./product";
 
 export const INITIAL_CART_STATE: Cart = {
@@ -14,6 +15,7 @@ export const INITIAL_CART_STATE: Cart = {
 
 export const cartAtom = atom<Cart>(INITIAL_CART_STATE);
 export const isCartDirtyAtom = atom(false);
+export const isCartEmptyAtom = atom((get) => isEmpty(get(cartAtom).items));
 
 export const cartTotalQtyAtom = atom((get) => {
   return get(cartAtom).items.reduce((acc, item) => {
@@ -54,6 +56,15 @@ export const cartTotalAmountAtom = atom((get) => {
     return order.totalAmount;
   }
 
+  const subtotal = get(cartSubtotalAmountAtom);
+  const serviceFee = calcServiceFee(order, subtotal);
+  const totalDiscount = calcTotalDiscount(order, subtotal);
+
+  return Math.max(subtotal + serviceFee - totalDiscount, 0);
+});
+
+export const draftCartTotalAmountAtom = atom((get) => {
+  const order = get(draftOrderAtom);
   const subtotal = get(cartSubtotalAmountAtom);
   const serviceFee = calcServiceFee(order, subtotal);
   const totalDiscount = calcTotalDiscount(order, subtotal);

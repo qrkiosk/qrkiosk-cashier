@@ -40,6 +40,29 @@ export const getOrder = (id: string) => {
   return axios.get<Response<Order>>(`${BASE_URL}/order/${id}`);
 };
 
+export const createOrder = (body: any, token: string) => {
+  return axios.post<Response<{ id: string }>>(
+    `${BASE_URL}/order/create`,
+    body,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+};
+
+export const cancelOrder = (
+  body: { id: string; reason: string },
+  token: string,
+) => {
+  return axios.put<Response<unknown>>(`${BASE_URL}/order/delete`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export const updateOrder = (body: OrderReqBody, token: string) => {
   return axios.put<Response<unknown>>(`${BASE_URL}/order/update`, body, {
     headers: {

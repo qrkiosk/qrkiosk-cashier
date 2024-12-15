@@ -105,9 +105,12 @@ export const buildOrderDetails = (cart: Cart): OrderDetailForOrderReqBody[] => {
   });
 };
 
-export const calcServiceFee = (order: Order, initialAmount: number) => {
-  const serviceFee = order.serviceFee;
-  const serviceFeePercentage = order.serviceFeePercentage;
+export const calcServiceFee = (
+  order: Order | Partial<OrderReqBody>,
+  initialAmount: number,
+): number => {
+  const serviceFee = order.serviceFee ?? 0;
+  const serviceFeePercentage = order.serviceFeePercentage ?? 0;
 
   if (isValidDiscountOrFee(serviceFeePercentage)) {
     return initialAmount * serviceFeePercentage;
@@ -116,13 +119,18 @@ export const calcServiceFee = (order: Order, initialAmount: number) => {
   return serviceFee;
 };
 
-export const calcDiscountVoucher = (order: Order) => {
+export const calcDiscountVoucher = (
+  order: Order | Partial<OrderReqBody>,
+): number => {
   return order.discountVoucher ?? 0;
 };
 
-export const calcDiscountAmount = (order: Order, initialAmount: number) => {
-  const discountAmount = order.discountAmount;
-  const discountPercentage = order.discountPercentage;
+export const calcDiscountAmount = (
+  order: Order | Partial<OrderReqBody>,
+  initialAmount: number,
+): number => {
+  const discountAmount = order.discountAmount ?? 0;
+  const discountPercentage = order.discountPercentage ?? 0;
 
   if (isValidDiscountOrFee(discountPercentage)) {
     return initialAmount * discountPercentage;
@@ -131,6 +139,9 @@ export const calcDiscountAmount = (order: Order, initialAmount: number) => {
   return discountAmount;
 };
 
-export const calcTotalDiscount = (order: Order, initialAmount: number) => {
+export const calcTotalDiscount = (
+  order: Order | Partial<OrderReqBody>,
+  initialAmount: number,
+): number => {
   return calcDiscountVoucher(order) + calcDiscountAmount(order, initialAmount);
 };

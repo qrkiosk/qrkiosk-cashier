@@ -1,17 +1,25 @@
-import { updateOrderDetails as updateOrderDetailsApi } from "@/api/order";
+import {
+  createOrder as createOrderApi,
+  updateOrderDetails as updateOrderDetailsApi,
+} from "@/api/order";
 import { useAuthorizedApi, useRouteHandle } from "@/hooks";
 import {
   categoriesStateUpwrapped,
   currentOrderAtom,
   currentOrderQueryAtom,
+  currentTableAtom,
+  draftOrderAtom,
   tokenAtom,
 } from "@/state";
-import { cartAtom, isCartDirtyAtom } from "@/state/cart";
+import { cartAtom, INITIAL_CART_STATE, isCartDirtyAtom } from "@/state/cart";
 import headerLogoImage from "@/static/header-logo.svg";
 import { BreadcrumbEntry } from "@/types/common";
+import { OrderStatus } from "@/types/order";
+import { ShippingType } from "@/types/shipping";
 import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
 import { useDisclosure } from "@chakra-ui/react";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import isEmpty from "lodash/isEmpty";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -43,11 +51,59 @@ const useUpdateOrderDetailsCallback = () => {
   };
 };
 
+const useCreateOrderCallback = () => {
+  const createOrder = useAuthorizedApi(createOrderApi);
+  const token = useAtomValue(tokenAtom);
+  const cart = useAtomValue(cartAtom);
+  const order = useAtomValue(draftOrderAtom);
+  const table = useAtomValue(currentTableAtom);
+
+  return async () => {
+    if (!table || isEmpty(order.customer)) {
+      toast.error("Bạn chưa chọn khách hàng.");
+      return;
+    }
+
+    const details = buildOrderDetails(cart);
+    try {
+      await createOrder(
+        {
+          id: order.id ?? null,
+          companyId: table.companyId,
+          storeId: table.storeId,
+          tableId: table.id,
+          tableName: table.name,
+          customer: !isEmpty(order.customer) ? order.customer : null,
+          paymentType: null,
+          sourceType: ShippingType.ON_SITE,
+          note: order.note ?? "",
+          discountAmount: order.discountAmount ?? 0,
+          discountPercentage: order.discountPercentage ?? 0,
+          discountVoucher: order.discountVoucher ?? 0,
+          serviceFee: order.serviceFee ?? 0,
+          serviceFeePercentage: order.serviceFeePercentage ?? 0,
+          status: OrderStatus.PROCESS,
+          isActive: true,
+          details,
+        },
+        token,
+      );
+    } catch {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
+  };
+};
+
 const Header = () => {
   const {
     isOpen: isExitOrderConfirmVisible,
     onOpen: onOpenExitOrderConfirm,
     onClose: onCloseExitOrderConfirm,
+  } = useDisclosure();
+  const {
+    isOpen: isExitOrderCreateConfirmVisible,
+    onOpen: onOpenExitOrderCreateConfirm,
+    onClose: onCloseExitOrderCreateConfirm,
   } = useDisclosure();
 
   const categories = useAtomValue(categoriesStateUpwrapped);
@@ -55,8 +111,11 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [handle, match] = useRouteHandle();
+  const setDraftOrder = useSetAtom(draftOrderAtom);
+  const [cart, setCart] = useAtom(cartAtom);
 
   const updateOrderDetails = useUpdateOrderDetailsCallback();
+  const createOrder = useCreateOrderCallback();
 
   const title = useMemo(() => {
     if (location.state?.title && Array.isArray(location.state?.title)) {
@@ -74,9 +133,22 @@ const Header = () => {
     return handle.title ?? "";
   }, [handle, categories]);
 
+  const resetDraftOrderAndExit = () => {
+    setDraftOrder({});
+    setCart(INITIAL_CART_STATE);
+    onCloseExitOrderCreateConfirm();
+    navigate(-1);
+  };
+
   const onNavigateBack = () => {
     if (handle?.backBehavior === "confirm-exit-order" && isCartDirty) {
       onOpenExitOrderConfirm();
+    } else if (handle?.backBehavior === "confirm-exit-order-create") {
+      if (isEmpty(cart.items)) {
+        resetDraftOrderAndExit();
+      } else {
+        onOpenExitOrderCreateConfirm();
+      }
     } else {
       navigate(-1);
     }
@@ -136,6 +208,33 @@ const Header = () => {
                 // TODO: Notify kitchen
                 onCloseExitOrderConfirm();
                 navigate(-1);
+              },
+            },
+          ]}
+        />
+      )}
+
+      {handle?.backBehavior === "confirm-exit-order-create" && (
+        <Modal
+          visible={isExitOrderCreateConfirmVisible}
+          onClose={onCloseExitOrderCreateConfirm}
+          title="Lưu ý"
+          description="Bạn có muốn lưu thay đổi với bar/bếp trước khi rời khỏi đơn không?"
+          actions={[
+            {
+              text: "Không",
+              onClick: async () => {
+                await createOrder();
+                resetDraftOrderAndExit();
+              },
+            },
+            {
+              text: "Có",
+              highLight: true,
+              onClick: async () => {
+                await createOrder();
+                // TODO: (await) Notify kitchen
+                resetDraftOrderAndExit();
               },
             },
           ]}
