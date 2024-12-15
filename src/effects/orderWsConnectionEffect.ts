@@ -1,12 +1,12 @@
-import { Order } from "@/types/order";
+import { storeIdAtom, tablesQueryAtom, tokenAtom } from "@/state";
 import { atomEffect } from "jotai-effect";
 import SockJS from "sockjs-client/dist/sockjs";
 import Stomp from "stompjs";
-import { localTablesAtom, storeIdAtom, tokenAtom } from "../state";
 
-export default atomEffect((get, set) => {
+export default atomEffect((get) => {
   const token = get(tokenAtom);
   const storeId = get(storeIdAtom);
+  const { refetch: refetchTables } = get(tablesQueryAtom);
 
   if (!token || !storeId) return;
 
@@ -20,19 +20,22 @@ export default atomEffect((get, set) => {
 
     stompClient.subscribe(
       `/store/${storeId}/orders`,
-      (message: { body: string }) => {
-        const wsOrder = JSON.parse(message.body) as Order;
-        console.log(wsOrder);
-
-        const tables = get.peek(localTablesAtom);
-        const newTables = tables.map((table) =>
-          table.id === wsOrder.tableId
-            ? { ...table, orders: [...table.orders, wsOrder] }
-            : table,
-        );
-
-        set(localTablesAtom, newTables);
+      () => {
+        refetchTables();
       },
+      // (message: { body: string }) => {
+      //   const wsOrder = JSON.parse(message.body) as Order;
+      //   console.log(wsOrder);
+
+      //   const tables = get.peek(localTablesAtom);
+      //   const newTables = tables.map((table) =>
+      //     table.id === wsOrder.tableId
+      //       ? { ...table, orders: [...table.orders, wsOrder] }
+      //       : table,
+      //   );
+
+      //   set(localTablesAtom, newTables);
+      // },
     );
 
     const disconnectFromServer = () => {

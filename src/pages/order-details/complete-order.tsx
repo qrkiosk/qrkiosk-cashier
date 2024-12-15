@@ -1,7 +1,7 @@
 import { updateOrderDetails as updateOrderDetailsApi } from "@/api/order";
 import { createPaymentTransaction as createPaymentTransactionApi } from "@/api/payment";
 import Button from "@/components/button";
-import { useAuthorizedApi } from "@/hooks";
+import { useAuthorizedApi, useResetOrderDetailsAndExitCallback } from "@/hooks";
 import {
   currentOrderAtom,
   currentOrderQueryAtom,
@@ -42,7 +42,7 @@ const DEFAULT_PAYMENT_TYPE = PaymentType.COD;
 
 const CompleteOrder = () => {
   const navigate = useNavigate();
-  const { isOpen, onOpen: on, onClose: off } = useDisclosure();
+  const { isOpen, onOpen: on, onClose } = useDisclosure();
   const [paymentType, setPaymentType] = useState(DEFAULT_PAYMENT_TYPE);
   const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
   const createPaymentTransaction = useAuthorizedApi(
@@ -56,6 +56,8 @@ const CompleteOrder = () => {
   const [isCartDirty, setIsCartDirty] = useAtom(isCartDirtyAtom);
   const { refetch: refetchCurrentOrder } = useAtomValue(currentOrderQueryAtom);
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
+
+  const resetOrderDetailsAndExit = useResetOrderDetailsAndExitCallback();
 
   const saveOrderChanges = async () => {
     if (!order) return;
@@ -72,19 +74,10 @@ const CompleteOrder = () => {
   };
 
   const onOpen = async () => {
-    if (false) {
-      // TODO: (await) If order is non-existent, create one right here w/ POST /order/create
-      // TODO: (await) Fetch the new order to sync to currentOrderAtom
-    } else if (isCartDirty) {
+    if (isCartDirty) {
       await saveOrderChanges();
     }
-
     on();
-  };
-
-  const onClose = () => {
-    // TODO: If order creation flow, cancel the newly created in onOpen order here w/ PUT /order/delete
-    off();
   };
 
   const onSubmit = async () => {
@@ -106,9 +99,10 @@ const CompleteOrder = () => {
     try {
       await createPaymentTransaction(data, token);
       await refetchTables();
+
       toast.success("Đơn hàng đã được hoàn tất.");
       onClose();
-      navigate(-1);
+      resetOrderDetailsAndExit();
     } catch {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
     }

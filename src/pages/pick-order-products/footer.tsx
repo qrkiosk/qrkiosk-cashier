@@ -1,11 +1,13 @@
 import Button from "@/components/button";
 import {
+  cartAtom,
   cartTotalAmountAtom,
   cartTotalQtyAtom,
   draftCartTotalAmountAtom,
 } from "@/state/cart";
 import { withThousandSeparators } from "@/utils/number";
 import { useAtomValue } from "jotai";
+import isEmpty from "lodash/isEmpty";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const Footer = () => {
@@ -15,6 +17,7 @@ const Footer = () => {
   const totalQty = useAtomValue(cartTotalQtyAtom);
   const cartTotalAmount = useAtomValue(cartTotalAmountAtom);
   const draftCartTotalAmount = useAtomValue(draftCartTotalAmountAtom);
+  const cart = useAtomValue(cartAtom);
 
   return (
     <div className="sticky bottom-0 left-0 right-0 z-50 border-t-[1px] border-t-black/5 bg-[--zmp-background-white] pb-[max(16px,env(safe-area-inset-bottom))]">
@@ -29,6 +32,7 @@ const Footer = () => {
         </div>
         <div className="flex max-w-[260px] items-center space-x-2">
           <Button
+            disabled={isCreatingOrder && isEmpty(cart.items)}
             variant="primary"
             className="!px-4"
             onClick={() => {

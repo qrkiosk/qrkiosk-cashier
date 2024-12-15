@@ -2,7 +2,12 @@ import {
   createOrder as createOrderApi,
   updateOrderDetails as updateOrderDetailsApi,
 } from "@/api/order";
-import { useAuthorizedApi, useRouteHandle } from "@/hooks";
+import {
+  useAuthorizedApi,
+  useResetDraftOrderAndExitCallback,
+  useResetOrderDetailsAndExitCallback,
+  useRouteHandle,
+} from "@/hooks";
 import {
   categoriesStateUpwrapped,
   currentOrderAtom,
@@ -11,14 +16,14 @@ import {
   draftOrderAtom,
   tokenAtom,
 } from "@/state";
-import { cartAtom, INITIAL_CART_STATE, isCartDirtyAtom } from "@/state/cart";
+import { cartAtom, isCartDirtyAtom } from "@/state/cart";
 import headerLogoImage from "@/static/header-logo.svg";
 import { BreadcrumbEntry } from "@/types/common";
 import { OrderStatus } from "@/types/order";
 import { ShippingType } from "@/types/shipping";
 import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
 import { useDisclosure } from "@chakra-ui/react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
@@ -101,9 +106,9 @@ const Header = () => {
     onClose: onCloseExitOrderConfirm,
   } = useDisclosure();
   const {
-    isOpen: isExitOrderCreateConfirmVisible,
-    onOpen: onOpenExitOrderCreateConfirm,
-    onClose: onCloseExitOrderCreateConfirm,
+    isOpen: isExitDraftOrderConfirmVisible,
+    onOpen: onOpenExitDraftOrderConfirm,
+    onClose: onCloseExitDraftOrderConfirm,
   } = useDisclosure();
 
   const categories = useAtomValue(categoriesStateUpwrapped);
@@ -111,11 +116,12 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [handle, match] = useRouteHandle();
-  const setDraftOrder = useSetAtom(draftOrderAtom);
-  const [cart, setCart] = useAtom(cartAtom);
-
+  const cart = useAtomValue(cartAtom);
   const updateOrderDetails = useUpdateOrderDetailsCallback();
   const createOrder = useCreateOrderCallback();
+
+  const resetOrderDetailsAndExit = useResetOrderDetailsAndExitCallback();
+  const resetDraftOrderAndExit = useResetDraftOrderAndExitCallback();
 
   const title = useMemo(() => {
     if (location.state?.title && Array.isArray(location.state?.title)) {
@@ -133,21 +139,28 @@ const Header = () => {
     return handle.title ?? "";
   }, [handle, categories]);
 
-  const resetDraftOrderAndExit = () => {
-    setDraftOrder({});
-    setCart(INITIAL_CART_STATE);
-    onCloseExitOrderCreateConfirm();
-    navigate(-1);
+  const onExitOrder = () => {
+    onCloseExitOrderConfirm();
+    resetOrderDetailsAndExit();
+  };
+
+  const onExitDraftOrder = () => {
+    onCloseExitDraftOrderConfirm();
+    resetDraftOrderAndExit();
   };
 
   const onNavigateBack = () => {
-    if (handle?.backBehavior === "confirm-exit-order" && isCartDirty) {
-      onOpenExitOrderConfirm();
-    } else if (handle?.backBehavior === "confirm-exit-order-create") {
-      if (isEmpty(cart.items)) {
-        resetDraftOrderAndExit();
+    if (handle?.backBehavior === "confirm-exit-order") {
+      if (isCartDirty) {
+        onOpenExitOrderConfirm();
       } else {
-        onOpenExitOrderCreateConfirm();
+        onExitOrder();
+      }
+    } else if (handle?.backBehavior === "confirm-exit-order-create") {
+      if (!isEmpty(cart.items)) {
+        onOpenExitDraftOrderConfirm();
+      } else {
+        onExitDraftOrder();
       }
     } else {
       navigate(-1);
@@ -196,8 +209,7 @@ const Header = () => {
               text: "Không",
               onClick: async () => {
                 await updateOrderDetails();
-                onCloseExitOrderConfirm();
-                navigate(-1);
+                onExitOrder();
               },
             },
             {
@@ -206,8 +218,7 @@ const Header = () => {
               onClick: async () => {
                 await updateOrderDetails();
                 // TODO: Notify kitchen
-                onCloseExitOrderConfirm();
-                navigate(-1);
+                onExitOrder();
               },
             },
           ]}
@@ -216,8 +227,8 @@ const Header = () => {
 
       {handle?.backBehavior === "confirm-exit-order-create" && (
         <Modal
-          visible={isExitOrderCreateConfirmVisible}
-          onClose={onCloseExitOrderCreateConfirm}
+          visible={isExitDraftOrderConfirmVisible}
+          onClose={onCloseExitDraftOrderConfirm}
           title="Lưu ý"
           description="Bạn có muốn lưu thay đổi với bar/bếp trước khi rời khỏi đơn không?"
           actions={[
@@ -225,7 +236,7 @@ const Header = () => {
               text: "Không",
               onClick: async () => {
                 await createOrder();
-                resetDraftOrderAndExit();
+                onExitDraftOrder();
               },
             },
             {
@@ -234,7 +245,7 @@ const Header = () => {
               onClick: async () => {
                 await createOrder();
                 // TODO: (await) Notify kitchen
-                resetDraftOrderAndExit();
+                onExitDraftOrder();
               },
             },
           ]}

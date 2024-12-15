@@ -1,10 +1,14 @@
 import {
   cartState,
   cartTotalState,
+  currentOrderIdAtom,
+  draftOrderAtom,
   isAuthenticatedAtom,
   logoutAtom,
   openShiftModalAtom,
+  tablesQueryAtom,
 } from "@/state";
+import { cartAtom, INITIAL_CART_STATE, isCartDirtyAtom } from "@/state/cart";
 import { has401Atom, hasOngoing401ErrorAtom } from "@/state/error-handling";
 import {
   productVariantAtom,
@@ -314,4 +318,34 @@ export const useAuthorizedApi = <T extends (...args: any[]) => Promise<any>>(
       withErrorStatusCodeHandler(api, [{ statusCode: 401, handler: escalate }]),
     [],
   );
+};
+
+export const useResetOrderDetailsAndExitCallback = () => {
+  const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
+  const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
+  const setCart = useSetAtom(cartAtom);
+  const setIsCartDirty = useSetAtom(isCartDirtyAtom);
+  const navigate = useNavigate();
+
+  return useCallback(() => {
+    refetchTables();
+    setCurrentOrderId(null);
+    setCart(INITIAL_CART_STATE);
+    setIsCartDirty(false);
+    navigate(-1);
+  }, []);
+};
+
+export const useResetDraftOrderAndExitCallback = () => {
+  const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
+  const setDraftOrder = useSetAtom(draftOrderAtom);
+  const setCart = useSetAtom(cartAtom);
+  const navigate = useNavigate();
+
+  return useCallback(() => {
+    refetchTables();
+    setDraftOrder({});
+    setCart(INITIAL_CART_STATE);
+    navigate(-1);
+  }, []);
 };
