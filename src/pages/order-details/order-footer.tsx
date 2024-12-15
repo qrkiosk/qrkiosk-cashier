@@ -52,6 +52,8 @@ const OrderFooter = () => {
                 );
                 // TODO: Notify kitchen
                 await refetchOrder();
+
+                toast.success("Thông báo đơn hàng cho bar/bếp thành công.");
                 resetOrderDetailsAndExit();
               } catch {
                 toast.error(

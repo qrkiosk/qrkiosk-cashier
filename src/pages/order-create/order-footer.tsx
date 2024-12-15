@@ -1,12 +1,11 @@
 import { createOrder as createOrderApi } from "@/api/order";
 import Button from "@/components/button";
-import { useAuthorizedApi } from "@/hooks";
+import { useAuthorizedApi, useResetDraftOrderAndExitCallback } from "@/hooks";
 import { currentTableAtom, draftOrderAtom, tokenAtom } from "@/state";
 import {
   cartAtom,
   cartTotalQtyAtom,
   draftCartTotalAmountAtom,
-  INITIAL_CART_STATE,
 } from "@/state/cart";
 import { OrderStatus } from "@/types/order";
 import { ShippingType } from "@/types/shipping";
@@ -27,6 +26,8 @@ const OrderFooter = () => {
   const [order, setOrder] = useAtom(draftOrderAtom);
   const [cart, setCart] = useAtom(cartAtom);
   const table = useAtomValue(currentTableAtom);
+
+  const resetDraftOrderAndExit = useResetDraftOrderAndExitCallback();
 
   return (
     <div className="sticky bottom-0 left-0 right-0 z-50 border-t-[1px] border-t-black/5 bg-[--zmp-background-white] pb-[max(16px,env(safe-area-inset-bottom))]">
@@ -73,10 +74,9 @@ const OrderFooter = () => {
                   token,
                 );
                 // TODO: Notify kitchen
-                setOrder({});
-                setCart(INITIAL_CART_STATE);
-                toast.success("Khởi tạo và thông báo đơn hàng thành công.");
-                navigate(-1);
+
+                toast.success("Thông báo đơn hàng cho bar/bếp thành công.");
+                resetDraftOrderAndExit();
               } catch {
                 toast.error(
                   "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",

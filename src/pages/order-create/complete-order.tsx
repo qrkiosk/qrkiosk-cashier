@@ -5,14 +5,14 @@ import {
 } from "@/api/order";
 import { createPaymentTransaction as createPaymentTransactionApi } from "@/api/payment";
 import Button from "@/components/button";
-import { useAuthorizedApi } from "@/hooks";
+import { useAuthorizedApi, useResetDraftOrderAndExitCallback } from "@/hooks";
 import {
   currentTableAtom,
   draftOrderAtom,
   tablesQueryAtom,
   tokenAtom,
 } from "@/state";
-import { cartAtom, INITIAL_CART_STATE } from "@/state/cart";
+import { cartAtom } from "@/state/cart";
 import { Order, OrderStatus } from "@/types/order";
 import { PaymentReqBody, PaymentType } from "@/types/payment";
 import { ShippingType } from "@/types/shipping";
@@ -61,6 +61,8 @@ const CompleteOrder = () => {
   const [cart, setCart] = useAtom(cartAtom);
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
   const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
+
+  const resetDraftOrderAndExit = useResetDraftOrderAndExitCallback();
 
   const saveNewOrder = async () => {
     if (!table || isEmpty(draftOrder.customer)) {
@@ -143,9 +145,7 @@ const CompleteOrder = () => {
 
       toast.success("Đơn hàng đã được hoàn tất.");
       onClose();
-      setDraftOrder({});
-      setCart(INITIAL_CART_STATE);
-      navigate(-1);
+      resetDraftOrderAndExit();
     } catch {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
     }

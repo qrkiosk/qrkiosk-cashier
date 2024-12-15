@@ -218,6 +218,8 @@ const Header = () => {
               onClick: async () => {
                 await updateOrderDetails();
                 // TODO: Notify kitchen
+
+                toast.success("Thông báo đơn hàng cho bar/bếp thành công.");
                 onExitOrder();
               },
             },
@@ -245,6 +247,8 @@ const Header = () => {
               onClick: async () => {
                 await createOrder();
                 // TODO: (await) Notify kitchen
+
+                toast.success("Thông báo đơn hàng cho bar/bếp thành công.");
                 onExitDraftOrder();
               },
             },
