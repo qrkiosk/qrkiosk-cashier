@@ -93,7 +93,7 @@ const OrderFooter = () => {
                       genOrderReqBody(order, { details }),
                       token,
                     );
-                    // TODO: Notify kitchen
+                    // TODO: (await) Notify kitchen
 
                     toast.success("Thông báo đơn hàng cho bar/bếp thành công.");
                     resetOrderDetailsAndExit();

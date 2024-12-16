@@ -86,7 +86,8 @@ const CompleteOrder = () => {
         },
         token,
       );
-      // TODO: Notify kitchen
+      // TODO: (await) Notify kitchen
+
       return res.data;
     } catch {
       toast.error("Khởi tạo đơn hàng không thành công.");

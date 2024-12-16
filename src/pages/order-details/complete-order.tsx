@@ -61,7 +61,7 @@ const CompleteOrder = () => {
     const details = buildOrderDetails(cart);
     try {
       await updateOrderDetails(genOrderReqBody(order, { details }), token);
-      // TODO: Notify kitchen
+      // TODO: (await) Notify kitchen
       await refetchCurrentOrder();
       setIsCartDirty(false);
     } catch {
