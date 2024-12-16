@@ -3,7 +3,6 @@ import Button from "@/components/button";
 import FormControl from "@/components/form/form-control";
 import FormError from "@/components/form/form-error";
 import { authResultAtom } from "@/state";
-import { Container } from "@chakra-ui/react";
 import { AxiosError } from "axios";
 import classNames from "classnames";
 import { useSetAtom } from "jotai";
@@ -135,15 +134,9 @@ const LoginForm = () => {
 
 const LoginPage: React.FunctionComponent = () => {
   return (
-    <Container
-      maxW="md"
-      flexGrow={1}
-      display="flex"
-      flexDir="column"
-      bgColor="var(--zmp-background-white)"
-    >
+    <div className="flex max-w-md flex-1 flex-col bg-[--zmp-background-white] py-12">
       <LoginForm />
-    </Container>
+    </div>
   );
 };
 

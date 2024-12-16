@@ -169,7 +169,7 @@ const Header = () => {
 
   const showBack = location.key !== "default" && handle?.back !== false;
 
-  if (handle?.headerless === true) return <div className="h-12 w-full py-2" />;
+  if (handle?.headerless === true) return null;
 
   if (handle?.logo === true) {
     return (
