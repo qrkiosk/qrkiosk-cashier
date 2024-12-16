@@ -1,3 +1,7 @@
+import { createShift as createShiftApi } from "@/api/company";
+import { checkOpenShiftEffect } from "@/effects";
+import { useAuthorizedApi, useOpenShiftModal } from "@/hooks";
+import { tokenAtom, userAtom } from "@/state";
 import {
   Box,
   Button,
@@ -17,18 +21,12 @@ import dayjs from "dayjs";
 import { useAtom, useAtomValue } from "jotai";
 import { useState } from "react";
 
-import { createShift } from "../api/company";
-import { checkOpenShiftEffect } from "../effects";
-import { use401ErrorFlag, useOpenShiftModal } from "../hooks";
-import { tokenAtom, userAtom } from "../state";
-import { withErrorStatusCodeHandler } from "../utils/error";
-
 const OpenShiftModal = () => {
   const toast = useToast();
   const [amount, setAmount] = useState<string>("");
   const [note, setNote] = useState<string>("");
   const { isOpen, onClose } = useOpenShiftModal();
-  const { escalate: escalate401Error } = use401ErrorFlag();
+  const createShift = useAuthorizedApi(createShiftApi);
   const user = useAtomValue(userAtom)!;
   const token = useAtomValue(tokenAtom);
 
@@ -138,12 +136,7 @@ const OpenShiftModal = () => {
             mr={3}
             onClick={async () => {
               try {
-                const createShiftWith401Handler = withErrorStatusCodeHandler(
-                  createShift,
-                  [{ statusCode: 401, handler: escalate401Error }],
-                );
-
-                await createShiftWith401Handler(
+                await createShift(
                   {
                     companyId: user?.companyId,
                     storeId: user?.storeId,

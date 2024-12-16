@@ -2,7 +2,7 @@ import { updateOrder as updateOrderApi } from "@/api/order";
 import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
 import HorizontalDivider from "@/components/horizontal-divider";
-import { use401ErrorFlag } from "@/hooks";
+import { useAuthorizedApi } from "@/hooks";
 import {
   currentOrderAtom,
   currentOrderQueryAtom,
@@ -15,7 +15,6 @@ import {
   searchCustomerResultsAtom,
 } from "@/state/customer";
 import { Customer } from "@/types/customer";
-import { withErrorStatusCodeHandler } from "@/utils/error";
 import { genOrderReqBody } from "@/utils/order";
 import { useAtomValue, useSetAtom } from "jotai";
 import debounce from "lodash/debounce";
@@ -28,13 +27,6 @@ import { Spinner } from "zmp-ui";
 import AddCustomerModal from "./add-modal";
 import EditCustomerModal from "./edit-modal";
 import { useEditModal } from "./local-state";
-
-const useUpdateOrderWith401Handler = () => {
-  const { escalate: escalate401Error } = use401ErrorFlag();
-  return withErrorStatusCodeHandler(updateOrderApi, [
-    { statusCode: 401, handler: escalate401Error },
-  ]);
-};
 
 const useDebouncedCustomerSearch = () => {
   const [input, setInput] = useState("");
@@ -60,7 +52,7 @@ const ChooseOrderCustomer = () => {
 
   const token = useAtomValue(tokenAtom);
   const existingOrder = useAtomValue(currentOrderAtom);
-  const updateOrder = useUpdateOrderWith401Handler();
+  const updateOrder = useAuthorizedApi(updateOrderApi);
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
   const setDraftOrder = useSetAtom(draftOrderAtom);
 

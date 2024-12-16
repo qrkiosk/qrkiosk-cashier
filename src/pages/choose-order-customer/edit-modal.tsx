@@ -1,27 +1,19 @@
 import { updateCustomer as updateCustomerApi } from "@/api/customer";
 import Button from "@/components/button";
-import { use401ErrorFlag } from "@/hooks";
+import { useAuthorizedApi } from "@/hooks";
 import { tokenAtom } from "@/state";
 import { customersQueryAtom } from "@/state/customer";
 import { Customer } from "@/types/customer";
-import { withErrorStatusCodeHandler } from "@/utils/error";
 import { useAtomValue } from "jotai";
 import toast from "react-hot-toast";
 import { Modal } from "zmp-ui";
 import CustomerForm from "./form";
 import { useEditModal } from "./local-state";
 
-const useUpdateCustomerWith401Handler = () => {
-  const { escalate: escalate401Error } = use401ErrorFlag();
-  return withErrorStatusCodeHandler(updateCustomerApi, [
-    { statusCode: 401, handler: escalate401Error },
-  ]);
-};
-
 const EditCustomerModal = ({ customer }: { customer: Customer }) => {
   const { isOpen, onClose } = useEditModal();
   const token = useAtomValue(tokenAtom);
-  const updateCustomer = useUpdateCustomerWith401Handler();
+  const updateCustomer = useAuthorizedApi(updateCustomerApi);
   const { refetch } = useAtomValue(customersQueryAtom);
 
   const onSubmit = async (values: { name: string; phoneNumber: string }) => {

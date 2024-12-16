@@ -1,8 +1,7 @@
 import { updateOrder as updateOrderApi } from "@/api/order";
 import Button from "@/components/button";
-import { use401ErrorFlag, useFocusedInputRef } from "@/hooks";
+import { useAuthorizedApi, useFocusedInputRef } from "@/hooks";
 import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
-import { withErrorStatusCodeHandler } from "@/utils/error";
 import { genOrderReqBody } from "@/utils/order";
 import { useDisclosure } from "@chakra-ui/react";
 import autosize from "autosize";
@@ -12,13 +11,6 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaAngleRight } from "react-icons/fa6";
 import { Modal } from "zmp-ui";
-
-const useUpdateOrderWith401Handler = () => {
-  const { escalate: escalate401Error } = use401ErrorFlag();
-  return withErrorStatusCodeHandler(updateOrderApi, [
-    { statusCode: 401, handler: escalate401Error },
-  ]);
-};
 
 const OrderNote = () => {
   const { isOpen, onOpen, onClose: off } = useDisclosure();
@@ -33,7 +25,7 @@ const OrderNote = () => {
   }, []);
 
   const token = useAtomValue(tokenAtom);
-  const updateOrder = useUpdateOrderWith401Handler();
+  const updateOrder = useAuthorizedApi(updateOrderApi);
   const { refetch } = useAtomValue(currentOrderQueryAtom);
 
   const onSubmit = async () => {

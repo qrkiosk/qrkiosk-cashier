@@ -1,9 +1,8 @@
 import { updateOrder as updateOrderApi } from "@/api/order";
 import Button from "@/components/button";
 import FormControl from "@/components/form/form-control";
-import { use401ErrorFlag, useFocusedInputRef } from "@/hooks";
+import { useAuthorizedApi, useFocusedInputRef } from "@/hooks";
 import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
-import { withErrorStatusCodeHandler } from "@/utils/error";
 import { withThousandSeparators } from "@/utils/number";
 import { genOrderReqBody, isValidDiscountOrFee } from "@/utils/order";
 import { ButtonGroup, useDisclosure } from "@chakra-ui/react";
@@ -13,13 +12,6 @@ import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
 import { Modal } from "zmp-ui";
-
-const useUpdateOrderWith401Handler = () => {
-  const { escalate: escalate401Error } = use401ErrorFlag();
-  return withErrorStatusCodeHandler(updateOrderApi, [
-    { statusCode: 401, handler: escalate401Error },
-  ]);
-};
 
 const ServiceFee = () => {
   const { isOpen, onOpen, onClose: off } = useDisclosure();
@@ -52,7 +44,7 @@ const ServiceFee = () => {
   }, []);
 
   const token = useAtomValue(tokenAtom);
-  const updateOrder = useUpdateOrderWith401Handler();
+  const updateOrder = useAuthorizedApi(updateOrderApi);
   const { refetch } = useAtomValue(currentOrderQueryAtom);
 
   const onSubmit = async () => {

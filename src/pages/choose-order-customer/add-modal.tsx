@@ -1,28 +1,20 @@
 import { createCustomer as createCustomerApi } from "@/api/customer";
 import Button from "@/components/button";
 import FloatingButton from "@/components/floating-button";
-import { use401ErrorFlag } from "@/hooks";
+import { useAuthorizedApi } from "@/hooks";
 import { currentOrderAtom, tokenAtom } from "@/state";
 import { customersQueryAtom } from "@/state/customer";
-import { withErrorStatusCodeHandler } from "@/utils/error";
 import { useAtomValue } from "jotai";
 import toast from "react-hot-toast";
 import { Modal } from "zmp-ui";
 import CustomerForm from "./form";
 import { useAddModal } from "./local-state";
 
-const useCreateCustomerWith401Handler = () => {
-  const { escalate: escalate401Error } = use401ErrorFlag();
-  return withErrorStatusCodeHandler(createCustomerApi, [
-    { statusCode: 401, handler: escalate401Error },
-  ]);
-};
-
 const AddCustomerModal = () => {
   const { isOpen, onOpen, onClose } = useAddModal();
   const order = useAtomValue(currentOrderAtom);
   const token = useAtomValue(tokenAtom);
-  const createCustomer = useCreateCustomerWith401Handler();
+  const createCustomer = useAuthorizedApi(createCustomerApi);
   const { refetch } = useAtomValue(customersQueryAtom);
 
   const onSubmit = async (values: { name: string; phoneNumber: string }) => {
