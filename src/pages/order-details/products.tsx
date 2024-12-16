@@ -21,7 +21,10 @@ const Products = () => {
 
   useEffect(() => {
     if (!isCartDirty && order) {
-      setCart(convertOrderToCart(order));
+      setCart({
+        ...cart,
+        ...convertOrderToCart(order),
+      });
     }
   }, [order]);
 
@@ -56,6 +59,7 @@ const Products = () => {
           navigate("/pick-order-products", {
             state: {
               title: [...breadcrumb, { text: "Thêm món" }],
+              isCreatingOrder: false,
             },
           });
         }}

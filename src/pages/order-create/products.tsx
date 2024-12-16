@@ -1,9 +1,9 @@
 import FloatingButton from "@/components/floating-button";
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
-import { cartAtom } from "@/state/cart";
+import { cartAtom, isCartSuggestedFirstItemAtom } from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,6 +13,9 @@ const Products = () => {
   const location = useLocation();
   const breadcrumb = location.state?.title as BreadcrumbEntry[];
   const cart = useAtomValue(cartAtom);
+  const [isCartSuggestedFirstItem, markCartAsSuggested] = useAtom(
+    isCartSuggestedFirstItemAtom,
+  );
 
   const navigateToProductPicker = () => {
     navigate("/pick-order-products", {
@@ -24,7 +27,8 @@ const Products = () => {
   };
 
   useEffect(() => {
-    if (isEmpty(cart.items)) {
+    if (!isCartSuggestedFirstItem && isEmpty(cart.items)) {
+      markCartAsSuggested();
       navigateToProductPicker(); // TODO: Fix bug when refusing to add the first item
     }
   }, []);

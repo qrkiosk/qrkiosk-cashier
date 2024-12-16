@@ -84,7 +84,9 @@ export const convertOrderVariantsToOptions = (
   return opts;
 };
 
-export const convertOrderToCart = (order: Order): Cart => ({
+export const convertOrderToCart = (
+  order: Order,
+): Pick<Cart, "items" | "payment"> => ({
   items: order.details.map((od) => ({
     uniqIdentifier: `${od.productId}--${Date.now()}`,
     id: od.productId,
@@ -99,5 +101,5 @@ export const convertOrderToCart = (order: Order): Cart => ({
     originalOrderDetailId: od.id,
     options: convertOrderVariantsToOptions(od.variants),
   })),
-  payment: { paymentType: order.paymentType },
+  payment: { paymentType: order.paymentType ?? null },
 });
