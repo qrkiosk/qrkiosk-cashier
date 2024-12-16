@@ -2,6 +2,7 @@ import {
   cartState,
   cartTotalState,
   currentOrderIdAtom,
+  currentTableAtom,
   draftOrderAtom,
   isAuthenticatedAtom,
   logoutAtom,
@@ -325,6 +326,7 @@ export const useResetOrderDetailsAndExitCallback = () => {
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
   const setCart = useSetAtom(cartAtom);
   const setIsCartDirty = useSetAtom(isCartDirtyAtom);
+  const setCurrentTable = useSetAtom(currentTableAtom);
   const navigate = useNavigate();
 
   return useCallback(() => {
@@ -332,6 +334,7 @@ export const useResetOrderDetailsAndExitCallback = () => {
     setCurrentOrderId(null);
     setCart(INITIAL_CART_STATE);
     setIsCartDirty(false);
+    setCurrentTable(null);
     navigate(-1);
   }, []);
 };
@@ -340,12 +343,14 @@ export const useResetDraftOrderAndExitCallback = () => {
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
   const setDraftOrder = useSetAtom(draftOrderAtom);
   const setCart = useSetAtom(cartAtom);
+  const setCurrentTable = useSetAtom(currentTableAtom);
   const navigate = useNavigate();
 
   return useCallback(() => {
     refetchTables();
     setDraftOrder({});
     setCart(INITIAL_CART_STATE);
+    setCurrentTable(null);
     navigate(-1);
   }, []);
 };
