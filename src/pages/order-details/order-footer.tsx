@@ -1,7 +1,7 @@
 import { updateOrderDetails as updateOrderDetailsApi } from "@/api/order";
 import Button from "@/components/button";
 import { useAuthorizedApi, useResetOrderDetailsAndExitCallback } from "@/hooks";
-import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
+import { currentOrderAtom, tokenAtom } from "@/state";
 import {
   cartAtom,
   cartTotalAmountAtom,
@@ -22,7 +22,6 @@ const OrderFooter = () => {
   const token = useAtomValue(tokenAtom);
   const isCartDirty = useAtomValue(isCartDirtyAtom);
   const cart = useAtomValue(cartAtom);
-  const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
 
   const resetOrderDetailsAndExit = useResetOrderDetailsAndExitCallback();
 
@@ -44,14 +43,12 @@ const OrderFooter = () => {
               if (!order) return;
 
               const details = buildOrderDetails(cart);
-
               try {
                 await updateOrderDetails(
                   genOrderReqBody(order, { details }),
                   token,
                 );
                 // TODO: Notify kitchen
-                await refetchOrder();
 
                 toast.success("Thông báo đơn hàng cho bar/bếp thành công.");
                 resetOrderDetailsAndExit();

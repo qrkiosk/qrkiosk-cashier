@@ -6,7 +6,6 @@ import {
   currentOrderAtom,
   currentOrderQueryAtom,
   currentTableAtom,
-  tablesQueryAtom,
   tokenAtom,
 } from "@/state";
 import { cartAtom, isCartDirtyAtom } from "@/state/cart";
@@ -36,12 +35,10 @@ import { isNil } from "lodash";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaCalendar, FaChair, FaClock } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
 
 const DEFAULT_PAYMENT_TYPE = PaymentType.COD;
 
 const CompleteOrder = () => {
-  const navigate = useNavigate();
   const { isOpen, onOpen: on, onClose } = useDisclosure();
   const [paymentType, setPaymentType] = useState(DEFAULT_PAYMENT_TYPE);
   const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
@@ -55,7 +52,6 @@ const CompleteOrder = () => {
   const order = useAtomValue(currentOrderAtom);
   const [isCartDirty, setIsCartDirty] = useAtom(isCartDirtyAtom);
   const { refetch: refetchCurrentOrder } = useAtomValue(currentOrderQueryAtom);
-  const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
 
   const resetOrderDetailsAndExit = useResetOrderDetailsAndExitCallback();
 
@@ -98,7 +94,6 @@ const CompleteOrder = () => {
 
     try {
       await createPaymentTransaction(data, token);
-      await refetchTables();
 
       toast.success("Đơn hàng đã được hoàn tất.");
       onClose();

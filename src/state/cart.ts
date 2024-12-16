@@ -52,10 +52,6 @@ export const cartTotalAmountAtom = atom((get) => {
 
   if (!order) return 0;
 
-  if (!get(isCartDirtyAtom)) {
-    return order.totalAmount;
-  }
-
   const subtotal = get(cartSubtotalAmountAtom);
   const serviceFee = calcServiceFee(order, subtotal);
   const totalDiscount = calcTotalDiscount(order, subtotal);

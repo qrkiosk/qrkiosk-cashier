@@ -6,12 +6,7 @@ import {
 import { createPaymentTransaction as createPaymentTransactionApi } from "@/api/payment";
 import Button from "@/components/button";
 import { useAuthorizedApi, useResetDraftOrderAndExitCallback } from "@/hooks";
-import {
-  currentTableAtom,
-  draftOrderAtom,
-  tablesQueryAtom,
-  tokenAtom,
-} from "@/state";
+import { currentTableAtom, draftOrderAtom, tokenAtom } from "@/state";
 import { cartAtom } from "@/state/cart";
 import { Order, OrderStatus } from "@/types/order";
 import { PaymentReqBody, PaymentType } from "@/types/payment";
@@ -35,18 +30,16 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import { isNil } from "lodash";
 import isEmpty from "lodash/isEmpty";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaCalendar, FaChair, FaClock } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
 
 const DEFAULT_PAYMENT_TYPE = PaymentType.COD;
 
 const CompleteOrder = () => {
-  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [paymentType, setPaymentType] = useState(DEFAULT_PAYMENT_TYPE);
   const createOrder = useAuthorizedApi(createOrderApi);
@@ -57,9 +50,8 @@ const CompleteOrder = () => {
 
   const token = useAtomValue(tokenAtom);
   const table = useAtomValue(currentTableAtom);
-  const [draftOrder, setDraftOrder] = useAtom(draftOrderAtom);
-  const [cart, setCart] = useAtom(cartAtom);
-  const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
+  const draftOrder = useAtomValue(draftOrderAtom);
+  const cart = useAtomValue(cartAtom);
   const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
 
   const resetDraftOrderAndExit = useResetDraftOrderAndExitCallback();
@@ -141,7 +133,6 @@ const CompleteOrder = () => {
 
     try {
       await createPaymentTransaction(data, token);
-      await refetchTables();
 
       toast.success("Đơn hàng đã được hoàn tất.");
       onClose();
