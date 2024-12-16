@@ -54,12 +54,18 @@ const OrderFooter = () => {
                 if (!order) return;
 
                 try {
-                  await updateOrderStatus({
+                  await updateOrderStatus(
+                    {
+                      id: order.id,
+                      companyId: order.companyId,
+                      storeId: order.storeId,
+                      code: order.code,
+                      isActive: order.isActive,
+                      status: order.status,
+                      statusNew: OrderStatus.PROCESS,
+                    },
                     token,
-                    id: order.id,
-                    status: order.status,
-                    statusNew: OrderStatus.PROCESS,
-                  });
+                  );
                   await refetchOrder();
                   toast.success("Đã xác nhận đơn.");
                 } catch {

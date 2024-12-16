@@ -134,7 +134,7 @@ const CompleteOrder = () => {
     try {
       await createPaymentTransaction(data, token);
 
-      toast.success("Đơn hàng đã được hoàn tất.");
+      toast.success("Đơn hàng đã được xác nhận thanh toán.");
       onClose();
       resetDraftOrderAndExit();
     } catch {

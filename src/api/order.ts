@@ -79,26 +79,23 @@ export const updateOrderDetails = (body: OrderReqBody, token: string) => {
   });
 };
 
-export const updateOrderStatus = ({
-  token,
-  id,
-  status,
-  statusNew,
-}: {
-  token: string;
-  id: string;
-  status: OrderStatus;
-  statusNew: OrderStatus;
-}) => {
-  return axios.put(
-    `${BASE_URL}/order/update-status`,
-    { id, status, statusNew },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+export const updateOrderStatus = (
+  body: {
+    id: string;
+    companyId: number;
+    storeId: number;
+    code: string;
+    isActive: boolean;
+    status: OrderStatus;
+    statusNew: OrderStatus;
+  },
+  token: string,
+) => {
+  return axios.put(`${BASE_URL}/order/update-status`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 };
 
 export const updateOrderPaymentStatus = ({
