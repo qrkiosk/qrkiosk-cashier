@@ -2,7 +2,7 @@ import FloatingButton from "@/components/floating-button";
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
 import { currentOrderAtom, isOrderWaitingAtom } from "@/state";
-import { cartAtom } from "@/state/cart";
+import { cartAtom, isCartDirtyAtom } from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
 import { convertOrderToCart } from "@/utils/cart";
 import { useAtom, useAtomValue } from "jotai";
@@ -16,10 +16,11 @@ const Products = () => {
   const breadcrumb = location.state?.title as BreadcrumbEntry[];
   const order = useAtomValue(currentOrderAtom);
   const [cart, setCart] = useAtom(cartAtom);
+  const isCartDirty = useAtomValue(isCartDirtyAtom);
   const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
 
   useEffect(() => {
-    if (order) {
+    if (!isCartDirty && order) {
       setCart(convertOrderToCart(order));
     }
   }, [order]);

@@ -2,7 +2,7 @@ import { ProductPrice } from "@/components/price";
 import Divider from "@/components/section-divider";
 import { PageSkeleton } from "@/components/skeleton";
 import { useProductVariantPicker } from "@/hooks";
-import { addCartItemAtom } from "@/state/cart";
+import { addToPickerBagAtom } from "@/state/cart";
 import {
   prepareProductVariantAtom,
   productVariantAtom,
@@ -45,7 +45,7 @@ const PickerBody = () => {
     productVariantQtyAtom,
   );
   const prepareProductVariantToAdd = useSetAtom(prepareProductVariantAtom);
-  const addItemToCart = useSetAtom(addCartItemAtom);
+  const addToPickerBag = useSetAtom(addToPickerBagAtom);
 
   useEffect(() => {
     if (data) prepareProductVariantToAdd(data);
@@ -141,7 +141,7 @@ const PickerBody = () => {
           borderRadius="lg"
           size="lg"
           onClick={() => {
-            addItemToCart();
+            addToPickerBag();
             onClose();
           }}
         >

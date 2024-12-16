@@ -165,3 +165,64 @@ export const setShippingTypeAtom = atom(
 );
 
 export const isPreservingCartAtom = atom(false);
+
+export const pickerBagAtom = atom<Cart["items"]>([]);
+
+export const pickerBagTotalQtyAtom = atom((get) => {
+  return get(pickerBagAtom).reduce((acc, item) => {
+    if (!item.isActive) return acc;
+    return acc + item.quantity;
+  }, 0);
+});
+
+export const pickerBagTotalAmountAtom = atom((get) => {
+  return get(pickerBagAtom).reduce((total, item) => {
+    if (!item.isActive) return total;
+
+    const quantity = item.quantity;
+    const baseItemPrice = item.priceSale;
+    const opts = item.options as unknown as CartItemOption[];
+
+    const optionsPrice = opts.reduce((acc, opt) => {
+      const selectedDetailPrice = opt.selectedDetail?.price ?? 0;
+      const selectedDetailsTotalAmount = opt.selectedDetails.reduce(
+        (a, d) => a + d.price,
+        0,
+      );
+      return acc + selectedDetailPrice + selectedDetailsTotalAmount;
+    }, 0);
+
+    const itemPrice = (baseItemPrice + optionsPrice) * quantity;
+
+    return total + itemPrice;
+  }, 0);
+});
+
+export const addToPickerBagAtom = atom(null, (get, set) => {
+  const productVariant = get(productVariantAtom);
+  if (!productVariant) return;
+
+  set(
+    pickerBagAtom,
+    get(pickerBagAtom).concat({
+      ...productVariant,
+      uniqIdentifier:
+        productVariant.uniqIdentifier ?? `${productVariant.id}--${Date.now()}`,
+    }),
+  );
+});
+
+export const clearPickerBagAtom = atom(null, (_get, set) => {
+  set(pickerBagAtom, []);
+});
+
+export const mergePickerBagIntoCartAtom = atom(null, (get, set) => {
+  const cart = get(cartAtom);
+
+  set(cartAtom, {
+    ...cart,
+    items: cart.items.concat(get(pickerBagAtom)),
+  });
+  set(isCartDirtyAtom, true);
+  set(pickerBagAtom, []);
+});
