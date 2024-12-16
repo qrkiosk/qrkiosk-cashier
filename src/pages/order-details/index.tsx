@@ -1,7 +1,8 @@
 import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
 import Divider from "@/components/section-divider";
-import { currentOrderQueryAtom } from "@/state";
+import { currentOrderQueryAtom, isOrderWaitingAtom } from "@/state";
+import classNames from "classnames";
 import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
@@ -14,6 +15,7 @@ import Products from "./products";
 import ServiceFee from "./service-fee";
 
 const OrderDetailsPage = () => {
+  const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
   const { data, isLoading, error, refetch } = useAtomValue(
     currentOrderQueryAtom,
   );
@@ -56,7 +58,12 @@ const OrderDetailsPage = () => {
 
   return (
     <>
-      <FlexDiv col className="!p-0">
+      <FlexDiv
+        col
+        className={classNames("relative !p-0", {
+          "pointer-events-none opacity-75": isOrderWaiting,
+        })}
+      >
         <Divider />
         <Customer />
 

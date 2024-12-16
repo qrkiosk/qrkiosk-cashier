@@ -324,3 +324,7 @@ export const currentOrderAtom = atom<Order | null>(
 export const currentTableAtom = atom<Table | null>(null);
 
 export const draftOrderAtom = atom<Partial<OrderReqBody>>({});
+
+export const isOrderWaitingAtom = atom(
+  (get) => get(currentOrderAtom)?.status === OrderStatus.WAIT,
+);

@@ -1,13 +1,22 @@
-import { updateOrderDetails as updateOrderDetailsApi } from "@/api/order";
+import {
+  updateOrderDetails as updateOrderDetailsApi,
+  updateOrderStatus as updateOrderStatusApi,
+} from "@/api/order";
 import Button from "@/components/button";
 import { useAuthorizedApi, useResetOrderDetailsAndExitCallback } from "@/hooks";
-import { currentOrderAtom, tokenAtom } from "@/state";
+import {
+  currentOrderAtom,
+  currentOrderQueryAtom,
+  isOrderWaitingAtom,
+  tokenAtom,
+} from "@/state";
 import {
   cartAtom,
   cartTotalAmountAtom,
   cartTotalQtyAtom,
   isCartDirtyAtom,
 } from "@/state/cart";
+import { OrderStatus } from "@/types/order";
 import { withThousandSeparators } from "@/utils/number";
 import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
 import { useAtomValue } from "jotai";
@@ -16,12 +25,15 @@ import CompleteOrder from "./complete-order";
 
 const OrderFooter = () => {
   const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
+  const updateOrderStatus = useAuthorizedApi(updateOrderStatusApi);
   const totalQty = useAtomValue(cartTotalQtyAtom);
   const cartTotalAmount = useAtomValue(cartTotalAmountAtom);
   const order = useAtomValue(currentOrderAtom);
   const token = useAtomValue(tokenAtom);
   const isCartDirty = useAtomValue(isCartDirtyAtom);
   const cart = useAtomValue(cartAtom);
+  const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
+  const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
 
   const resetOrderDetailsAndExit = useResetOrderDetailsAndExitCallback();
 
@@ -35,33 +47,62 @@ const OrderFooter = () => {
           </span>
         </div>
         <div className="flex max-w-[260px] items-center space-x-2">
-          <Button
-            disabled={!isCartDirty}
-            variant="secondary"
-            className="!px-4"
-            onClick={async () => {
-              if (!order) return;
+          {isOrderWaiting ? (
+            <Button
+              variant="primary"
+              onClick={async () => {
+                if (!order) return;
 
-              const details = buildOrderDetails(cart);
-              try {
-                await updateOrderDetails(
-                  genOrderReqBody(order, { details }),
-                  token,
-                );
-                // TODO: Notify kitchen
+                try {
+                  await updateOrderStatus({
+                    token,
+                    id: order.id,
+                    status: order.status,
+                    statusNew: OrderStatus.PROCESS,
+                  });
+                  await refetchOrder();
+                  toast.success("Đã xác nhận đơn.");
+                } catch {
+                  toast.error(
+                    "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
+                  );
+                }
+              }}
+              className="!px-4"
+            >
+              Xác nhận đơn
+            </Button>
+          ) : (
+            <>
+              <Button
+                disabled={!isCartDirty}
+                variant="secondary"
+                className="!px-4"
+                onClick={async () => {
+                  if (!order) return;
 
-                toast.success("Thông báo đơn hàng cho bar/bếp thành công.");
-                resetOrderDetailsAndExit();
-              } catch {
-                toast.error(
-                  "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
-                );
-              }
-            }}
-          >
-            Lưu
-          </Button>
-          <CompleteOrder />
+                  const details = buildOrderDetails(cart);
+                  try {
+                    await updateOrderDetails(
+                      genOrderReqBody(order, { details }),
+                      token,
+                    );
+                    // TODO: Notify kitchen
+
+                    toast.success("Thông báo đơn hàng cho bar/bếp thành công.");
+                    resetOrderDetailsAndExit();
+                  } catch {
+                    toast.error(
+                      "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
+                    );
+                  }
+                }}
+              >
+                Lưu
+              </Button>
+              <CompleteOrder />
+            </>
+          )}
         </div>
       </div>
     </div>

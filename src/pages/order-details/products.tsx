@@ -1,7 +1,7 @@
 import FloatingButton from "@/components/floating-button";
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
-import { currentOrderAtom } from "@/state";
+import { currentOrderAtom, isOrderWaitingAtom } from "@/state";
 import { cartAtom } from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
 import { convertOrderToCart } from "@/utils/cart";
@@ -16,6 +16,7 @@ const Products = () => {
   const breadcrumb = location.state?.title as BreadcrumbEntry[];
   const order = useAtomValue(currentOrderAtom);
   const [cart, setCart] = useAtom(cartAtom);
+  const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
 
   useEffect(() => {
     if (order) {
@@ -49,6 +50,7 @@ const Products = () => {
 
       <FloatingButton
         className="bottom-[115px] right-4 bg-gray-700 hover:bg-gray-800"
+        disabled={isOrderWaiting}
         onClick={() => {
           navigate("/pick-order-products", {
             state: {
