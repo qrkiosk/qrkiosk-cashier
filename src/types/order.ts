@@ -114,6 +114,7 @@ export interface OrderReqBody {
   serviceFee: number;
   serviceFeePercentage: number;
   status: OrderStatus;
+  statusNew: OrderStatus;
   isActive: boolean;
   details: OrderDetailForOrderReqBody[];
 }
