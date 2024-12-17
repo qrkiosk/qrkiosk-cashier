@@ -12,8 +12,7 @@ export const INITIAL_CART_STATE: Cart = {
   payment: { paymentType: null },
   shipping: { shippingType: ShippingType.ON_SITE },
   metadata: {
-    "order-create": { suggestedToAddFirstItem: false },
-    "order-details": {},
+    suggestedFirstItems: false,
   },
 };
 
@@ -136,15 +135,15 @@ export const removeCartItemAtom = atom(
   },
 );
 
-export const isCartSuggestedFirstItemAtom = atom(
-  (get) => get(cartAtom).metadata["order-create"].suggestedToAddFirstItem,
+export const isCartSuggestedFirstItemsAtom = atom(
+  (get) => get(cartAtom).metadata.suggestedFirstItems,
   (get, set) => {
     const cart = get(cartAtom);
     set(cartAtom, {
       ...cart,
       metadata: {
         ...cart.metadata,
-        "order-create": { suggestedToAddFirstItem: true },
+        suggestedFirstItems: true,
       },
     });
   },

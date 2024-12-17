@@ -1,7 +1,7 @@
 import FloatingButton from "@/components/floating-button";
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
-import { cartAtom, isCartSuggestedFirstItemAtom } from "@/state/cart";
+import { cartAtom, isCartSuggestedFirstItemsAtom } from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
 import { useAtom, useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
@@ -14,7 +14,7 @@ const Products = () => {
   const breadcrumb = location.state?.title as BreadcrumbEntry[];
   const cart = useAtomValue(cartAtom);
   const [isCartSuggestedFirstItem, markCartAsSuggested] = useAtom(
-    isCartSuggestedFirstItemAtom,
+    isCartSuggestedFirstItemsAtom,
   );
 
   const navigateToProductPicker = () => {

@@ -35,8 +35,7 @@ export interface CartOrderItem {
 export interface Cart {
   items: Array<CartOrderItem | CartProductVariant>;
   metadata: {
-    "order-create": { suggestedToAddFirstItem: boolean };
-    "order-details": {};
+    suggestedFirstItems: boolean;
   };
   payment?: { paymentType: PaymentType | null };
   shipping?: { shippingType: ShippingType };
