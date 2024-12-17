@@ -1,7 +1,7 @@
 import Button from "@/components/button";
 import Collapse from "@/components/collapse";
 import HorizontalDivider from "@/components/horizontal-divider";
-import { useAddToCart } from "@/hooks";
+// import { useAddToCart } from "@/hooks";
 import { productState } from "@/state";
 import { Color, Size } from "@/types.global";
 import { formatPrice } from "@/utils/format";
@@ -25,13 +25,13 @@ export default function ProductDetailPage() {
     setSelectedSize(product.sizes?.[0]);
   }, [id]);
 
-  const { addToCart, setOptions } = useAddToCart(product);
+  // const { addToCart, setOptions } = useAddToCart(product);
 
   useEffect(() => {
-    setOptions({
-      size: selectedSize,
-      color: selectedColor?.name,
-    });
+    // setOptions({
+    //   size: selectedSize,
+    //   color: selectedColor?.name,
+    // });
   }, [selectedSize, selectedColor]);
 
   return (
@@ -120,7 +120,7 @@ export default function ProductDetailPage() {
           size="lg"
           variant="secondary"
           onClick={() => {
-            addToCart(1);
+            // addToCart(1);
             toast.success("Đã thêm vào giỏ hàng");
           }}
         >
@@ -130,7 +130,7 @@ export default function ProductDetailPage() {
           size="lg"
           variant="primary"
           onClick={() => {
-            addToCart(1);
+            // addToCart(1);
             navigate("/cart");
           }}
         >

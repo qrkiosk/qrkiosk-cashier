@@ -1,7 +1,7 @@
 import Checkbox from "@/components/checkbox";
 import QuantityInput from "@/components/quantity-input";
 import { RemoveIcon } from "@/components/vectors";
-import { useAddToCart } from "@/hooks";
+// import { useAddToCart } from "@/hooks";
 import { selectedCartItemIdsState } from "@/state";
 import { CartItem as CartItemProps } from "@/types.global";
 import { formatPrice } from "@/utils/format";
@@ -14,7 +14,7 @@ const SWIPE_TO_DELTE_OFFSET = 80;
 
 export default function CartItem(props: CartItemProps) {
   const [quantity, setQuantity] = useState(props.quantity);
-  const { addToCart } = useAddToCart(props.product, props.id);
+  // const { addToCart } = useAddToCart(props.product, props.id);
 
   const [selectedItemIds, setSelectedItemIds] = useAtom(
     selectedCartItemIdsState,
@@ -34,7 +34,7 @@ export default function CartItem(props: CartItemProps) {
 
   // update cart
   useEffect(() => {
-    addToCart(quantity);
+    // addToCart(quantity);
   }, [quantity]);
 
   // swipe left to delete animation
@@ -65,7 +65,7 @@ export default function CartItem(props: CartItemProps) {
       <div className="absolute bottom-0 right-0 top-0 w-20 border-b-[0.5px] border-t-[0.5px] border-black/10">
         <div
           className="flex h-full w-full cursor-pointer flex-col items-center justify-center space-y-1 bg-danger text-white/95"
-          onClick={() => addToCart(0)}
+          onClick={() => {}}
         >
           <RemoveIcon />
           <div className="text-2xs font-medium">Xoá</div>
