@@ -103,7 +103,7 @@ const ChooseOrderCustomer = () => {
 
   return (
     <FlexDiv col className="!p-0">
-      <div className="bg-[--zmp-background-white] p-4">
+      <div className="bg-white p-4">
         <div className="relative w-full">
           <input
             value={input}
@@ -123,7 +123,7 @@ const ChooseOrderCustomer = () => {
           Không tìm thấy khách hàng.
         </p>
       ) : (
-        <div className="bg-[--zmp-background-white]">
+        <div className="bg-white">
           {searchResults.map((customer) => (
             <Fragment key={customer.id}>
               <div className="flex items-center justify-between pr-3">

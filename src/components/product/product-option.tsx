@@ -1,6 +1,5 @@
 import Divider from "@/components/section-divider";
 import { OptionWithSelectedDetail } from "@/types/product";
-import { Box } from "@chakra-ui/react";
 import MandatoryOption from "./mandatory-option";
 import NonMandatoryOption from "./non-mandatory-option";
 
@@ -11,13 +10,13 @@ const ProductOption = ({
 }) => {
   return (
     <>
-      <Box p={4} bgColor="var(--zmp-background-white)">
+      <div className="bg-white p-4">
         {option.isMandatory ? (
           <MandatoryOption option={option} />
         ) : (
           <NonMandatoryOption option={option} />
         )}
-      </Box>
+      </div>
       <Divider />
     </>
   );

@@ -35,7 +35,7 @@ const ZoneList = () => {
   return (
     <div
       {...getRootProps()}
-      className="scrollbar-hidden z-[998] flex min-h-12 items-center !gap-0 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[1px] border-b-black/10 bg-[--zmp-background-white] px-2"
+      className="scrollbar-hidden z-[998] flex min-h-12 items-center !gap-0 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[1px] border-b-black/10 bg-white px-2"
     >
       {zones.map(({ value, text }) => (
         <RadioCard key={value} {...getRadioProps({ value })}>

@@ -25,7 +25,7 @@ const TopStickyHeader = () => {
   }, [input]);
 
   return (
-    <div className="scrollbar-hidden sticky left-0 right-0 top-0 z-[999] space-y-2.5 overflow-x-auto overflow-y-hidden border-b-[1px] border-b-black/5 bg-[--zmp-background-white] p-2">
+    <div className="scrollbar-hidden sticky left-0 right-0 top-0 z-[999] space-y-2.5 overflow-x-auto overflow-y-hidden border-b-[1px] border-b-black/5 bg-white p-2">
       <div className="px-2">
         <div className="relative w-full">
           <input

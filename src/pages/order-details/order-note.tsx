@@ -55,10 +55,7 @@ const OrderNote = () => {
 
   return (
     <>
-      <div
-        className="cursor-pointer bg-[--zmp-background-white] p-4"
-        onClick={onOpen}
-      >
+      <div className="cursor-pointer bg-white p-4" onClick={onOpen}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <span className="font-semibold">Ghi chú đơn</span>

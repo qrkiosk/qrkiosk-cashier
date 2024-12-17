@@ -65,7 +65,7 @@ const PickerBody = () => {
           maxHeight="260px"
         />
 
-        <Box p={4} bgColor="var(--zmp-background-white)">
+        <div className="bg-white p-4">
           <Box display="flex" justifyContent="space-between">
             <Heading size="sm">{productVariant.name}</Heading>
             <Box display="flex" flexDir="column" alignItems="flex-end" mb={4}>
@@ -80,20 +80,14 @@ const PickerBody = () => {
           <Text color="GrayText" fontSize="xs" mt={2}>
             {productVariant.description}
           </Text>
-        </Box>
+        </div>
         <Divider />
 
         {productVariant.options.map((option) => (
           <ProductOption key={option.id}>{option}</ProductOption>
         ))}
 
-        <Box
-          p={4}
-          bgColor="var(--zmp-background-white)"
-          display="flex"
-          flexDir="column"
-          alignItems="center"
-        >
+        <div className="flex flex-col items-center bg-white p-4">
           <Box w="100%" mb={3} display="flex" alignItems="flex-end">
             <Heading size="sm">Thêm lưu ý cho quán</Heading>
             <Text fontSize="xs" color="GrayText" ml={2}>
@@ -125,12 +119,12 @@ const PickerBody = () => {
               </Text>
             </Button>
           </HStack>
-        </Box>
+        </div>
         <Divider />
       </div>
 
       <Box
-        className="sticky bottom-0 left-0 right-0 bg-[--zmp-background-white] p-3"
+        className="sticky bottom-0 left-0 right-0 bg-white p-3"
         boxShadow="0px -4px 6px rgba(0, 0, 0, 0.1)"
       >
         <Button
@@ -169,6 +163,7 @@ const ProductVariantPicker = () => {
       <DrawerOverlay />
       <DrawerContent className="pb-[max(16px,env(safe-area-inset-bottom))]">
         <IconButton
+          className="bg-white hover:bg-white"
           isRound={true}
           autoFocus={false}
           position="absolute"
@@ -177,8 +172,6 @@ const ProductVariantPicker = () => {
           variant="outline"
           aria-label="Close"
           boxShadow="0 0 6px rgba(0, 0, 0, 0.15)"
-          bgColor="var(--zmp-background-white)"
-          _hover={{ bgColor: "var(--zmp-background-white)" }}
           fontSize="md"
           zIndex={999}
           icon={<Icon icon="zi-close" />}

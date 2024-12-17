@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 
 const CSS_VARIABLES = {
   "--zmp-background-color": "#f4f5f6",
-  "--zmp-background-white": "#ffffff",
 };
 
 const ConfigProvider = ({ children }: { children: React.ReactNode }) => {

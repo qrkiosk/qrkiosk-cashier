@@ -35,7 +35,7 @@ const Products = () => {
 
   return (
     <>
-      <div className="space-y-4 bg-[--zmp-background-white] px-4 py-3">
+      <div className="space-y-4 bg-white px-4 py-3">
         <p className="font-semibold">Sản phẩm</p>
 
         {isEmpty(cart.items) ? (

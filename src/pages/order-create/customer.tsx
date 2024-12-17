@@ -13,7 +13,7 @@ const Customer = () => {
 
   return (
     <div
-      className="cursor-pointer bg-[--zmp-background-white] p-4"
+      className="cursor-pointer bg-white p-4"
       onClick={() => {
         navigate("/choose-order-customer", {
           state: {

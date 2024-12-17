@@ -25,7 +25,7 @@ ProductsListing.Banner = forwardRef(({ category, scrollMargin }, ref) => {
   const [emblaRef] = useEmblaCarousel({ dragFree: true });
 
   return (
-    <div className="bg-[--zmp-background-white] py-5">
+    <div className="bg-white py-5">
       <Box ref={ref} id={category.id} scrollMarginTop={scrollMargin} />
       <Heading as="p" size="md" fontWeight="semibold" px={6} mt={1} mb={2}>
         {category.name}
@@ -47,7 +47,7 @@ ProductsListing.Banner = forwardRef(({ category, scrollMargin }, ref) => {
 
 ProductsListing.Grid = forwardRef(({ category, scrollMargin }, ref) => {
   return (
-    <div className="bg-[--zmp-background-white] px-6 py-5">
+    <div className="bg-white px-6 py-5">
       <Box ref={ref} id={category.id} scrollMarginTop={scrollMargin} />
       <Heading as="p" size="md" fontWeight="semibold" mt={1} mb={4}>
         {category.name}
@@ -63,7 +63,7 @@ ProductsListing.Grid = forwardRef(({ category, scrollMargin }, ref) => {
 
 ProductsListing.List = forwardRef(({ category, scrollMargin }, ref) => {
   return (
-    <div className="bg-[--zmp-background-white] px-6 py-5">
+    <div className="bg-white px-6 py-5">
       <Box ref={ref} id={category.id} scrollMarginTop={scrollMargin} />
       <Heading as="p" size="md" fontWeight="semibold" mt={1} mb={4}>
         {category.name}

@@ -134,7 +134,7 @@ const LoginForm = () => {
 
 const LoginPage: React.FunctionComponent = () => {
   return (
-    <div className="flex max-w-md flex-1 flex-col bg-[--zmp-background-white] py-12">
+    <div className="flex max-w-md flex-1 flex-col bg-white py-12">
       <LoginForm />
     </div>
   );

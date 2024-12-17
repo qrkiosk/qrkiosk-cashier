@@ -28,7 +28,7 @@ const Footer = () => {
   );
 
   return (
-    <div className="sticky bottom-0 left-0 right-0 z-50 border-t-[1px] border-t-black/5 bg-[--zmp-background-white] pb-[max(16px,env(safe-area-inset-bottom))]">
+    <div className="sticky bottom-0 left-0 right-0 z-50 border-t-[1px] border-t-black/5 bg-white pb-[max(16px,env(safe-area-inset-bottom))]">
       <div className="flex items-center justify-between p-3">
         <div className="flex flex-col space-y-1">
           <span className="text-2xs text-subtitle">Tổng cộng ({totalQty})</span>

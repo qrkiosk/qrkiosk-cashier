@@ -108,7 +108,7 @@ const ServiceFee = () => {
 
   return (
     <>
-      <div className="space-y-3 bg-[--zmp-background-white] p-4">
+      <div className="space-y-3 bg-white p-4">
         <div className="flex items-center justify-between">
           <p className="font-semibold">Phí dịch vụ</p>
           {!isFeeApplied && (
