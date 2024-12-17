@@ -1,7 +1,6 @@
 import { getProductById, getStoreProductsByCategory } from "@/api/product";
-import { CartOrderItem } from "@/types/cart";
+import { CartItem, CartProductVariant } from "@/types/cart";
 import {
-  CartProductVariant,
   CategoryWithProducts,
   OptionDetail,
   ProductWithOptions,
@@ -68,9 +67,7 @@ export const singleProductQueryAtom = atomWithQuery<
   },
 }));
 
-export const productVariantAtom = atom<
-  CartOrderItem | CartProductVariant | null
->(null);
+export const productVariantAtom = atom<CartItem | null>(null);
 
 export const productVariantQtyAtom = atom(
   (get) => get(productVariantAtom)?.quantity,

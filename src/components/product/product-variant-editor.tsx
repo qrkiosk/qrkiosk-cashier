@@ -10,7 +10,7 @@ import {
   productVariantQtyAtom,
   singleProductQueryAtom,
 } from "@/state/product";
-import { CartProductVariant } from "@/types/product";
+import { CartProductVariant } from "@/types/cart";
 import { APP_ACCENT_COLOR, APP_DANGER_COLOR } from "@/utils/constants";
 import { withThousandSeparators } from "@/utils/number";
 import {

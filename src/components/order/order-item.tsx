@@ -1,8 +1,7 @@
 import Button from "@/components/button";
 import { useProductVariantEditor } from "@/hooks";
 import { removeCartItemAtom } from "@/state/cart";
-import { CartItemOption, CartOrderItem } from "@/types/cart";
-import { CartProductVariant } from "@/types/product";
+import { CartItem, CartItemOption } from "@/types/cart";
 import {
   calcItemTotalAmount,
   genMultiChoiceOptionDisplayText,
@@ -24,7 +23,7 @@ const OrderItemOption = ({ option }: { option: CartItemOption }) => {
   return null;
 };
 
-const OrderItem = ({ item }: { item: CartOrderItem | CartProductVariant }) => {
+const OrderItem = ({ item }: { item: CartItem }) => {
   const { onOpen } = useProductVariantEditor();
   const removeCartItem = useSetAtom(removeCartItemAtom);
   const itemFormattedPrice = useMemo(

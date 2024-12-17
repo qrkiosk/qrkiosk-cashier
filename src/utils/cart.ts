@@ -1,12 +1,11 @@
 import { Product, SelectedOptions } from "@/types.global";
 import {
   Cart,
+  CartItem,
   CartItemOption,
   CartItemOptionDetail,
-  CartOrderItem,
 } from "@/types/cart";
 import { Order, OrderDetail } from "@/types/order";
-import { CartProductVariant } from "@/types/product";
 import uniqBy from "lodash/uniqBy";
 
 export function getDefaultOptions(product: Product): SelectedOptions {
@@ -23,9 +22,7 @@ export function isIdentical(
   return option1.size === option2.size && option1.color === option2.color;
 }
 
-export const calcItemTotalAmount = (
-  item: CartOrderItem | CartProductVariant,
-) => {
+export const calcItemTotalAmount = (item: CartItem) => {
   const quantity = item.quantity;
   const baseItemPrice = item.price;
   const opts = item.options as unknown as CartItemOption[];
