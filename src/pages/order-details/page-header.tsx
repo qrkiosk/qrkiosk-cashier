@@ -26,7 +26,6 @@ const useUpdateOrderDetailsCallback = () => {
     const details = buildOrderDetails(cart);
     try {
       await updateOrderDetails(genOrderReqBody(order, { details }), token);
-      // TODO: (await) Notify kitchen
       await refetchOrder();
       setIsCartDirty(false);
     } catch {

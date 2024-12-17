@@ -36,6 +36,7 @@ export interface Cart {
   items: Array<CartOrderItem | CartProductVariant>;
   metadata: {
     suggestedFirstItems: boolean;
+    isDirty: boolean;
   };
   payment?: { paymentType: PaymentType | null };
   shipping?: { shippingType: ShippingType };

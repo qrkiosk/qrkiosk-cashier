@@ -9,7 +9,7 @@ import {
   openShiftModalAtom,
   tablesQueryAtom,
 } from "@/state";
-import { isCartDirtyAtom, resetCartAtom } from "@/state/cart";
+import { resetCartAtom } from "@/state/cart";
 import { has401Atom, hasOngoing401ErrorAtom } from "@/state/error-handling";
 import {
   productVariantAtom,
@@ -325,7 +325,6 @@ export const useResetOrderDetailsAndExitCallback = () => {
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
   const resetCart = useSetAtom(resetCartAtom);
-  const setIsCartDirty = useSetAtom(isCartDirtyAtom);
   const setCurrentTable = useSetAtom(currentTableAtom);
   const navigate = useNavigate();
 
@@ -333,7 +332,6 @@ export const useResetOrderDetailsAndExitCallback = () => {
     refetchTables();
     setCurrentOrderId(null);
     resetCart();
-    setIsCartDirty(false);
     setCurrentTable(null);
     navigate(-1);
   }, []);

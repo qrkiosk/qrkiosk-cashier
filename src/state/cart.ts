@@ -13,14 +13,27 @@ export const INITIAL_CART_STATE: Cart = {
   shipping: { shippingType: ShippingType.ON_SITE },
   metadata: {
     suggestedFirstItems: false,
+    isDirty: false,
   },
 };
 
 export const cartAtom = atom<Cart>(INITIAL_CART_STATE);
+
 export const resetCartAtom = atom(null, (_, set) => {
   set(cartAtom, INITIAL_CART_STATE);
 });
-export const isCartDirtyAtom = atom(false);
+
+export const isCartDirtyAtom = atom(
+  (get) => get(cartAtom).metadata.isDirty,
+  (get, set, isDirty: boolean) => {
+    const cart = get(cartAtom);
+    set(cartAtom, {
+      ...cart,
+      metadata: { ...cart.metadata, isDirty },
+    });
+  },
+);
+
 export const isCartEmptyAtom = atom((get) => isEmpty(get(cartAtom).items));
 
 export const cartTotalQtyAtom = atom((get) => {
@@ -81,13 +94,13 @@ export const addCartItemAtom = atom(null, (get, set) => {
   const cart = get(cartAtom);
   set(cartAtom, {
     ...cart,
+    metadata: { ...cart.metadata, isDirty: true },
     items: cart.items.concat({
       ...productVariant,
       uniqIdentifier:
         productVariant.uniqIdentifier ?? `${productVariant.id}--${Date.now()}`,
     }),
   });
-  set(isCartDirtyAtom, true);
 });
 
 export const updateCartItemAtom = atom(null, (get, set) => {
@@ -97,13 +110,13 @@ export const updateCartItemAtom = atom(null, (get, set) => {
   const cart = get(cartAtom);
   set(cartAtom, {
     ...cart,
+    metadata: { ...cart.metadata, isDirty: true },
     items: cart.items.map((item) =>
       item.uniqIdentifier === productVariant.uniqIdentifier
         ? { ...productVariant }
         : item,
     ),
   });
-  set(isCartDirtyAtom, true);
 });
 
 export const removeCartItemAtom = atom(
@@ -113,6 +126,7 @@ export const removeCartItemAtom = atom(
 
     set(cartAtom, {
       ...cart,
+      metadata: { ...cart.metadata, isDirty: true },
       items: cart.items.reduce((acc, item) => {
         if (item.uniqIdentifier !== uniqIdentifier) {
           return [...acc, item];
@@ -134,7 +148,6 @@ export const removeCartItemAtom = atom(
         return acc;
       }, []),
     });
-    set(isCartDirtyAtom, true);
   },
 );
 
@@ -237,8 +250,8 @@ export const mergePickerBagIntoCartAtom = atom(null, (get, set) => {
 
   set(cartAtom, {
     ...cart,
+    metadata: { ...cart.metadata, isDirty: true },
     items: cart.items.concat(get(pickerBagAtom)),
   });
-  set(isCartDirtyAtom, true);
   set(pickerBagAtom, []);
 });
