@@ -17,6 +17,9 @@ export const INITIAL_CART_STATE: Cart = {
 };
 
 export const cartAtom = atom<Cart>(INITIAL_CART_STATE);
+export const resetCartAtom = atom(null, (_, set) => {
+  set(cartAtom, INITIAL_CART_STATE);
+});
 export const isCartDirtyAtom = atom(false);
 export const isCartEmptyAtom = atom((get) => isEmpty(get(cartAtom).items));
 
@@ -149,10 +152,6 @@ export const isCartSuggestedFirstItemsAtom = atom(
   },
 );
 
-export const clearCartAtom = atom(null, (_get, set) => {
-  set(cartAtom, INITIAL_CART_STATE);
-});
-
 export const setPaymentTypeAtom = atom(
   null,
   (get, set, paymentType: string | PaymentType) => {
@@ -229,7 +228,7 @@ export const addToPickerBagAtom = atom(null, (get, set) => {
   );
 });
 
-export const clearPickerBagAtom = atom(null, (_get, set) => {
+export const clearPickerBagAtom = atom(null, (_, set) => {
   set(pickerBagAtom, []);
 });
 

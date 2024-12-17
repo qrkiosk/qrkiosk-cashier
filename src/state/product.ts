@@ -122,7 +122,7 @@ export const productVariantPriceAtom = atom((get) => {
 
 export const prepareProductVariantAtom = atom(
   null,
-  (_get, set, productDetails: ProductWithOptions) => {
+  (_, set, productDetails: ProductWithOptions) => {
     set(productVariantAtom, {
       ...productDetails,
       uniqIdentifier: `${productDetails.id}--${Date.now()}`,

@@ -133,7 +133,7 @@ export const userAtom = atom((get) => get(authResultAtom)?.user ?? null);
 export const storeIdAtom = atom((get) => get(userAtom)?.storeId ?? null);
 export const companyIdAtom = atom((get) => get(userAtom)?.companyId ?? null);
 
-export const logoutAtom = atom(null, (_get, set) => {
+export const logoutAtom = atom(null, (_, set) => {
   set(authResultAtom, RESET);
 });
 

@@ -9,7 +9,7 @@ import {
   openShiftModalAtom,
   tablesQueryAtom,
 } from "@/state";
-import { cartAtom, INITIAL_CART_STATE, isCartDirtyAtom } from "@/state/cart";
+import { isCartDirtyAtom, resetCartAtom } from "@/state/cart";
 import { has401Atom, hasOngoing401ErrorAtom } from "@/state/error-handling";
 import {
   productVariantAtom,
@@ -324,7 +324,7 @@ export const useAuthorizedApi = <T extends (...args: any[]) => Promise<any>>(
 export const useResetOrderDetailsAndExitCallback = () => {
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
-  const setCart = useSetAtom(cartAtom);
+  const resetCart = useSetAtom(resetCartAtom);
   const setIsCartDirty = useSetAtom(isCartDirtyAtom);
   const setCurrentTable = useSetAtom(currentTableAtom);
   const navigate = useNavigate();
@@ -332,7 +332,7 @@ export const useResetOrderDetailsAndExitCallback = () => {
   return useCallback(() => {
     refetchTables();
     setCurrentOrderId(null);
-    setCart(INITIAL_CART_STATE);
+    resetCart();
     setIsCartDirty(false);
     setCurrentTable(null);
     navigate(-1);
@@ -342,14 +342,14 @@ export const useResetOrderDetailsAndExitCallback = () => {
 export const useResetDraftOrderAndExitCallback = () => {
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
   const setDraftOrder = useSetAtom(draftOrderAtom);
-  const setCart = useSetAtom(cartAtom);
+  const resetCart = useSetAtom(resetCartAtom);
   const setCurrentTable = useSetAtom(currentTableAtom);
   const navigate = useNavigate();
 
   return useCallback(() => {
     refetchTables();
     setDraftOrder({});
-    setCart(INITIAL_CART_STATE);
+    resetCart();
     setCurrentTable(null);
     navigate(-1);
   }, []);
