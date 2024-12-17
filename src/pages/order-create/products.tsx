@@ -29,7 +29,7 @@ const Products = () => {
   useEffect(() => {
     if (!isCartSuggestedFirstItem && isEmpty(cart.items)) {
       markCartAsSuggested();
-      navigateToProductPicker(); // TODO: Fix bug when refusing to add the first item
+      navigateToProductPicker();
     }
   }, []);
 
