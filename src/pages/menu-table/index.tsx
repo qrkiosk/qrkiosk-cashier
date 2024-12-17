@@ -15,7 +15,12 @@ const MENU_TABLE_TABS = ["Tất cả", "Chờ xác nhận", "Đang sử dụng",
 
 const MenuTable = () => {
   const [index, setIndex] = useAtom(currentMenuTableTabIndexAtom);
-  const { data, error, isLoading, refetch } = useAtomValue(tablesQueryAtom);
+  const {
+    data,
+    error,
+    isLoading,
+    refetch: refetchTables,
+  } = useAtomValue(tablesQueryAtom);
 
   useAtom(syncLocalTablesEffect);
   useRemoveQueriesOnUnmount(["tables"]);
@@ -48,7 +53,7 @@ const MenuTable = () => {
                 variant="secondary"
                 onClick={async () => {
                   try {
-                    await refetch();
+                    await refetchTables();
                   } catch {
                     toast.error("Xảy ra lỗi khi tải dữ liệu.");
                   }

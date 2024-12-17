@@ -26,14 +26,16 @@ const OrderNote = () => {
 
   const token = useAtomValue(tokenAtom);
   const updateOrder = useAuthorizedApi(updateOrderApi);
-  const { refetch } = useAtomValue(currentOrderQueryAtom);
+  const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
 
   const onSubmit = async () => {
     if (!order) return;
 
+    const body = genOrderReqBody(order, { note: input.trim() });
+
     try {
-      await updateOrder(genOrderReqBody(order, { note: input.trim() }), token);
-      await refetch();
+      await updateOrder(body, token);
+      await refetchOrder();
       onClose();
     } catch {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");

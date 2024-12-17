@@ -2,12 +2,12 @@ import { updateOrderDetails as updateOrderDetailsApi } from "@/api/order";
 import Breadcrumb from "@/components/breadcrumb";
 import { BackIcon } from "@/components/vectors";
 import { useAuthorizedApi, useResetOrderDetailsAndExitCallback } from "@/hooks";
-import { currentOrderAtom, currentOrderQueryAtom, tokenAtom } from "@/state";
+import { currentOrderAtom, tokenAtom } from "@/state";
 import { cartAtom, isCartDirtyAtom } from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
 import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
 import { useDisclosure } from "@chakra-ui/react";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import { Modal } from "zmp-ui";
@@ -17,17 +17,15 @@ const useUpdateOrderDetailsCallback = () => {
   const token = useAtomValue(tokenAtom);
   const cart = useAtomValue(cartAtom);
   const order = useAtomValue(currentOrderAtom);
-  const setIsCartDirty = useSetAtom(isCartDirtyAtom);
-  const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
 
   return async () => {
     if (!order) return;
 
     const details = buildOrderDetails(cart);
+    const body = genOrderReqBody(order, { details });
+
     try {
-      await updateOrderDetails(genOrderReqBody(order, { details }), token);
-      await refetchOrder();
-      setIsCartDirty(false);
+      await updateOrderDetails(body, token);
     } catch {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
     }

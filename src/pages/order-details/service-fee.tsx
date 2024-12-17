@@ -45,24 +45,25 @@ const ServiceFee = () => {
 
   const token = useAtomValue(tokenAtom);
   const updateOrder = useAuthorizedApi(updateOrderApi);
-  const { refetch } = useAtomValue(currentOrderQueryAtom);
+  const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
 
   const onSubmit = async () => {
     if (!order) return;
 
-    try {
-      const updatedData = usingPercentage
-        ? {
-            serviceFee: Math.floor(orderAmount * inputPercentage),
-            serviceFeePercentage: inputPercentage,
-          }
-        : {
-            serviceFee: inputAmount,
-            serviceFeePercentage: 0,
-          };
+    const updatedData = usingPercentage
+      ? {
+          serviceFee: Math.floor(orderAmount * inputPercentage),
+          serviceFeePercentage: inputPercentage,
+        }
+      : {
+          serviceFee: inputAmount,
+          serviceFeePercentage: 0,
+        };
+    const body = genOrderReqBody(order, updatedData);
 
-      await updateOrder(genOrderReqBody(order, updatedData), token);
-      await refetch();
+    try {
+      await updateOrder(body, token);
+      await refetchOrder();
       onClose();
     } catch {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
@@ -72,15 +73,14 @@ const ServiceFee = () => {
   const onRemoveDiscount = async () => {
     if (!order) return;
 
+    const body = genOrderReqBody(order, {
+      serviceFee: 0,
+      serviceFeePercentage: 0,
+    });
+
     try {
-      await updateOrder(
-        genOrderReqBody(order, {
-          serviceFee: 0,
-          serviceFeePercentage: 0,
-        }),
-        token,
-      );
-      await refetch();
+      await updateOrder(body, token);
+      await refetchOrder();
     } catch {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
     }

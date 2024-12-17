@@ -15,7 +15,7 @@ const AddCustomerModal = () => {
   const order = useAtomValue(currentOrderAtom);
   const token = useAtomValue(tokenAtom);
   const createCustomer = useAuthorizedApi(createCustomerApi);
-  const { refetch } = useAtomValue(customersQueryAtom);
+  const { refetch: refetchCustomers } = useAtomValue(customersQueryAtom);
 
   const onSubmit = async (values: { name: string; phoneNumber: string }) => {
     if (!order) return;
@@ -29,7 +29,7 @@ const AddCustomerModal = () => {
         },
         token,
       );
-      await refetch();
+      await refetchCustomers();
       onClose();
     } catch (error) {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");

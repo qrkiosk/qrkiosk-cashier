@@ -14,7 +14,7 @@ const EditCustomerModal = ({ customer }: { customer: Customer }) => {
   const { isOpen, onClose } = useEditModal();
   const token = useAtomValue(tokenAtom);
   const updateCustomer = useAuthorizedApi(updateCustomerApi);
-  const { refetch } = useAtomValue(customersQueryAtom);
+  const { refetch: refetchCustomers } = useAtomValue(customersQueryAtom);
 
   const onSubmit = async (values: { name: string; phoneNumber: string }) => {
     try {
@@ -27,7 +27,7 @@ const EditCustomerModal = ({ customer }: { customer: Customer }) => {
         },
         token,
       );
-      await refetch();
+      await refetchCustomers();
       onClose();
     } catch (error) {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");

@@ -29,29 +29,28 @@ const useCreateOrderCallback = () => {
     }
 
     const details = buildOrderDetails(cart);
+    const body = {
+      id: order.id ?? null,
+      companyId: table.companyId,
+      storeId: table.storeId,
+      tableId: table.id,
+      tableName: table.name,
+      customer: !isEmpty(order.customer) ? order.customer : null,
+      paymentType: null,
+      sourceType: ShippingType.ON_SITE,
+      note: order.note ?? "",
+      discountAmount: order.discountAmount ?? 0,
+      discountPercentage: order.discountPercentage ?? 0,
+      discountVoucher: order.discountVoucher ?? 0,
+      serviceFee: order.serviceFee ?? 0,
+      serviceFeePercentage: order.serviceFeePercentage ?? 0,
+      status: OrderStatus.PROCESS,
+      isActive: true,
+      details,
+    };
+
     try {
-      await createOrder(
-        {
-          id: order.id ?? null,
-          companyId: table.companyId,
-          storeId: table.storeId,
-          tableId: table.id,
-          tableName: table.name,
-          customer: !isEmpty(order.customer) ? order.customer : null,
-          paymentType: null,
-          sourceType: ShippingType.ON_SITE,
-          note: order.note ?? "",
-          discountAmount: order.discountAmount ?? 0,
-          discountPercentage: order.discountPercentage ?? 0,
-          discountVoucher: order.discountVoucher ?? 0,
-          serviceFee: order.serviceFee ?? 0,
-          serviceFeePercentage: order.serviceFeePercentage ?? 0,
-          status: OrderStatus.PROCESS,
-          isActive: true,
-          details,
-        },
-        token,
-      );
+      await createOrder(body, token);
     } catch {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
     }

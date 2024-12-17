@@ -11,20 +11,18 @@ import { OrderStatus } from "@/types/order";
 import { ShippingType } from "@/types/shipping";
 import { withThousandSeparators } from "@/utils/number";
 import { buildOrderDetails } from "@/utils/order";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import CompleteOrder from "./complete-order";
 
 const OrderFooter = () => {
-  const navigate = useNavigate();
   const createOrder = useAuthorizedApi(createOrderApi);
   const token = useAtomValue(tokenAtom);
   const totalQty = useAtomValue(cartTotalQtyAtom);
   const cartTotalAmount = useAtomValue(draftCartTotalAmountAtom);
-  const [order, setOrder] = useAtom(draftOrderAtom);
-  const [cart, setCart] = useAtom(cartAtom);
+  const order = useAtomValue(draftOrderAtom);
+  const cart = useAtomValue(cartAtom);
   const table = useAtomValue(currentTableAtom);
 
   const resetDraftOrderAndExit = useResetDraftOrderAndExitCallback();
@@ -50,29 +48,28 @@ const OrderFooter = () => {
               }
 
               const details = buildOrderDetails(cart);
+              const body = {
+                id: order.id ?? null,
+                companyId: table.companyId,
+                storeId: table.storeId,
+                tableId: table.id,
+                tableName: table.name,
+                customer: !isEmpty(order.customer) ? order.customer : null,
+                paymentType: null,
+                sourceType: ShippingType.ON_SITE,
+                note: order.note ?? "",
+                discountAmount: order.discountAmount ?? 0,
+                discountPercentage: order.discountPercentage ?? 0,
+                discountVoucher: order.discountVoucher ?? 0,
+                serviceFee: order.serviceFee ?? 0,
+                serviceFeePercentage: order.serviceFeePercentage ?? 0,
+                status: OrderStatus.PROCESS,
+                isActive: true,
+                details,
+              };
+
               try {
-                await createOrder(
-                  {
-                    id: order.id ?? null,
-                    companyId: table.companyId,
-                    storeId: table.storeId,
-                    tableId: table.id,
-                    tableName: table.name,
-                    customer: !isEmpty(order.customer) ? order.customer : null,
-                    paymentType: null,
-                    sourceType: ShippingType.ON_SITE,
-                    note: order.note ?? "",
-                    discountAmount: order.discountAmount ?? 0,
-                    discountPercentage: order.discountPercentage ?? 0,
-                    discountVoucher: order.discountVoucher ?? 0,
-                    serviceFee: order.serviceFee ?? 0,
-                    serviceFeePercentage: order.serviceFeePercentage ?? 0,
-                    status: OrderStatus.PROCESS,
-                    isActive: true,
-                    details,
-                  },
-                  token,
-                );
+                await createOrder(body, token);
                 // TODO: (await) Notify kitchen
 
                 toast.success("Thông báo đơn hàng cho bar/bếp thành công.");

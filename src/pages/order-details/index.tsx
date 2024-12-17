@@ -17,9 +17,12 @@ import ServiceFee from "./service-fee";
 
 const OrderDetailsPage = () => {
   const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
-  const { data, isLoading, error, refetch } = useAtomValue(
-    currentOrderQueryAtom,
-  );
+  const {
+    data,
+    isLoading,
+    error,
+    refetch: refetchOrder,
+  } = useAtomValue(currentOrderQueryAtom);
 
   return (
     <>
@@ -44,7 +47,7 @@ const OrderDetailsPage = () => {
                 variant="secondary"
                 onClick={async () => {
                   try {
-                    await refetch();
+                    await refetchOrder();
                   } catch {
                     toast.error("Xảy ra lỗi khi tải dữ liệu.");
                   }

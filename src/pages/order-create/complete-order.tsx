@@ -63,29 +63,28 @@ const CompleteOrder = () => {
     }
 
     const details = buildOrderDetails(cart);
+    const body = {
+      id: draftOrder.id ?? null,
+      companyId: table.companyId,
+      storeId: table.storeId,
+      tableId: table.id,
+      tableName: table.name,
+      customer: !isEmpty(draftOrder.customer) ? draftOrder.customer : null,
+      paymentType: null,
+      sourceType: ShippingType.ON_SITE,
+      note: draftOrder.note ?? "",
+      discountAmount: draftOrder.discountAmount ?? 0,
+      discountPercentage: draftOrder.discountPercentage ?? 0,
+      discountVoucher: draftOrder.discountVoucher ?? 0,
+      serviceFee: draftOrder.serviceFee ?? 0,
+      serviceFeePercentage: draftOrder.serviceFeePercentage ?? 0,
+      status: OrderStatus.PROCESS,
+      isActive: true,
+      details,
+    };
+
     try {
-      const res = await createOrder(
-        {
-          id: draftOrder.id ?? null,
-          companyId: table.companyId,
-          storeId: table.storeId,
-          tableId: table.id,
-          tableName: table.name,
-          customer: !isEmpty(draftOrder.customer) ? draftOrder.customer : null,
-          paymentType: null,
-          sourceType: ShippingType.ON_SITE,
-          note: draftOrder.note ?? "",
-          discountAmount: draftOrder.discountAmount ?? 0,
-          discountPercentage: draftOrder.discountPercentage ?? 0,
-          discountVoucher: draftOrder.discountVoucher ?? 0,
-          serviceFee: draftOrder.serviceFee ?? 0,
-          serviceFeePercentage: draftOrder.serviceFeePercentage ?? 0,
-          status: OrderStatus.PROCESS,
-          isActive: true,
-          details,
-        },
-        token,
-      );
+      const res = await createOrder(body, token);
       // TODO: (await) Notify kitchen
 
       return res.data;

@@ -133,24 +133,20 @@ const ChooseOrderCustomer = () => {
                     if (isCreatingOrder) {
                       setDraftOrder((prev) => ({
                         ...prev,
+                        customer: { id: customer.id, name: customer.name },
+                      }));
+                      navigate(-1);
+                    } else if (existingOrder) {
+                      const body = genOrderReqBody(existingOrder, {
                         customer: {
                           id: customer.id,
                           name: customer.name,
                         },
-                      }));
-                      navigate(-1);
-                    } else if (existingOrder) {
+                      });
+
                       try {
-                        await updateOrder(
-                          genOrderReqBody(existingOrder, {
-                            customer: {
-                              id: customer.id,
-                              name: customer.name,
-                            },
-                          }),
-                          token,
-                        );
-                        refetchOrder();
+                        await updateOrder(body, token);
+                        await refetchOrder();
                         navigate(-1);
                       } catch {
                         toast.error(

@@ -88,11 +88,10 @@ const OrderFooter = () => {
                   if (!order) return;
 
                   const details = buildOrderDetails(cart);
+                  const body = genOrderReqBody(order, { details });
+
                   try {
-                    await updateOrderDetails(
-                      genOrderReqBody(order, { details }),
-                      token,
-                    );
+                    await updateOrderDetails(body, token);
                     // TODO: (await) Notify kitchen
 
                     toast.success("Thông báo đơn hàng cho bar/bếp thành công.");

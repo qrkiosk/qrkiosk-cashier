@@ -51,7 +51,7 @@ const CompleteOrder = () => {
   const cart = useAtomValue(cartAtom);
   const order = useAtomValue(currentOrderAtom);
   const [isCartDirty, setIsCartDirty] = useAtom(isCartDirtyAtom);
-  const { refetch: refetchCurrentOrder } = useAtomValue(currentOrderQueryAtom);
+  const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
 
   const resetOrderDetailsAndExit = useResetOrderDetailsAndExitCallback();
 
@@ -59,11 +59,12 @@ const CompleteOrder = () => {
     if (!order) return;
 
     const details = buildOrderDetails(cart);
+    const body = genOrderReqBody(order, { details });
+
     try {
-      await updateOrderDetails(genOrderReqBody(order, { details }), token);
+      await updateOrderDetails(body, token);
       // TODO: (await) Notify kitchen
-      await refetchCurrentOrder();
-      setIsCartDirty(false);
+      await refetchOrder();
     } catch {
       toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
     }
@@ -72,6 +73,7 @@ const CompleteOrder = () => {
   const onOpen = async () => {
     if (isCartDirty) {
       await saveOrderChanges();
+      setIsCartDirty(false);
     }
     on();
   };
