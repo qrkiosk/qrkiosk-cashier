@@ -101,8 +101,15 @@ const router = createBrowserRouter(
           path: "/order-details",
           element: <OrderDetailsPage />,
           handle: {
-            back: true,
-            backBehavior: "confirm-exit-order",
+            headerless: true, // uses its own header bar
+            footerless: true,
+          },
+        },
+        {
+          path: "/order-create",
+          element: <OrderCreatePage />,
+          handle: {
+            headerless: true, // uses its own header bar
             footerless: true,
           },
         },
@@ -111,6 +118,7 @@ const router = createBrowserRouter(
           element: <ChooseOrderCustomer />,
           handle: {
             back: true,
+            backAppearance: "close",
             footerless: true,
           },
         },
@@ -120,15 +128,6 @@ const router = createBrowserRouter(
           handle: {
             back: true,
             backAppearance: "close",
-            footerless: true,
-          },
-        },
-        {
-          path: "/order-create",
-          element: <OrderCreatePage />,
-          handle: {
-            back: true,
-            backBehavior: "confirm-exit-order-create",
             footerless: true,
           },
         },

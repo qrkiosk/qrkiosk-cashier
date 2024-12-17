@@ -6,6 +6,7 @@ export interface Customer extends CreateUpdateTrace {
   id: string;
   name: string;
   phoneNumber?: string;
+  isDefault: boolean;
   totalPages: number;
   page: number;
   pageSize: number;
