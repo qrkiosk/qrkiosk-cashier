@@ -1,5 +1,4 @@
-import syncLocalTablesEffect from "./syncLocalTablesEffect";
-import orderWsConnectionEffect from "./orderWsConnectionEffect";
 import checkOpenShiftEffect from "./checkOpenShiftEffect";
+import syncLocalTablesEffect from "./syncLocalTablesEffect";
 
-export { syncLocalTablesEffect, orderWsConnectionEffect, checkOpenShiftEffect };
+export { checkOpenShiftEffect, syncLocalTablesEffect };
