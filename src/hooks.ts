@@ -250,7 +250,7 @@ export const useResetOrderDetailsAndExitCallback = () => {
   const navigate = useNavigate();
 
   return useCallback(() => {
-    refetchTables();
+    setTimeout(refetchTables, 1000);
     setCurrentOrderId(null);
     resetCart();
     setCurrentTable(null);
@@ -266,7 +266,7 @@ export const useResetDraftOrderAndExitCallback = () => {
   const navigate = useNavigate();
 
   return useCallback(() => {
-    refetchTables();
+    setTimeout(refetchTables, 1000);
     setDraftOrder({});
     resetCart();
     setCurrentTable(null);
