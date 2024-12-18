@@ -57,9 +57,9 @@ ProductsListing.Grid = forwardRef(({ category, scrollMargin }, ref) => {
         {category.name}
       </Heading>
       <div
-        className={classNames("grid gap-4", {
-          "grid-cols-2": device === "mobile",
-          "grid-cols-3": device === "tablet",
+        className={classNames("grid", {
+          "grid-cols-2 gap-4": device === "mobile",
+          "grid-cols-3 gap-6": device === "tablet",
         })}
       >
         {category.products.map((product) => (

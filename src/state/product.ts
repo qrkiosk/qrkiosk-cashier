@@ -40,12 +40,15 @@ export const productsQueryAtom = atomWithQuery<
   },
 }));
 
-export const categoryTuplesAtom = atom((get) => {
-  const categories = get(productsQueryAtom).data.map((cat) => ({
+export const categoryEntriesAtom = atom((get) => {
+  return get(productsQueryAtom).data.map((cat) => ({
     value: cat.id,
     text: cat.name,
   }));
+});
 
+export const categoryTuplesAtom = atom((get) => {
+  const categories = get(categoryEntriesAtom);
   return toTuples(categories);
 });
 
