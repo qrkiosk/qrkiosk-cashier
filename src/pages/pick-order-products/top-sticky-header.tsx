@@ -34,17 +34,21 @@ const TopStickyHeader = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
-          <Button
-            variant="text"
-            className="absolute right-7 top-1/2 -translate-y-1/2 !p-2 text-subtitle"
-            onClick={() => setInput("")}
-          >
-            <FaXmark />
-          </Button>
-          <FaMagnifyingGlass
-            fontSize={14}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-inactive"
-          />
+
+          {isEmpty(input) ? (
+            <FaMagnifyingGlass
+              fontSize={14}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-inactive"
+            />
+          ) : (
+            <Button
+              variant="text"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-subtitle"
+              onClick={() => setInput("")}
+            >
+              <FaXmark />
+            </Button>
+          )}
         </div>
       </div>
 
