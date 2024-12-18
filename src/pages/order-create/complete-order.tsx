@@ -57,10 +57,7 @@ const CompleteOrder = () => {
   const resetDraftOrderAndExit = useResetDraftOrderAndExitCallback();
 
   const saveNewOrder = async () => {
-    if (!table || isEmpty(draftOrder.customer)) {
-      toast.error("Bạn chưa chọn khách hàng.");
-      return null;
-    }
+    if (!table) return null;
 
     const details = buildOrderDetails(cart);
     const body = {

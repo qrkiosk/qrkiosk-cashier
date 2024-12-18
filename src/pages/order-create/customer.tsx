@@ -1,6 +1,8 @@
 import { draftOrderAtom } from "@/state";
+import { defaultCustomerAtom } from "@/state/customer";
 import { BreadcrumbEntry } from "@/types/common";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
+import { useEffect } from "react";
 import { FaAngleRight } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -8,8 +10,22 @@ const Customer = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const breadcrumb = location.state?.title as BreadcrumbEntry[];
-  const order = useAtomValue(draftOrderAtom);
-  const customerName = order?.customer?.name;
+  const defaultCustomer = useAtomValue(defaultCustomerAtom);
+  const [draftOrder, setDraftOrder] = useAtom(draftOrderAtom);
+  const customerName = draftOrder?.customer?.name;
+
+  // Set default customer for new order
+  useEffect(() => {
+    if (!defaultCustomer) return;
+
+    setDraftOrder((prev) => ({
+      ...prev,
+      customer: {
+        id: defaultCustomer.id,
+        name: defaultCustomer.name,
+      },
+    }));
+  }, [defaultCustomer]);
 
   return (
     <div

@@ -42,10 +42,7 @@ const OrderFooter = () => {
             variant="secondary"
             className="!px-4"
             onClick={async () => {
-              if (!table || isEmpty(order.customer)) {
-                toast.error("Bạn chưa chọn khách hàng.");
-                return;
-              }
+              if (!table) return;
 
               const details = buildOrderDetails(cart);
               const body = {

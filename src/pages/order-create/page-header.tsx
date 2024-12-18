@@ -10,7 +10,6 @@ import { ShippingType } from "@/types/shipping";
 import { buildOrderDetails } from "@/utils/order";
 import { useDisclosure } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";
-import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import { Modal } from "zmp-ui";
@@ -23,10 +22,7 @@ const useCreateOrderCallback = () => {
   const table = useAtomValue(currentTableAtom);
 
   return async () => {
-    if (!table || isEmpty(order.customer)) {
-      toast.error("Bạn chưa chọn khách hàng.");
-      return;
-    }
+    if (!table) return;
 
     const details = buildOrderDetails(cart);
     const body = {
@@ -35,7 +31,7 @@ const useCreateOrderCallback = () => {
       storeId: table.storeId,
       tableId: table.id,
       tableName: table.name,
-      customer: !isEmpty(order.customer) ? order.customer : null,
+      customer: order.customer,
       paymentType: null,
       sourceType: ShippingType.ON_SITE,
       note: order.note ?? "",
