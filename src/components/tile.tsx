@@ -1,4 +1,5 @@
 import Button from "@/components/button";
+import { useDeviceMode } from "@/hooks";
 import { currentOrderIdAtom, currentTableAtom } from "@/state";
 import { BreadcrumbEntry } from "@/types/common";
 import { Table } from "@/types/company";
@@ -72,6 +73,7 @@ Tile.Delivery = ({ table }) => {
 
 Tile.OnSite = ({ table }) => {
   const navigate = useNavigate();
+  const device = useDeviceMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const setCurrentTable = useSetAtom(currentTableAtom);
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
@@ -84,7 +86,7 @@ Tile.OnSite = ({ table }) => {
     ];
     setCurrentTable(table);
     setCurrentOrderId(null);
-    navigate("/order-create", {
+    navigate(device === "tablet" ? "/order-create-pos" : "/order-create", {
       state: { title },
     });
   };
@@ -96,7 +98,7 @@ Tile.OnSite = ({ table }) => {
     ];
     setCurrentTable(table);
     setCurrentOrderId(orderId);
-    navigate("/order-details", {
+    navigate(device === "tablet" ? "/order-details-pos" : "/order-details", {
       state: { title },
     });
   };

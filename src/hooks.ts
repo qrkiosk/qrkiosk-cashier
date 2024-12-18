@@ -33,6 +33,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import { UIMatch, useMatches, useNavigate } from "react-router-dom";
+import { useMediaQuery } from "usehooks-ts";
 import { openChat, purchase } from "zmp-sdk";
 
 export function useRealHeight(
@@ -271,4 +272,9 @@ export const useResetDraftOrderAndExitCallback = () => {
     setCurrentTable(null);
     navigate(-1);
   }, []);
+};
+
+export const useDeviceMode = () => {
+  const matches = useMediaQuery("(min-width: 768px)");
+  return matches ? "tablet" : "mobile";
 };

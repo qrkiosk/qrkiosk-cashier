@@ -13,6 +13,7 @@ import { getBasePath } from "@/utils/zma";
 import { createBrowserRouter } from "react-router-dom";
 import ChooseOrderCustomer from "./pages/choose-order-customer";
 import OrderCreatePage from "./pages/order-create";
+import OrderDetailsPosPage from "./pages/order-details-pos";
 import PickOrderProducts from "./pages/pick-order-products";
 
 const router = createBrowserRouter(
@@ -100,6 +101,14 @@ const router = createBrowserRouter(
         {
           path: "/order-details",
           element: <OrderDetailsPage />,
+          handle: {
+            headerless: true, // uses its own header bar
+            footerless: true,
+          },
+        },
+        {
+          path: "/order-details-pos",
+          element: <OrderDetailsPosPage />,
           handle: {
             headerless: true, // uses its own header bar
             footerless: true,

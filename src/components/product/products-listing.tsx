@@ -1,5 +1,7 @@
+import { useDeviceMode } from "@/hooks";
 import { CategoryWithProducts } from "@/types/product";
 import { Box, Heading, Divider as LineDivider } from "@chakra-ui/react";
+import classNames from "classnames";
 import useEmblaCarousel from "embla-carousel-react";
 import React, { forwardRef } from "react";
 import ProductItem from "./product-item";
@@ -46,13 +48,20 @@ ProductsListing.Banner = forwardRef(({ category, scrollMargin }, ref) => {
 });
 
 ProductsListing.Grid = forwardRef(({ category, scrollMargin }, ref) => {
+  const device = useDeviceMode();
+
   return (
     <div className="bg-white px-6 py-5">
       <Box ref={ref} id={category.id} scrollMarginTop={scrollMargin} />
       <Heading as="p" size="md" fontWeight="semibold" mt={1} mb={4}>
         {category.name}
       </Heading>
-      <div className="grid grid-cols-2 gap-4">
+      <div
+        className={classNames("grid gap-4", {
+          "grid-cols-2": device === "mobile",
+          "grid-cols-3": device === "tablet",
+        })}
+      >
         {category.products.map((product) => (
           <ProductItem.Grid key={product.id} product={product} />
         ))}
