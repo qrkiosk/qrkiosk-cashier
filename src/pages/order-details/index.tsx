@@ -1,5 +1,11 @@
 import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
+import Customer from "@/components/order-details/customer";
+import OrderFooter from "@/components/order-details/order-footer";
+import OrderNote from "@/components/order-details/order-note";
+import PageHeader from "@/components/order-details/page-header";
+import PriceReduction from "@/components/order-details/price-reduction";
+import ServiceFee from "@/components/order-details/service-fee";
 import Divider from "@/components/section-divider";
 import { currentOrderQueryAtom, isOrderWaitingAtom } from "@/state";
 import classNames from "classnames";
@@ -7,13 +13,7 @@ import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
 import { Spinner } from "zmp-ui";
-import Customer from "./customer";
-import OrderFooter from "./order-footer";
-import OrderNote from "./order-note";
-import PageHeader from "./page-header";
-import PriceReduction from "./price-reduction";
 import Products from "./products";
-import ServiceFee from "./service-fee";
 
 const OrderDetailsPage = () => {
   const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
