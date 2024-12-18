@@ -103,7 +103,6 @@ export function useRouteHandle() {
       title?: string | Function;
       logo?: boolean;
       back?: boolean;
-      backBehavior?: "confirm-exit-order" | "confirm-exit-order-create";
       backAppearance?: "back" | "close";
       user?: boolean;
       headerless?: boolean;
