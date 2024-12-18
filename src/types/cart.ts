@@ -1,3 +1,4 @@
+import { OrderProductVariant } from "./order";
 import { PaymentType } from "./payment";
 import { BaseProductVariant } from "./product";
 import { ShippingType } from "./shipping";
@@ -30,6 +31,7 @@ export interface CartOrderItem {
   serviceTaskId: string | null;
   originalOrderDetailId: string | null;
   options: CartItemOption[];
+  _refODVariants?: OrderProductVariant[];
 }
 
 export interface CartProductVariant extends BaseProductVariant {
@@ -39,15 +41,16 @@ export interface CartProductVariant extends BaseProductVariant {
   serviceTaskId: string | null;
   originalOrderDetailId: string | null;
   note?: string;
+  _refODVariants?: OrderProductVariant[];
 }
 
 export type CartItem = CartOrderItem | CartProductVariant;
 
 export interface Cart {
-  items: Array<CartItem>;
+  items: CartItem[];
   metadata: {
-    suggestedFirstItems: boolean;
     isDirty: boolean;
+    suggestedFirstItems: boolean;
   };
   payment?: { paymentType: PaymentType | null };
   shipping?: { shippingType: ShippingType };

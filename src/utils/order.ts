@@ -1,4 +1,4 @@
-import { Cart, CartItemOption } from "@/types/cart";
+import { Cart, CartItem, CartItemOption } from "@/types/cart";
 import {
   Order,
   OrderDetailForOrderReqBody,
@@ -51,42 +51,73 @@ export const genOrderReqBody = (
   ...updatedFields,
 });
 
+export const buildODVariants = (cartItem: CartItem) => {
+  const before = cartItem._refODVariants ?? [];
+
+  const after = (cartItem.options as CartItemOption[]).reduce((acc, opt) => {
+    if (!isEmpty(opt.selectedDetail)) {
+      const variantOfOption = {
+        productVariantId: opt.selectedDetail.productVariantId,
+        productOptionId: opt.id,
+        poName: opt.name,
+        productOptionDetailId: opt.selectedDetail.id,
+        podName: opt.selectedDetail.name,
+        podPrice: opt.selectedDetail.price,
+      };
+
+      return [...acc, variantOfOption];
+    }
+
+    if (!isEmpty(opt.selectedDetails)) {
+      const variantsOfOption = opt.selectedDetails.map((dtl) => ({
+        productVariantId: dtl.productVariantId,
+        productOptionId: opt.id,
+        poName: opt.name,
+        productOptionDetailId: dtl.id,
+        podName: dtl.name,
+        podPrice: dtl.price,
+      }));
+
+      return [...acc, ...variantsOfOption];
+    }
+
+    return acc;
+  }, []);
+
+  // Step 1: Create a Set of productVariantIds from `after` for lookup
+  const productVariantIdsAfter = new Set(
+    after.map((item) => item.productVariantId),
+  );
+
+  // Step 2: Process array `before`, adding isActive based on the lookup
+  const resultFromBefore = before.map((item) => ({
+    ...item,
+    isActive: productVariantIdsAfter.has(item.productVariantId),
+  }));
+
+  // Step 3: Create a Set of productVariantIds from `before` for lookup
+  const productVariantIdsBefore = new Set(
+    before.map((item) => item.productVariantId),
+  );
+
+  // Step 4: Find items in B that are NOT in A
+  const resultFromAfter = after.reduce((acc, item) => {
+    return !productVariantIdsBefore.has(item.productVariantId)
+      ? [...acc, { ...item, id: null, isActive: true }]
+      : acc;
+  }, []);
+
+  // Step 4: Combine the results
+  return [...resultFromBefore, ...resultFromAfter];
+};
+
 export const buildOrderDetails = (cart: Cart): OrderDetailForOrderReqBody[] => {
   return cart.items.map((item) => {
     const { priceSale: productPrice, quantity } = item; // base price (before discount)
     const discountedPrice = productPrice - 0; // final price (discounted, without including extra options) - equals productPrice for now
     const amount = calcItemTotalAmount({ ...item, priceSale: discountedPrice });
     const totalAmount = amount;
-
-    const variants = (item.options as CartItemOption[]).reduce((acc, opt) => {
-      if (!isEmpty(opt.selectedDetail)) {
-        const variantOfOption = {
-          productVariantId: opt.selectedDetail.productVariantId,
-          productOptionId: opt.id,
-          poName: opt.name,
-          productOptionDetailId: opt.selectedDetail.id,
-          podName: opt.selectedDetail.name,
-          podPrice: opt.selectedDetail.price,
-        };
-
-        return [...acc, variantOfOption];
-      }
-
-      if (!isEmpty(opt.selectedDetails)) {
-        const variantsOfOption = opt.selectedDetails.map((dtl) => ({
-          productVariantId: dtl.productVariantId,
-          productOptionId: opt.id,
-          poName: opt.name,
-          productOptionDetailId: dtl.id,
-          podName: dtl.name,
-          podPrice: dtl.price,
-        }));
-
-        return [...acc, ...variantsOfOption];
-      }
-
-      return acc;
-    }, []);
+    const variants = buildODVariants(item);
 
     return {
       id: item.originalOrderDetailId,

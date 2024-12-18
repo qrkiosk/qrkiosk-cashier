@@ -97,6 +97,7 @@ export const convertOrderToCart = (
     serviceTaskId: od.serviceTaskId ?? null,
     originalOrderDetailId: od.id,
     options: convertOrderVariantsToOptions(od.variants),
+    _refODVariants: od.variants,
   })),
   payment: { paymentType: order.paymentType ?? null },
 });

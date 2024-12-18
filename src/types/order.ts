@@ -89,6 +89,8 @@ export interface OrderDetailForOrderReqBody {
   isDone: boolean;
   serviceTaskId: string | null;
   variants: Array<{
+    id: string | null;
+    isActive: boolean;
     productVariantId: string;
     productOptionId: string;
     poName: string;
