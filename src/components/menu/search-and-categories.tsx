@@ -2,16 +2,18 @@ import Button from "@/components/button";
 import HorizontalDivider from "@/components/horizontal-divider";
 import { categoryEntriesAtom, searchProductQueryAtom } from "@/state/product";
 import classNames from "classnames";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
 import { useEffect, useMemo, useState } from "react";
 import { FaMagnifyingGlass, FaXmark } from "react-icons/fa6";
 
+/* For POS screen only */
 const SearchAndCategories = () => {
-  const categoryEntries = useAtomValue(categoryEntriesAtom);
-  const [searchQuery, setSearchQuery] = useAtom(searchProductQueryAtom);
   const [input, setInput] = useState("");
+  const setSearchQuery = useSetAtom(searchProductQueryAtom);
+  const categoryEntries = useAtomValue(categoryEntriesAtom);
+  const hasInput = !isEmpty(input);
 
   const setSearchQueryDebounced = useMemo(
     () => debounce(setSearchQuery, 500),
@@ -33,12 +35,7 @@ const SearchAndCategories = () => {
             onChange={(e) => setInput(e.target.value)}
           />
 
-          {isEmpty(input) ? (
-            <FaMagnifyingGlass
-              fontSize={14}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-inactive"
-            />
-          ) : (
+          {hasInput ? (
             <Button
               variant="text"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-subtitle"
@@ -46,6 +43,11 @@ const SearchAndCategories = () => {
             >
               <FaXmark />
             </Button>
+          ) : (
+            <FaMagnifyingGlass
+              fontSize={14}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-inactive"
+            />
           )}
         </div>
       </div>
@@ -53,9 +55,10 @@ const SearchAndCategories = () => {
       <HorizontalDivider />
 
       <div
-        className={classNames("flex-1 space-y-2 overflow-y-auto p-2", {
-          hidden: !isEmpty(searchQuery),
-        })}
+        className={classNames(
+          "flex-1 space-y-2 overflow-y-auto p-2 transition-[opacity] ease-linear",
+          { "pointer-events-none opacity-0": hasInput },
+        )}
       >
         {categoryEntries.map((cat) => (
           <div

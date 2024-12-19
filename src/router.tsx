@@ -3,18 +3,19 @@ import CartPage from "@/pages/cart";
 import CategoryListPage from "@/pages/catalog/category-list";
 import ProductDetailPage from "@/pages/catalog/product-detail";
 import ProductListPage from "@/pages/catalog/product-list";
+import ChooseOrderCustomer from "@/pages/choose-order-customer";
 import HomePage from "@/pages/home";
 import LoginPage from "@/pages/login";
 import MenuTable from "@/pages/menu-table";
+import OrderCreatePage from "@/pages/order-create";
+import OrderCreatePosPage from "@/pages/order-create-pos";
 import OrderDetailsPage from "@/pages/order-details";
+import OrderDetailsPosPage from "@/pages/order-details-pos";
+import PickOrderProducts from "@/pages/pick-order-products";
 import ProfilePage from "@/pages/profile";
 import SearchPage from "@/pages/search";
 import { getBasePath } from "@/utils/zma";
 import { createBrowserRouter } from "react-router-dom";
-import ChooseOrderCustomer from "./pages/choose-order-customer";
-import OrderCreatePage from "./pages/order-create";
-import OrderDetailsPosPage from "./pages/order-details-pos";
-import PickOrderProducts from "./pages/pick-order-products";
 
 const router = createBrowserRouter(
   [
@@ -117,6 +118,14 @@ const router = createBrowserRouter(
         {
           path: "/order-create",
           element: <OrderCreatePage />,
+          handle: {
+            headerless: true, // uses its own header bar
+            footerless: true,
+          },
+        },
+        {
+          path: "/order-create-pos",
+          element: <OrderCreatePosPage />,
           handle: {
             headerless: true, // uses its own header bar
             footerless: true,

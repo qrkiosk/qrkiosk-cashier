@@ -1,6 +1,6 @@
+import ProductsListing from "@/components/product/products-listing";
 import Divider from "@/components/section-divider";
 import { CategoryTemplate, CategoryWithProducts } from "@/types/product";
-import ProductsListing from "./products-listing";
 
 const CategoryItem = ({
   category,
