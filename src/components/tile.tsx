@@ -9,7 +9,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import { useSetAtom } from "jotai";
 import isEmpty from "lodash/isEmpty";
-import React from "react";
+import React, { useMemo } from "react";
 import { FaBagShopping, FaFileLines, FaTruckFast } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "zmp-ui";
@@ -78,6 +78,13 @@ Tile.OnSite = ({ table }) => {
   const setCurrentTable = useSetAtom(currentTableAtom);
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
   const hasOrders = !isEmpty(table.orders);
+  const [tableTotalQuantity, tableTotalAmount] = useMemo(
+    () => [
+      table.orders.reduce((acc, order) => acc + order.totalQuantity, 0),
+      table.orders.reduce((acc, order) => acc + order.totalAmount, 0),
+    ],
+    [table.orders],
+  );
 
   const navigateToOrderCreate = () => {
     const title: BreadcrumbEntry[] = [
@@ -123,8 +130,8 @@ Tile.OnSite = ({ table }) => {
             {hasOrders && (
               <>
                 <span className="text-xs">
-                  {table.orders[0].totalQuantity} món •{" "}
-                  {withThousandSeparators(table.orders[0].totalAmount)}
+                  {tableTotalQuantity} món •{" "}
+                  {withThousandSeparators(tableTotalAmount)}
                 </span>
                 <div className="flex items-center space-x-0.5 text-xs">
                   <FaFileLines />
