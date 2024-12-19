@@ -5,7 +5,7 @@ import {
   OrderReqBody,
   OrderStatus,
 } from "@/types/order";
-import isEmpty from "lodash/isEmpty";
+import compact from "lodash/compact";
 import { calcItemTotalAmount } from "./cart";
 
 export const toDisplayOrderStatus = (status: OrderStatus) => {
@@ -55,33 +55,21 @@ export const buildODVariants = (cartItem: CartItem) => {
   const before = cartItem._refODVariants ?? [];
 
   const after = (cartItem.options as CartItemOption[]).reduce((acc, opt) => {
-    if (!isEmpty(opt.selectedDetail)) {
-      const variantOfOption = {
-        productVariantId: opt.selectedDetail.productVariantId,
-        productOptionId: opt.id,
-        poName: opt.name,
-        productOptionDetailId: opt.selectedDetail.id,
-        podName: opt.selectedDetail.name,
-        podPrice: opt.selectedDetail.price,
-      };
+    const allSelectedDetails = compact([
+      opt.selectedDetail,
+      ...opt.selectedDetails,
+    ]);
 
-      return [...acc, variantOfOption];
-    }
+    const variantsOfOption = allSelectedDetails.map((selectedDetail) => ({
+      productVariantId: selectedDetail.productVariantId,
+      productOptionId: opt.id,
+      poName: opt.name,
+      productOptionDetailId: selectedDetail.id,
+      podName: selectedDetail.name,
+      podPrice: selectedDetail.price,
+    }));
 
-    if (!isEmpty(opt.selectedDetails)) {
-      const variantsOfOption = opt.selectedDetails.map((dtl) => ({
-        productVariantId: dtl.productVariantId,
-        productOptionId: opt.id,
-        poName: opt.name,
-        productOptionDetailId: dtl.id,
-        podName: dtl.name,
-        podPrice: dtl.price,
-      }));
-
-      return [...acc, ...variantsOfOption];
-    }
-
-    return acc;
+    return [...acc, ...variantsOfOption];
   }, []);
 
   // Step 1: Create a Set of productVariantIds from `after` for lookup

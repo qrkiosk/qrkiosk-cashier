@@ -62,7 +62,7 @@ export default function CartItem(props: CartItemProps) {
 
   return (
     <div className="relative">
-      <div className="absolute bottom-0 right-0 top-0 w-20 border-b-[0.5px] border-t-[0.5px] border-black/10">
+      <div className="absolute bottom-0 right-0 top-0 w-20 border-y-[1px] border-black/10">
         <div
           className="flex h-full w-full cursor-pointer flex-col items-center justify-center space-y-1 bg-danger text-white/95"
           onClick={() => {}}

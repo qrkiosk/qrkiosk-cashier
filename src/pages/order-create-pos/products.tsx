@@ -1,5 +1,6 @@
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
+import ProductVariantPicker from "@/components/product/product-variant-picker";
 import { cartAtom } from "@/state/cart";
 import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
@@ -30,6 +31,8 @@ const Products = () => {
           </div>
         )}
       </div>
+
+      <ProductVariantPicker />
       <ProductVariantEditor />
     </>
   );

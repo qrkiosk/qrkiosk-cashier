@@ -166,28 +166,46 @@ export const enrichProductVariantAtom = atom(
           ({ id }) => id === opt.id,
         );
 
-        const selectedDetail =
-          opt.details.find(
-            ({ id }) => id === existingOpt?.selectedDetail?.id,
-          ) ?? null;
+        if (!existingOpt) {
+          return {
+            ...opt,
+            selectedDetail: null,
+            selectedDetails: [],
+          };
+        }
 
-        const selectedDetails = compact(
-          (existingOpt?.selectedDetails ?? []).map((esd) =>
-            opt.details.find((dtl) => dtl.id === esd.id),
-          ),
+        // Gotta exhaustively look up in both selectedDetail and selectedDetails
+        const allSelectedDetailIds = new Set(
+          compact([
+            existingOpt.selectedDetail,
+            ...existingOpt.selectedDetails,
+          ]).map(({ id }) => id),
         );
 
-        return opt.isMandatory
-          ? {
-              ...opt,
-              selectedDetail,
-              selectedDetails: [],
-            }
-          : {
-              ...opt,
-              selectedDetail: null,
-              selectedDetails,
-            };
+        if (opt.isMandatory) {
+          const selectedDetail =
+            opt.details.find((detail) => allSelectedDetailIds.has(detail.id)) ??
+            null;
+
+          return {
+            ...opt,
+            selectedDetail,
+            selectedDetails: [],
+          };
+        }
+
+        const selectedDetails = opt.details.reduce((acc, detail) => {
+          if (allSelectedDetailIds.has(detail.id)) {
+            return [...acc, detail];
+          }
+          return acc;
+        }, []);
+
+        return {
+          ...opt,
+          selectedDetail: null,
+          selectedDetails,
+        };
       }),
     });
   },

@@ -20,20 +20,29 @@ import { OrderStatus } from "@/types/order";
 import { withThousandSeparators } from "@/utils/number";
 import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
 import { useAtomValue } from "jotai";
+import { useMemo } from "react";
 import toast from "react-hot-toast";
 import CompleteOrder from "./complete-order";
 
 const OrderFooter = () => {
   const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
   const updateOrderStatus = useAuthorizedApi(updateOrderStatusApi);
-  const totalQty = useAtomValue(cartTotalQtyAtom);
-  const cartTotalAmount = useAtomValue(cartTotalAmountAtom);
-  const order = useAtomValue(currentOrderAtom);
   const token = useAtomValue(tokenAtom);
+  const totalQty = useAtomValue(cartTotalQtyAtom);
+  const order = useAtomValue(currentOrderAtom);
+  const orderTotalAmount = order?.totalAmount;
+  const cartTotalAmount = useAtomValue(cartTotalAmountAtom);
   const isCartDirty = useAtomValue(isCartDirtyAtom);
   const cart = useAtomValue(cartAtom);
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
   const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
+
+  const totalAmount = useMemo(() => {
+    if (!orderTotalAmount || isCartDirty) {
+      return cartTotalAmount;
+    }
+    return orderTotalAmount;
+  }, [orderTotalAmount, cartTotalAmount, isCartDirty]);
 
   const resetOrderDetailsAndExit = useResetOrderDetailsAndExitCallback();
 
@@ -43,7 +52,7 @@ const OrderFooter = () => {
         <div className="flex flex-col space-y-1">
           <span className="text-2xs text-subtitle">Tổng cộng ({totalQty})</span>
           <span className="text-sm font-semibold text-primary">
-            {withThousandSeparators(cartTotalAmount)}
+            {withThousandSeparators(totalAmount)}
           </span>
         </div>
         <div className="flex max-w-[260px] items-center space-x-2">

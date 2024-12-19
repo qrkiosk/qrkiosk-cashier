@@ -3,7 +3,6 @@ import { OptionWithSelectedDetail } from "@/types/product";
 import {
   Checkbox,
   CheckboxGroup,
-  Heading,
   Divider as LineDivider,
   Stack,
 } from "@chakra-ui/react";
@@ -30,9 +29,7 @@ const NonMandatoryOption = ({
 
   return (
     <div>
-      <Heading size="sm" mb={3}>
-        {option.name}
-      </Heading>
+      <p className="mb-4 text-base font-bold">{option.name}</p>
       <CheckboxGroup value={selectedDetails} onChange={setSelectedDetails}>
         <Stack rowGap={3}>
           {option.details.map((detail, idx) => {

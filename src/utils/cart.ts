@@ -46,11 +46,10 @@ export const convertOrderVariantsToOptions = (
   variants: OrderDetail["variants"],
 ) => {
   const opts = uniqBy(variants, "productOptionId").map<CartItemOption>(
-    (variant) => {
-      const { productOptionId: poId, poName } = variant;
+    (opt) => {
       const selectedDetails = variants.reduce<CartItemOptionDetail[]>(
         (acc, v) => {
-          if (v.productOptionId === poId) {
+          if (v.productOptionId === opt.productOptionId) {
             return [
               ...acc,
               {
@@ -66,14 +65,13 @@ export const convertOrderVariantsToOptions = (
         },
         [],
       );
-      const isMultiChoiceOpt = selectedDetails.length > 1;
 
       return {
-        id: poId,
-        name: poName,
+        id: opt.productOptionId,
+        name: opt.poName,
         details: [],
-        selectedDetail: isMultiChoiceOpt ? null : selectedDetails[0],
-        selectedDetails: isMultiChoiceOpt ? selectedDetails : [],
+        selectedDetail: null, // can't determine if this opt is singlechoice or multichoice at this stage
+        selectedDetails, // so every selected detail will be inside this array
       };
     },
   );

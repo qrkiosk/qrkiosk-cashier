@@ -24,7 +24,6 @@ const VariantNote = () => {
       transition="height none" // important for autosize to work properly
       placeholder="Thêm lưu ý của bạn về món này."
       borderRadius="md"
-      mb={5}
       value={note}
       onChange={(e) => setNote(e.target.value)}
     />

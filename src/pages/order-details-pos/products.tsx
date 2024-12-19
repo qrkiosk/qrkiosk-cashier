@@ -1,5 +1,6 @@
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
+import ProductVariantPicker from "@/components/product/product-variant-picker";
 import { currentOrderAtom } from "@/state";
 import { cartAtom, isCartDirtyAtom } from "@/state/cart";
 import { convertOrderToCart } from "@/utils/cart";
@@ -44,6 +45,8 @@ const Products = () => {
           </div>
         )}
       </div>
+
+      <ProductVariantPicker />
       <ProductVariantEditor />
     </>
   );

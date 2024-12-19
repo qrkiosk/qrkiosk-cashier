@@ -1,7 +1,6 @@
 import { setVariantSelectedDetailAtom } from "@/state/product";
 import { OptionWithSelectedDetail } from "@/types/product";
 import {
-  Heading,
   Divider as LineDivider,
   Radio,
   RadioGroup,
@@ -22,9 +21,7 @@ const MandatoryOption = ({ option }: { option: OptionWithSelectedDetail }) => {
 
   return (
     <div>
-      <Heading size="sm" mb={3}>
-        {option.name}
-      </Heading>
+      <p className="mb-4 text-base font-bold">{option.name}</p>
       <RadioGroup
         value={option.selectedDetail?.id}
         onChange={setSelectedDetail}
