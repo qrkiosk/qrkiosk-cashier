@@ -71,7 +71,7 @@ const OrderDetailsPage = () => {
           <>
             <FlexDiv
               col
-              className={classNames("relative !p-0", {
+              className={classNames("!p-0", {
                 "pointer-events-none opacity-75": isOrderWaiting,
               })}
             >

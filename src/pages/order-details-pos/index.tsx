@@ -14,16 +14,21 @@ const OrderDetailsPosPage = () => {
     <>
       <PageHeader />
 
-      <div
-        className={classNames("grid flex-1 grid-cols-10 overflow-y-auto", {
-          "pointer-events-none opacity-75": isOrderWaiting,
-        })}
-      >
-        <div className="col-span-2 flex flex-col overflow-y-auto border-r-[1px] border-black/10 bg-white">
+      <div className="grid flex-1 grid-cols-10 overflow-y-auto">
+        <div
+          className={classNames(
+            "col-span-2 flex flex-col overflow-y-auto border-r-[1px] border-black/10 bg-white",
+            { "pointer-events-none opacity-75": isOrderWaiting },
+          )}
+        >
           <SearchAndCategories />
         </div>
 
-        <div className="col-span-5 overflow-y-auto">
+        <div
+          className={classNames("col-span-5 overflow-y-auto", {
+            "pointer-events-none opacity-75": isOrderWaiting,
+          })}
+        >
           <MainMenu />
           <SearchResult />
         </div>

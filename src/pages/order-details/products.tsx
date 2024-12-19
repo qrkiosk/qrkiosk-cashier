@@ -1,7 +1,7 @@
 import FloatingButton from "@/components/floating-button";
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
-import { currentOrderAtom, isOrderWaitingAtom } from "@/state";
+import { currentOrderAtom } from "@/state";
 import { cartAtom, isCartDirtyAtom } from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
 import { convertOrderToCart } from "@/utils/cart";
@@ -17,7 +17,6 @@ const Products = () => {
   const order = useAtomValue(currentOrderAtom);
   const [cart, setCart] = useAtom(cartAtom);
   const isCartDirty = useAtomValue(isCartDirtyAtom);
-  const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
 
   useEffect(() => {
     if (!isCartDirty && order) {
@@ -54,7 +53,6 @@ const Products = () => {
 
       <FloatingButton
         className="bottom-[115px] right-4 bg-gray-700 hover:bg-gray-800"
-        disabled={isOrderWaiting}
         onClick={() => {
           navigate("/pick-order-products", {
             state: {

@@ -6,7 +6,8 @@ import OrderNote from "@/components/order-details/order-note";
 import PriceReduction from "@/components/order-details/price-reduction";
 import ServiceFee from "@/components/order-details/service-fee";
 import Divider from "@/components/section-divider";
-import { currentOrderQueryAtom } from "@/state";
+import { currentOrderQueryAtom, isOrderWaitingAtom } from "@/state";
+import classNames from "classnames";
 import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
@@ -14,6 +15,7 @@ import { Spinner } from "zmp-ui";
 import Products from "./products";
 
 const OrderView = () => {
+  const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
   const {
     data,
     isLoading,
@@ -59,7 +61,12 @@ const OrderView = () => {
 
   return (
     <>
-      <FlexDiv col className="!p-0">
+      <FlexDiv
+        col
+        className={classNames("!p-0", {
+          "pointer-events-none opacity-75": isOrderWaiting,
+        })}
+      >
         <Customer />
 
         <Divider />
