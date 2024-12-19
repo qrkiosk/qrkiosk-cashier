@@ -1,4 +1,7 @@
-import { productsQueryAtom, searchProductQueryAtom } from "@/state/product";
+import {
+  filteredCategoriesAtom,
+  searchProductQueryAtom,
+} from "@/state/product";
 import { CategoryTemplate } from "@/types/product";
 import classNames from "classnames";
 import { useAtomValue } from "jotai";
@@ -6,8 +9,8 @@ import isEmpty from "lodash/isEmpty";
 import CategoryItem from "./category-item";
 
 const MainMenu = () => {
-  const { data: categoriesWProducts } = useAtomValue(productsQueryAtom);
   const searchQuery = useAtomValue(searchProductQueryAtom);
+  const filteredCategories = useAtomValue(filteredCategoriesAtom);
 
   return (
     <div
@@ -15,7 +18,7 @@ const MainMenu = () => {
         hidden: !isEmpty(searchQuery),
       })}
     >
-      {categoriesWProducts.map((cat) => (
+      {filteredCategories.map((cat) => (
         <CategoryItem
           key={cat.id}
           category={cat}

@@ -15,6 +15,7 @@ import {
   productVariantAtom,
   productVariantEditorAtom,
   productVariantPickerAtom,
+  resetFocusedCategoryIdAtom,
   selectedProductIdAtom,
 } from "@/state/product";
 import { CartItem } from "@/types/cart";
@@ -246,6 +247,7 @@ export const useResetOrderDetailsAndExitCallback = () => {
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
   const setCurrentOrderId = useSetAtom(currentOrderIdAtom);
   const resetCart = useSetAtom(resetCartAtom);
+  const resetFocusedCategoryId = useSetAtom(resetFocusedCategoryIdAtom);
   const setCurrentTable = useSetAtom(currentTableAtom);
   const navigate = useNavigate();
 
@@ -253,6 +255,7 @@ export const useResetOrderDetailsAndExitCallback = () => {
     setTimeout(refetchTables, 1250);
     setCurrentOrderId(null);
     resetCart();
+    resetFocusedCategoryId();
     setCurrentTable(null);
     navigate(-1);
   }, []);
@@ -262,6 +265,7 @@ export const useResetDraftOrderAndExitCallback = () => {
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
   const setDraftOrder = useSetAtom(draftOrderAtom);
   const resetCart = useSetAtom(resetCartAtom);
+  const resetFocusedCategoryId = useSetAtom(resetFocusedCategoryIdAtom);
   const setCurrentTable = useSetAtom(currentTableAtom);
   const navigate = useNavigate();
 
@@ -269,6 +273,7 @@ export const useResetDraftOrderAndExitCallback = () => {
     setTimeout(refetchTables, 1250);
     setDraftOrder({});
     resetCart();
+    resetFocusedCategoryId();
     setCurrentTable(null);
     navigate(-1);
   }, []);

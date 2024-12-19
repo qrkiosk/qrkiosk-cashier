@@ -13,6 +13,8 @@ import compact from "lodash/compact";
 import isEmpty from "lodash/isEmpty";
 import { companyIdAtom, storeIdAtom } from ".";
 
+export const ALL_CATEGORIES = "ALL_CATEGORIES";
+
 export const productsQueryAtom = atomWithQuery<
   CategoryWithProducts[],
   Error,
@@ -40,11 +42,37 @@ export const productsQueryAtom = atomWithQuery<
   },
 }));
 
+export const categorizedProductsAtom = atom(
+  (get) => get(productsQueryAtom).data,
+);
+
+export const focusedCategoryIdAtom = atom(ALL_CATEGORIES);
+export const resetFocusedCategoryIdAtom = atom(null, (_, set) => {
+  set(focusedCategoryIdAtom, ALL_CATEGORIES);
+});
+
+export const filteredCategoriesAtom = atom((get) => {
+  const focusedCategoryId = get(focusedCategoryIdAtom);
+  const all = get(categorizedProductsAtom);
+
+  if (focusedCategoryId === ALL_CATEGORIES) {
+    return all;
+  }
+
+  return all.filter(({ id }) => id === focusedCategoryId);
+});
+
 export const categoryEntriesAtom = atom((get) => {
-  return get(productsQueryAtom).data.map((cat) => ({
+  const defaultEntry = {
+    value: ALL_CATEGORIES,
+    text: "Tất cả",
+  };
+  const categoryEntries = get(categorizedProductsAtom).map((cat) => ({
     value: cat.id,
     text: cat.name,
   }));
+
+  return [defaultEntry, ...categoryEntries];
 });
 
 export const categoryTuplesAtom = atom((get) => {
@@ -276,7 +304,7 @@ export const searchProductQueryAtom = atom<string>("");
 
 export const searchProductResultsAtom = atom<CategoryWithProducts[]>((get) => {
   const searchQuery = get(searchProductQueryAtom);
-  const products = get(productsQueryAtom).data;
+  const products = get(categorizedProductsAtom);
 
   if (isEmpty(searchQuery)) return products;
 

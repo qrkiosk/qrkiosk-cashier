@@ -91,7 +91,7 @@ Tile.OnSite = ({ table }) => {
     });
   };
 
-  const navigateToOrderDetails = (orderId: string | null) => {
+  const navigateToOrderDetails = (orderId: string) => {
     const title: BreadcrumbEntry[] = [
       { text: table.zoneName },
       { text: table.name },
@@ -165,10 +165,14 @@ Tile.OnSite = ({ table }) => {
           </div>
 
           <div className="flex space-x-2">
-            <Button variant="secondary" onClick={onClose} className="flex-1">
+            <Button variant="secondary" className="flex-1" onClick={onClose}>
               Đóng
             </Button>
-            <Button variant="primary" className="flex-1">
+            <Button
+              variant="primary"
+              className="flex-1"
+              onClick={navigateToOrderCreate}
+            >
               Tạo đơn mới
             </Button>
           </div>

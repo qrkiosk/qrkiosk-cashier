@@ -1,8 +1,12 @@
 import Button from "@/components/button";
 import HorizontalDivider from "@/components/horizontal-divider";
-import { categoryEntriesAtom, searchProductQueryAtom } from "@/state/product";
+import {
+  categoryEntriesAtom,
+  focusedCategoryIdAtom,
+  searchProductQueryAtom,
+} from "@/state/product";
 import classNames from "classnames";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
 import { useEffect, useMemo, useState } from "react";
@@ -11,9 +15,12 @@ import { FaMagnifyingGlass, FaXmark } from "react-icons/fa6";
 /* For POS screen only */
 const SearchAndCategories = () => {
   const [input, setInput] = useState("");
+  const hasInput = !isEmpty(input);
   const setSearchQuery = useSetAtom(searchProductQueryAtom);
   const categoryEntries = useAtomValue(categoryEntriesAtom);
-  const hasInput = !isEmpty(input);
+  const [focusedCategoryId, setFocusedCategoryId] = useAtom(
+    focusedCategoryIdAtom,
+  );
 
   const setSearchQueryDebounced = useMemo(
     () => debounce(setSearchQuery, 500),
@@ -60,19 +67,25 @@ const SearchAndCategories = () => {
           { "pointer-events-none opacity-0": hasInput },
         )}
       >
-        {categoryEntries.map((cat) => (
-          <div
-            key={cat.value}
-            className="cursor-pointer rounded-lg bg-black/5 p-2.5 text-xs font-semibold transition-[background] active:bg-black/10"
-            onClick={() => {
-              setTimeout(() => {
-                document.getElementById(cat.value)?.scrollIntoView();
-              });
-            }}
-          >
-            {cat.text}
-          </div>
-        ))}
+        {categoryEntries.map((cat) => {
+          const isActive = cat.value === focusedCategoryId;
+          return (
+            <div
+              key={cat.value}
+              className={classNames(
+                "rounded-lg p-2.5 text-xs font-semibold transition-[background]",
+                {
+                  "bg-primary text-white": isActive,
+                  "cursor-pointer bg-black/5 text-black active:bg-black/10":
+                    !isActive,
+                },
+              )}
+              onClick={() => setFocusedCategoryId(cat.value)}
+            >
+              {cat.text}
+            </div>
+          );
+        })}
       </div>
     </>
   );

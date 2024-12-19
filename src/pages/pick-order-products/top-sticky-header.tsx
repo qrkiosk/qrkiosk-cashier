@@ -1,8 +1,12 @@
 import Button from "@/components/button";
-import { categoryTuplesAtom, searchProductQueryAtom } from "@/state/product";
+import {
+  categoryTuplesAtom,
+  focusedCategoryIdAtom,
+  searchProductQueryAtom,
+} from "@/state/product";
 import classNames from "classnames";
 import useEmblaCarousel from "embla-carousel-react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
 import { useEffect, useMemo, useState } from "react";
@@ -10,10 +14,14 @@ import { FaMagnifyingGlass, FaXmark } from "react-icons/fa6";
 import "./embla.css";
 
 const TopStickyHeader = () => {
-  const [emblaRef] = useEmblaCarousel({ loop: false, dragFree: true });
-  const categoryTuples = useAtomValue(categoryTuplesAtom);
-  const [searchQuery, setSearchQuery] = useAtom(searchProductQueryAtom);
   const [input, setInput] = useState("");
+  const hasInput = !isEmpty(input);
+  const [emblaRef] = useEmblaCarousel({ loop: false, dragFree: true });
+  const setSearchQuery = useSetAtom(searchProductQueryAtom);
+  const categoryTuples = useAtomValue(categoryTuplesAtom);
+  const [focusedCategoryId, setFocusedCategoryId] = useAtom(
+    focusedCategoryIdAtom,
+  );
 
   const setSearchQueryDebounced = useMemo(
     () => debounce(setSearchQuery, 500),
@@ -35,12 +43,7 @@ const TopStickyHeader = () => {
             onChange={(e) => setInput(e.target.value)}
           />
 
-          {isEmpty(input) ? (
-            <FaMagnifyingGlass
-              fontSize={14}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-inactive"
-            />
-          ) : (
+          {hasInput ? (
             <Button
               variant="text"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-subtitle"
@@ -48,30 +51,35 @@ const TopStickyHeader = () => {
             >
               <FaXmark />
             </Button>
+          ) : (
+            <FaMagnifyingGlass
+              fontSize={14}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-inactive"
+            />
           )}
         </div>
       </div>
 
-      <div
-        ref={emblaRef}
-        className={classNames("embla", { hidden: !isEmpty(searchQuery) })}
-      >
+      <div ref={emblaRef} className={classNames("embla", { hidden: hasInput })}>
         <div className="embla__container space-x-1.5">
           {categoryTuples.map((catTuple, index) => (
             <div className="embla__slide space-y-1.5" key={catTuple[0].value}>
-              {catTuple.map((cat) => (
-                <div
-                  key={`${cat.value}--${index}`}
-                  className="embla__slide__inner"
-                  onClick={() => {
-                    setTimeout(() => {
-                      document.getElementById(cat.value)?.scrollIntoView();
-                    });
-                  }}
-                >
-                  {cat.text}
-                </div>
-              ))}
+              {catTuple.map((cat) => {
+                const isActive = cat.value === focusedCategoryId;
+                return (
+                  <div
+                    key={`${cat.value}--${index}`}
+                    className={classNames("embla__slide__inner", {
+                      "bg-primary text-white": isActive,
+                      "cursor-pointer bg-black/5 text-black active:bg-black/10":
+                        !isActive,
+                    })}
+                    onClick={() => setFocusedCategoryId(cat.value)}
+                  >
+                    {cat.text}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
