@@ -17,15 +17,15 @@ const Customer = () => {
 
   // Set default customer for new order
   useEffect(() => {
-    if (!isEmpty(draftOrder.customer) || !defaultCustomer) return;
-
-    setDraftOrder((prev) => ({
-      ...prev,
-      customer: {
-        id: defaultCustomer.id,
-        name: defaultCustomer.name,
-      },
-    }));
+    if (isEmpty(draftOrder.customer) && !isEmpty(defaultCustomer)) {
+      setDraftOrder((prev) => ({
+        ...prev,
+        customer: {
+          id: defaultCustomer.id,
+          name: defaultCustomer.name,
+        },
+      }));
+    }
   }, [defaultCustomer]);
 
   return (
