@@ -210,7 +210,17 @@ export const localTablesAtom = atom<Table[]>([]); // table list for optimistic u
 
 export const syncLocalTablesEffect = atomEffect((get, set) => {
   const tables = get(tablesQueryAtom).data;
-  set(localTablesAtom, tables);
+
+  const newTables = tables.map((table) => ({
+    ...table,
+    orders: table.orders.filter(
+      (order) =>
+        order.status !== OrderStatus.WAIT &&
+        order.paymentStatus === PaymentStatus.PAID,
+    ),
+  }));
+
+  set(localTablesAtom, newTables);
 });
 
 export const addWsOrderToLocalTablesAtom = atom(

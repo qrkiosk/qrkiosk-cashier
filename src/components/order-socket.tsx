@@ -11,7 +11,7 @@ const OrderSocket = () => {
   const { refetch: refetchTables } = useAtomValue(tablesQueryAtom);
 
   const refetchTablesDebounced = useMemo(
-    () => debounce(refetchTables, 1000),
+    () => debounce(refetchTables, 1250),
     [refetchTables],
   );
 
