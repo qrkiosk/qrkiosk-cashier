@@ -6,7 +6,6 @@ import { Shift, ShiftStatus, Table, TableType } from "@/types/company";
 import { Order, OrderReqBody, OrderStatus } from "@/types/order";
 import { PaymentStatus } from "@/types/payment";
 import { AuthResult } from "@/types/user";
-import { ALL_ZONES } from "@/utils/constants";
 import { requestWithFallback } from "@/utils/request";
 import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
@@ -15,6 +14,8 @@ import { atomFamily, atomWithStorage, RESET, unwrap } from "jotai/utils";
 import isEmpty from "lodash/isEmpty";
 import uniqBy from "lodash/uniqBy";
 import { getUserInfo } from "zmp-sdk";
+
+export const ALL_ZONES = "-1";
 
 export const userState = atom(() =>
   getUserInfo({

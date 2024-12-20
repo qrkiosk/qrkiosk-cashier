@@ -1,5 +1,4 @@
-import { allZonesAtom, currentZoneAtom } from "@/state";
-import { ALL_ZONES } from "@/utils/constants";
+import { ALL_ZONES, allZonesAtom, currentZoneAtom } from "@/state";
 import { useRadio, useRadioGroup } from "@chakra-ui/react";
 import { useAtomValue, useSetAtom } from "jotai";
 
