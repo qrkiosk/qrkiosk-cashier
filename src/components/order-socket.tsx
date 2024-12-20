@@ -18,21 +18,26 @@ const OrderSocket = () => {
   useEffect(() => {
     if (!token || !storeId) return;
 
-    const socket = new SockJS(
-      `https://ws.greendragonlog.com.vn/socket?token=${token}`,
-    );
-    const stompClient = Stomp.over(socket);
+    let stompClient;
 
-    stompClient.connect({}, (frame) => {
-      console.log("Connected: " + frame);
+    try {
+      const socket = new SockJS(
+        `https://ws.greendragonlog.com.vn/socket?token=${token}`,
+      );
+      stompClient = Stomp.over(socket);
 
-      stompClient.subscribe(`/store/${storeId}/orders`, () => {
-        refetchTablesDebounced();
+      stompClient.connect({}, (frame) => {
+        console.log("Connected: " + frame);
+        stompClient.subscribe(`/store/${storeId}/orders`, () => {
+          refetchTablesDebounced();
+        });
       });
-    });
+    } catch (err) {
+      console.log("order-socket error:", err);
+    }
 
     return () => {
-      stompClient?.disconnect(() => {
+      stompClient?.disconnect?.(() => {
         console.log("Disconnected.");
       });
     };
