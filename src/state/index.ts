@@ -9,6 +9,7 @@ import { AuthResult } from "@/types/user";
 import { ALL_ZONES } from "@/utils/constants";
 import { requestWithFallback } from "@/utils/request";
 import { atom } from "jotai";
+import { atomEffect } from "jotai-effect";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { atomFamily, atomWithStorage, RESET, unwrap } from "jotai/utils";
 import isEmpty from "lodash/isEmpty";
@@ -205,6 +206,11 @@ export const tablesQueryAtom = atomWithQuery<
 }));
 
 export const localTablesAtom = atom<Table[]>([]); // table list for optimistic update and real-time websocket updates
+
+export const syncLocalTablesEffect = atomEffect((get, set) => {
+  const tables = get(tablesQueryAtom).data;
+  set(localTablesAtom, tables);
+});
 
 export const addWsOrderToLocalTablesAtom = atom(
   null,

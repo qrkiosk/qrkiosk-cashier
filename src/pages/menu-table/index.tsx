@@ -1,9 +1,12 @@
 import Button from "@/components/button";
 import FlexDiv from "@/components/flex-div";
 import Tabs from "@/components/tabs";
-import { syncLocalTablesEffect } from "@/effects";
 import { useRemoveQueriesOnUnmount } from "@/hooks";
-import { currentMenuTableTabIndexAtom, tablesQueryAtom } from "@/state";
+import {
+  currentMenuTableTabIndexAtom,
+  syncLocalTablesEffect,
+  tablesQueryAtom,
+} from "@/state";
 import { useAtom, useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
 import toast from "react-hot-toast";
