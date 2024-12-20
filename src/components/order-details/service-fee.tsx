@@ -33,8 +33,7 @@ const ServiceFee = () => {
 
   const isFeeAmountApplied =
     isValidDiscountOrFee(feeAmount) && !isValidDiscountOrFee(feePercentage);
-  const isFeePercentageApplied =
-    isValidDiscountOrFee(feeAmount) && isValidDiscountOrFee(feePercentage);
+  const isFeePercentageApplied = isValidDiscountOrFee(feePercentage);
   const isFeeApplied = isFeeAmountApplied || isFeePercentageApplied;
 
   const onClose = useCallback(() => {

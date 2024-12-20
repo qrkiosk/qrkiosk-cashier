@@ -34,9 +34,7 @@ const PriceReduction = () => {
   const isDiscountAmountApplied =
     isValidDiscountOrFee(discountAmount) &&
     !isValidDiscountOrFee(discountPercentage);
-  const isDiscountPercentageApplied =
-    isValidDiscountOrFee(discountAmount) &&
-    isValidDiscountOrFee(discountPercentage);
+  const isDiscountPercentageApplied = isValidDiscountOrFee(discountPercentage);
   const isDiscountApplied =
     isDiscountAmountApplied || isDiscountPercentageApplied;
 

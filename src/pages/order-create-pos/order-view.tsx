@@ -11,7 +11,6 @@ const OrderView = () => {
   return (
     <>
       <FlexDiv col className="!p-0">
-        <Divider />
         <Customer />
 
         <Divider />
