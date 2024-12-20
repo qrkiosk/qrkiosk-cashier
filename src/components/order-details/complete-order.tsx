@@ -6,6 +6,7 @@ import {
   currentOrderAtom,
   currentOrderQueryAtom,
   currentTableAtom,
+  isOrderPaidAtom,
   tokenAtom,
 } from "@/state";
 import { cartAtom, isCartDirtyAtom } from "@/state/cart";
@@ -50,6 +51,7 @@ const CompleteOrder = () => {
   const table = useAtomValue(currentTableAtom);
   const cart = useAtomValue(cartAtom);
   const order = useAtomValue(currentOrderAtom);
+  const isOrderPaid = useAtomValue(isOrderPaidAtom);
   const [isCartDirty, setIsCartDirty] = useAtom(isCartDirtyAtom);
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
 
@@ -107,7 +109,12 @@ const CompleteOrder = () => {
 
   return (
     <>
-      <Button variant="primary" onClick={onOpen} className="!px-4">
+      <Button
+        variant="primary"
+        onClick={onOpen}
+        className="!px-4"
+        disabled={isOrderPaid}
+      >
         Thanh toán
       </Button>
 
@@ -231,7 +238,7 @@ const CompleteOrder = () => {
             <Button variant="secondary" onClick={onClose}>
               Hủy
             </Button>
-            <Button variant="primary" onClick={onSubmit}>
+            <Button variant="primary" onClick={onSubmit} disabled={isOrderPaid}>
               Thanh toán
             </Button>
           </ModalFooter>

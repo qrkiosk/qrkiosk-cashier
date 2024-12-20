@@ -4,6 +4,7 @@ import { Cart, Category, Color, Product } from "@/types.global";
 import { Tab } from "@/types/common";
 import { Shift, ShiftStatus, Table, TableType } from "@/types/company";
 import { Order, OrderReqBody, OrderStatus } from "@/types/order";
+import { PaymentStatus } from "@/types/payment";
 import { AuthResult } from "@/types/user";
 import { ALL_ZONES } from "@/utils/constants";
 import { requestWithFallback } from "@/utils/request";
@@ -327,4 +328,8 @@ export const draftOrderAtom = atom<Partial<OrderReqBody>>({});
 
 export const isOrderWaitingAtom = atom(
   (get) => get(currentOrderAtom)?.status === OrderStatus.WAIT,
+);
+
+export const isOrderPaidAtom = atom(
+  (get) => get(currentOrderAtom)?.paymentStatus === PaymentStatus.PAID,
 );
