@@ -17,3 +17,11 @@ export interface AuthResult {
   token: string;
   expiresIn: number;
 }
+
+export enum UserRole {
+  ADMIN = "ADMIN",
+  MANAGER = "MANAGER",
+  CASHIER = "CASHIER",
+  WAITER = "WAITER",
+  CUSTOMER = "CUSTOMER",
+}

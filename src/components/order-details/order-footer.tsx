@@ -75,6 +75,7 @@ const OrderFooter = () => {
                     },
                     token,
                   );
+                  // TODO: (await) Notify kitchen
                   await refetchOrder();
                   toast.success("Đã xác nhận đơn.");
                 } catch {
