@@ -1,4 +1,7 @@
-import { updateOrderDetails as updateOrderDetailsApi } from "@/api/order";
+import {
+  updateOrderDetails as updateOrderDetailsApi,
+  updateOrderPaymentStatus as updateOrderPaymentStatusApi,
+} from "@/api/order";
 import { createPaymentTransaction as createPaymentTransactionApi } from "@/api/payment";
 import Button from "@/components/button";
 import { useAuthorizedApi, useResetOrderDetailsAndExitCallback } from "@/hooks";
@@ -10,7 +13,8 @@ import {
   tokenAtom,
 } from "@/state";
 import { cartAtom, isCartDirtyAtom } from "@/state/cart";
-import { PaymentReqBody, PaymentType } from "@/types/payment";
+import { PaymentStatus, PaymentType } from "@/types/payment";
+import { UserRole } from "@/types/user";
 import { withThousandSeparators } from "@/utils/number";
 import {
   buildOrderDetails,
@@ -33,6 +37,7 @@ import {
 import dayjs from "dayjs";
 import { useAtom, useAtomValue } from "jotai";
 import { isNil } from "lodash";
+import compact from "lodash/compact";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaCalendar, FaChair, FaClock } from "react-icons/fa6";
@@ -43,6 +48,9 @@ const CompleteOrder = () => {
   const { isOpen, onOpen: on, onClose } = useDisclosure();
   const [paymentType, setPaymentType] = useState(DEFAULT_PAYMENT_TYPE);
   const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
+  const updateOrderPaymentStatus = useAuthorizedApi(
+    updateOrderPaymentStatusApi,
+  );
   const createPaymentTransaction = useAuthorizedApi(
     createPaymentTransactionApi,
   );
@@ -81,29 +89,49 @@ const CompleteOrder = () => {
   };
 
   const onSubmit = async () => {
-    if (!table || !order) return;
+    if (!order || isOrderPaid) return;
 
-    const data: PaymentReqBody = {
-      data: {
-        amount: order.totalAmount,
-        method: paymentType,
-      },
-      info: {
-        companyId: table.companyId,
-        storeId: table.storeId,
-        orderId: order.id,
-        orderCode: order.code,
-      },
-    };
+    if (order.createdByRole === UserRole.CUSTOMER) {
+      const body = {
+        id: order.id,
+        companyId: order.companyId,
+        storeId: order.storeId,
+        code: order.code,
+        isActive: order.isActive,
+        paymentStatus: order.paymentStatus,
+        paymentStatusNew: PaymentStatus.PAID,
+      };
 
-    try {
-      await createPaymentTransaction(data, token);
+      try {
+        await updateOrderPaymentStatus(body, token);
+        toast.success("Đơn hàng đã được xác nhận thanh toán.");
+        onClose();
+        resetOrderDetailsAndExit();
+      } catch {
+        toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+      }
+    } else {
+      const body = {
+        data: {
+          amount: order.totalAmount,
+          method: paymentType,
+        },
+        info: {
+          companyId: order.companyId,
+          storeId: order.storeId,
+          orderId: order.id,
+          orderCode: order.code,
+        },
+      };
 
-      toast.success("Đơn hàng đã được xác nhận thanh toán.");
-      onClose();
-      resetOrderDetailsAndExit();
-    } catch {
-      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+      try {
+        await createPaymentTransaction(body, token);
+        toast.success("Đơn hàng đã được xác nhận thanh toán.");
+        onClose();
+        resetOrderDetailsAndExit();
+      } catch {
+        toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+      }
     }
   };
 
@@ -134,7 +162,7 @@ const CompleteOrder = () => {
               <div className="flex items-center space-x-1">
                 <FaChair />
                 <span className="text-sm font-semibold">
-                  {[table?.zoneName, table?.name].join(", ")}
+                  {compact([table?.zoneName, table?.name]).join(", ")}
                 </span>
               </div>
               <div className="flex items-center space-x-2">

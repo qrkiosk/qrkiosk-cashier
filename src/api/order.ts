@@ -98,24 +98,21 @@ export const updateOrderStatus = (
   });
 };
 
-export const updateOrderPaymentStatus = ({
-  token,
-  id,
-  paymentStatus,
-  paymentStatusNew,
-}: {
-  token: string;
-  id: string;
-  paymentStatus: PaymentStatus;
-  paymentStatusNew: PaymentStatus;
-}) => {
-  return axios.put(
-    `${BASE_URL}/order/update-status-payment`,
-    { id, paymentStatus, paymentStatusNew },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+export const updateOrderPaymentStatus = (
+  body: {
+    id: string;
+    companyId: number;
+    storeId: number;
+    code: string;
+    isActive: boolean;
+    paymentStatus: PaymentStatus;
+    paymentStatusNew: PaymentStatus;
+  },
+  token: string,
+) => {
+  return axios.put(`${BASE_URL}/order/update-status-payment`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 };

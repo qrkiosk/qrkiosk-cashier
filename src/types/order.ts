@@ -1,6 +1,7 @@
 import { CreateUpdateTrace } from "./common";
 import { PaymentStatus, PaymentType } from "./payment";
 import { ShippingType } from "./shipping";
+import { UserRole } from "./user";
 
 export enum OrderStatus {
   NEW,
@@ -72,6 +73,7 @@ export interface Order extends CreateUpdateTrace {
   paymentStatus: PaymentStatus;
   isActive: boolean;
   note: string;
+  createdByRole: UserRole;
   details: OrderDetail[];
 }
 

@@ -9,7 +9,7 @@ import { useAuthorizedApi, useResetDraftOrderAndExitCallback } from "@/hooks";
 import { currentTableAtom, draftOrderAtom, tokenAtom } from "@/state";
 import { cartAtom } from "@/state/cart";
 import { Order, OrderStatus } from "@/types/order";
-import { PaymentReqBody, PaymentType } from "@/types/payment";
+import { PaymentType } from "@/types/payment";
 import { ShippingType } from "@/types/shipping";
 import { withThousandSeparators } from "@/utils/number";
 import {
@@ -115,7 +115,7 @@ const CompleteOrder = () => {
   const onSubmit = async () => {
     if (!table || !createdOrder) return;
 
-    const data: PaymentReqBody = {
+    const body = {
       data: {
         amount: createdOrder.totalAmount,
         method: paymentType,
@@ -129,8 +129,7 @@ const CompleteOrder = () => {
     };
 
     try {
-      await createPaymentTransaction(data, token);
-
+      await createPaymentTransaction(body, token);
       toast.success("Đơn hàng đã được xác nhận thanh toán.");
       onClose();
       resetDraftOrderAndExit();
