@@ -33,7 +33,7 @@ const SearchAndCategories = () => {
 
   return (
     <>
-      <div className="p-2">
+      <div className="p-3">
         <div className="relative w-full">
           <input
             placeholder="Tìm kiếm sản phẩm"
@@ -63,7 +63,7 @@ const SearchAndCategories = () => {
 
       <div
         className={classNames(
-          "flex-1 space-y-2 overflow-y-auto p-2 transition-[opacity] ease-linear",
+          "flex-1 space-y-3 overflow-y-auto p-3 transition-[opacity] ease-linear",
           { "pointer-events-none opacity-0": hasInput },
         )}
       >
@@ -73,7 +73,7 @@ const SearchAndCategories = () => {
             <div
               key={cat.value}
               className={classNames(
-                "rounded-lg p-2.5 text-xs font-semibold transition-[background]",
+                "rounded-lg p-3 text-xs font-semibold transition-[background]",
                 {
                   "bg-primary text-white": isActive,
                   "cursor-pointer bg-black/5 text-black active:bg-black/10":

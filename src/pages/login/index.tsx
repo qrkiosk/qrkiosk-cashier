@@ -47,7 +47,10 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="w-full flex-1 self-center bg-white py-12 md:w-1/3"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div className="flex flex-col justify-center space-y-6 p-5">
         <FormControl>
           <label
@@ -134,7 +137,7 @@ const LoginForm = () => {
 
 const LoginPage: React.FunctionComponent = () => {
   return (
-    <div className="flex max-w-md flex-1 flex-col bg-white py-12">
+    <div className="flex flex-1 flex-col bg-[--zmp-background-color]">
       <LoginForm />
     </div>
   );
