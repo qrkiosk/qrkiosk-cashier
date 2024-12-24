@@ -33,7 +33,7 @@ const TopStickyHeader = () => {
   }, [input]);
 
   return (
-    <div className="scrollbar-hidden sticky left-0 right-0 top-0 z-[999] space-y-2.5 overflow-x-auto overflow-y-hidden border-b-[1px] border-b-black/5 bg-white p-2">
+    <div className="sticky left-0 right-0 top-0 z-[999] space-y-2.5 border-b-[1px] border-b-black/5 bg-white p-2">
       <div className="px-2">
         <div className="relative w-full">
           <input
@@ -60,7 +60,13 @@ const TopStickyHeader = () => {
         </div>
       </div>
 
-      <div ref={emblaRef} className={classNames("embla", { hidden: hasInput })}>
+      <div
+        ref={emblaRef}
+        className={classNames(
+          "embla scrollbar-hidden overflow-x-auto overflow-y-hidden",
+          { hidden: hasInput },
+        )}
+      >
         <div className="embla__container space-x-1.5">
           {categoryTuples.map((catTuple, index) => (
             <div className="embla__slide space-y-1.5" key={catTuple[0].value}>

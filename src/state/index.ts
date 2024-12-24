@@ -215,8 +215,8 @@ export const syncLocalTablesEffect = atomEffect((get, set) => {
     ...table,
     orders: table.orders.filter(
       (order) =>
-        order.status !== OrderStatus.WAIT &&
-        order.paymentStatus === PaymentStatus.PAID,
+        order.status === OrderStatus.WAIT ||
+        order.paymentStatus !== PaymentStatus.PAID,
     ),
   }));
 

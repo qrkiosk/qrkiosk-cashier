@@ -24,4 +24,6 @@ export enum UserRole {
   CASHIER = "CASHIER",
   WAITER = "WAITER",
   CUSTOMER = "CUSTOMER",
+  BARISTA = "BARISTA",
+  CHEF = "CHEF",
 }
