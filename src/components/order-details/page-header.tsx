@@ -3,9 +3,19 @@ import Breadcrumb from "@/components/breadcrumb";
 import { BackIcon } from "@/components/vectors";
 import { useAuthorizedApi, useResetOrderDetailsAndExitCallback } from "@/hooks";
 import { currentOrderAtom, tokenAtom } from "@/state";
-import { cartAtom, isCartDirtyAtom } from "@/state/cart";
+import {
+  cartAtom,
+  cartSubtotalAmountAtom,
+  isCartDirtyAtom,
+} from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
-import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
+import {
+  buildOrderDetails,
+  calcDiscountAmount,
+  calcDiscountVoucher,
+  calcServiceFee,
+  genOrderReqBody,
+} from "@/utils/order";
 import { useDisclosure } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";
 import toast from "react-hot-toast";
@@ -16,13 +26,19 @@ const useUpdateOrderDetailsCallback = () => {
   const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
   const token = useAtomValue(tokenAtom);
   const cart = useAtomValue(cartAtom);
+  const newCartSubtotalAmount = useAtomValue(cartSubtotalAmountAtom);
   const order = useAtomValue(currentOrderAtom);
 
   return async () => {
     if (!order) return;
 
     const details = buildOrderDetails(cart);
-    const body = genOrderReqBody(order, { details });
+    const body = genOrderReqBody(order, {
+      details,
+      discountVoucher: calcDiscountVoucher(order),
+      discountAmount: calcDiscountAmount(order, newCartSubtotalAmount),
+      serviceFee: calcServiceFee(order, newCartSubtotalAmount),
+    });
 
     try {
       await updateOrderDetails(body, token);

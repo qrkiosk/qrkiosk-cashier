@@ -12,13 +12,20 @@ import {
 } from "@/state";
 import {
   cartAtom,
+  cartSubtotalAmountAtom,
   cartTotalAmountAtom,
   cartTotalQtyAtom,
   isCartDirtyAtom,
 } from "@/state/cart";
 import { OrderStatus } from "@/types/order";
 import { withThousandSeparators } from "@/utils/number";
-import { buildOrderDetails, genOrderReqBody } from "@/utils/order";
+import {
+  buildOrderDetails,
+  calcDiscountAmount,
+  calcDiscountVoucher,
+  calcServiceFee,
+  genOrderReqBody,
+} from "@/utils/order";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import toast from "react-hot-toast";
@@ -36,6 +43,7 @@ const OrderFooter = () => {
   const cart = useAtomValue(cartAtom);
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
   const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
+  const newCartSubtotalAmount = useAtomValue(cartSubtotalAmountAtom);
 
   const totalAmount = useMemo(() => {
     if (!orderTotalAmount || isCartDirty) {
@@ -98,7 +106,15 @@ const OrderFooter = () => {
                   if (!order) return;
 
                   const details = buildOrderDetails(cart);
-                  const body = genOrderReqBody(order, { details });
+                  const body = genOrderReqBody(order, {
+                    details,
+                    discountVoucher: calcDiscountVoucher(order),
+                    discountAmount: calcDiscountAmount(
+                      order,
+                      newCartSubtotalAmount,
+                    ),
+                    serviceFee: calcServiceFee(order, newCartSubtotalAmount),
+                  });
 
                   try {
                     await updateOrderDetails(body, token);

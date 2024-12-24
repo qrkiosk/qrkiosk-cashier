@@ -12,12 +12,18 @@ import {
   isOrderPaidAtom,
   tokenAtom,
 } from "@/state";
-import { cartAtom, isCartDirtyAtom } from "@/state/cart";
+import {
+  cartAtom,
+  cartSubtotalAmountAtom,
+  isCartDirtyAtom,
+} from "@/state/cart";
 import { PaymentStatus, PaymentType } from "@/types/payment";
 import { UserRole } from "@/types/user";
 import { withThousandSeparators } from "@/utils/number";
 import {
   buildOrderDetails,
+  calcDiscountAmount,
+  calcDiscountVoucher,
   calcServiceFee,
   calcTotalDiscount,
   genOrderReqBody,
@@ -62,6 +68,7 @@ const CompleteOrder = () => {
   const isOrderPaid = useAtomValue(isOrderPaidAtom);
   const [isCartDirty, setIsCartDirty] = useAtom(isCartDirtyAtom);
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
+  const newCartSubtotalAmount = useAtomValue(cartSubtotalAmountAtom);
 
   const resetOrderDetailsAndExit = useResetOrderDetailsAndExitCallback();
 
@@ -69,7 +76,12 @@ const CompleteOrder = () => {
     if (!order) return;
 
     const details = buildOrderDetails(cart);
-    const body = genOrderReqBody(order, { details });
+    const body = genOrderReqBody(order, {
+      details,
+      discountVoucher: calcDiscountVoucher(order),
+      discountAmount: calcDiscountAmount(order, newCartSubtotalAmount),
+      serviceFee: calcServiceFee(order, newCartSubtotalAmount),
+    });
 
     try {
       await updateOrderDetails(body, token);
