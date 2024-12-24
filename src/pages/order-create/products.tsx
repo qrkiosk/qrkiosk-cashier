@@ -1,7 +1,12 @@
 import FloatingButton from "@/components/floating-button";
 import OrderItem from "@/components/order/order-item";
 import ProductVariantEditor from "@/components/product/product-variant-editor";
-import { cartAtom, isCartSuggestedFirstItemsAtom } from "@/state/cart";
+import {
+  cartAtom,
+  displayCartItemsAtom,
+  isCartEmptyAtom,
+  isCartSuggestedFirstItemsAtom,
+} from "@/state/cart";
 import { BreadcrumbEntry } from "@/types/common";
 import { useAtom, useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
@@ -13,6 +18,8 @@ const Products = () => {
   const location = useLocation();
   const breadcrumb = location.state?.title as BreadcrumbEntry[];
   const cart = useAtomValue(cartAtom);
+  const isCartEmpty = useAtomValue(isCartEmptyAtom);
+  const displayCartItems = useAtomValue(displayCartItemsAtom);
   const [isCartSuggestedFirstItem, markCartAsSuggested] = useAtom(
     isCartSuggestedFirstItemsAtom,
   );
@@ -38,21 +45,15 @@ const Products = () => {
       <div className="space-y-4 bg-white px-4 py-3">
         <p className="font-semibold">Sản phẩm</p>
 
-        {isEmpty(cart.items) ? (
+        {isCartEmpty ? (
           <p className="py-5 text-center text-sm text-subtitle">
             Giỏ hàng chưa có sản phẩm nào.
           </p>
         ) : (
           <div className="grid-g grid grid-cols-3 gap-y-4">
-            {cart.items.reduce((acc, item) => {
-              if (item.isActive) {
-                return [
-                  ...acc,
-                  <OrderItem key={item.uniqIdentifier} item={item} />,
-                ];
-              }
-              return acc;
-            }, [])}
+            {displayCartItems.map((item) => (
+              <OrderItem key={item.uniqIdentifier} item={item} />
+            ))}
           </div>
         )}
       </div>

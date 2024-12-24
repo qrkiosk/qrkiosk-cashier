@@ -34,7 +34,13 @@ export const isCartDirtyAtom = atom(
   },
 );
 
-export const isCartEmptyAtom = atom((get) => isEmpty(get(cartAtom).items));
+export const displayCartItemsAtom = atom((get) =>
+  get(cartAtom).items.filter((item) => item.isActive),
+);
+
+export const isCartEmptyAtom = atom((get) =>
+  isEmpty(get(displayCartItemsAtom)),
+);
 
 export const cartTotalQtyAtom = atom((get) => {
   return get(cartAtom).items.reduce((acc, item) => {
