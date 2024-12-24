@@ -101,7 +101,7 @@ const CompleteOrder = () => {
     }
   };
 
-  const onCancelPayment = async () => {
+  const onClosePayment = async () => {
     if (createdOrder) {
       await cancelOrder(
         { id: createdOrder.id, reason: "Cashier canceled payment." },
@@ -154,7 +154,7 @@ const CompleteOrder = () => {
         closeOnOverlayClick={false}
         size={{ base: "sm", sm: "md" }}
         isOpen={isOpen}
-        onClose={onCancelPayment}
+        onClose={onClosePayment}
       >
         <ModalOverlay />
         <ModalContent>
@@ -266,7 +266,7 @@ const CompleteOrder = () => {
           </ModalBody>
 
           <ModalFooter className="space-x-2">
-            <Button variant="secondary" onClick={onCancelPayment}>
+            <Button variant="secondary" onClick={onClosePayment}>
               Hủy
             </Button>
             <Button variant="primary" onClick={onSubmit}>

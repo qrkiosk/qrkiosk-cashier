@@ -1,4 +1,5 @@
 import {
+  cancelOrder as cancelOrderApi,
   updateOrderDetails as updateOrderDetailsApi,
   updateOrderStatus as updateOrderStatusApi,
 } from "@/api/order";
@@ -7,6 +8,7 @@ import { useAuthorizedApi, useResetOrderDetailsAndExitCallback } from "@/hooks";
 import {
   currentOrderAtom,
   currentOrderQueryAtom,
+  isOrderPaidAtom,
   isOrderWaitingAtom,
   tokenAtom,
 } from "@/state";
@@ -34,6 +36,7 @@ import CompleteOrder from "./complete-order";
 const OrderFooter = () => {
   const updateOrderDetails = useAuthorizedApi(updateOrderDetailsApi);
   const updateOrderStatus = useAuthorizedApi(updateOrderStatusApi);
+  const cancelOrder = useAuthorizedApi(cancelOrderApi);
   const token = useAtomValue(tokenAtom);
   const totalQty = useAtomValue(cartTotalQtyAtom);
   const order = useAtomValue(currentOrderAtom);
@@ -43,6 +46,7 @@ const OrderFooter = () => {
   const cart = useAtomValue(cartAtom);
   const { refetch: refetchOrder } = useAtomValue(currentOrderQueryAtom);
   const isOrderWaiting = useAtomValue(isOrderWaitingAtom);
+  const isOrderPaid = useAtomValue(isOrderPaidAtom);
   const newCartSubtotalAmount = useAtomValue(cartSubtotalAmountAtom);
 
   const totalAmount = useMemo(() => {
@@ -64,7 +68,32 @@ const OrderFooter = () => {
           </span>
         </div>
         <div className="flex max-w-[260px] items-center space-x-2">
-          {isOrderWaiting ? (
+          {isOrderWaiting && !isOrderPaid && (
+            <Button
+              variant="secondary"
+              onClick={async () => {
+                if (!order) return;
+
+                try {
+                  await cancelOrder(
+                    { id: order.id, reason: "Cashier canceled order." },
+                    token,
+                  );
+                  toast.success("Đã hủy đơn thanh toán trả sau.");
+                  resetOrderDetailsAndExit();
+                } catch {
+                  toast.error(
+                    "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
+                  );
+                }
+              }}
+              className="!px-4"
+            >
+              Hủy
+            </Button>
+          )}
+
+          {isOrderWaiting && (
             <Button
               variant="primary"
               onClick={async () => {
@@ -84,8 +113,14 @@ const OrderFooter = () => {
                     token,
                   );
                   // TODO: (await) Notify kitchen
-                  await refetchOrder();
-                  toast.success("Đã xác nhận đơn.");
+
+                  if (isOrderPaid) {
+                    resetOrderDetailsAndExit();
+                    toast.success("Đã xác nhận đơn thanh toán trả trước.");
+                  } else {
+                    await refetchOrder();
+                    toast.success("Đã xác nhận đơn thanh toán trả sau.");
+                  }
                 } catch {
                   toast.error(
                     "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
@@ -94,9 +129,11 @@ const OrderFooter = () => {
               }}
               className="!px-4"
             >
-              Xác nhận đơn
+              Xác nhận
             </Button>
-          ) : (
+          )}
+
+          {!isOrderWaiting && (
             <>
               <Button
                 disabled={!isCartDirty}
