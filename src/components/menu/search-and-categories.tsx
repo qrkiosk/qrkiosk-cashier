@@ -6,7 +6,7 @@ import {
   searchProductQueryAtom,
 } from "@/state/product";
 import classNames from "classnames";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
 import { useEffect, useMemo, useState } from "react";
@@ -15,8 +15,7 @@ import { FaMagnifyingGlass, FaXmark } from "react-icons/fa6";
 /* For POS screen only */
 const SearchAndCategories = () => {
   const [input, setInput] = useState("");
-  const hasInput = !isEmpty(input);
-  const setSearchQuery = useSetAtom(searchProductQueryAtom);
+  const [searchQuery, setSearchQuery] = useAtom(searchProductQueryAtom);
   const categoryEntries = useAtomValue(categoryEntriesAtom);
   const [focusedCategoryId, setFocusedCategoryId] = useAtom(
     focusedCategoryIdAtom,
@@ -42,7 +41,7 @@ const SearchAndCategories = () => {
             onChange={(e) => setInput(e.target.value)}
           />
 
-          {hasInput ? (
+          {!isEmpty(input) ? (
             <Button
               variant="text"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-subtitle"
@@ -64,7 +63,7 @@ const SearchAndCategories = () => {
       <div
         className={classNames(
           "flex-1 space-y-3 overflow-y-auto p-3 transition-[opacity] ease-linear",
-          { "pointer-events-none opacity-0": hasInput },
+          { "pointer-events-none opacity-0": !isEmpty(searchQuery) },
         )}
       >
         {categoryEntries.map((cat) => {

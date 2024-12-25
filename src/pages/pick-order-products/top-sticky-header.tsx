@@ -6,7 +6,7 @@ import {
 } from "@/state/product";
 import classNames from "classnames";
 import useEmblaCarousel from "embla-carousel-react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import debounce from "lodash/debounce";
 import isEmpty from "lodash/isEmpty";
 import { useEffect, useMemo, useState } from "react";
@@ -15,9 +15,8 @@ import "./embla.css";
 
 const TopStickyHeader = () => {
   const [input, setInput] = useState("");
-  const hasInput = !isEmpty(input);
   const [emblaRef] = useEmblaCarousel({ loop: false, dragFree: true });
-  const setSearchQuery = useSetAtom(searchProductQueryAtom);
+  const [searchQuery, setSearchQuery] = useAtom(searchProductQueryAtom);
   const categoryTuples = useAtomValue(categoryTuplesAtom);
   const [focusedCategoryId, setFocusedCategoryId] = useAtom(
     focusedCategoryIdAtom,
@@ -42,8 +41,7 @@ const TopStickyHeader = () => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
-
-          {hasInput ? (
+          {!isEmpty(input) ? (
             <Button
               variant="text"
               className="absolute right-3 top-1/2 -translate-y-1/2 text-subtitle"
@@ -64,7 +62,7 @@ const TopStickyHeader = () => {
         ref={emblaRef}
         className={classNames(
           "embla scrollbar-hidden overflow-x-auto overflow-y-hidden",
-          { hidden: hasInput },
+          { hidden: !isEmpty(searchQuery) },
         )}
       >
         <div className="embla__container space-x-1.5">
