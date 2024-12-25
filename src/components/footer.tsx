@@ -16,7 +16,7 @@ const BOTTOM_NAV_ITEMS = [
   },
   {
     name: "Sổ quỹ",
-    path: "/cart",
+    path: "/ledger",
     icon: LedgerIcon,
   },
   {

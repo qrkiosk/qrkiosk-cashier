@@ -5,6 +5,7 @@ import ProductDetailPage from "@/pages/catalog/product-detail";
 import ProductListPage from "@/pages/catalog/product-list";
 import ChooseOrderCustomer from "@/pages/choose-order-customer";
 import HomePage from "@/pages/home";
+import LedgerPage from "@/pages/ledger";
 import LoginPage from "@/pages/login";
 import MenuTable from "@/pages/menu-table";
 import OrderCreatePage from "@/pages/order-create";
@@ -147,6 +148,15 @@ const router = createBrowserRouter(
             back: true,
             backAppearance: "close",
             footerless: true,
+          },
+        },
+        {
+          path: "/ledger",
+          element: <LedgerPage />,
+          handle: {
+            title: "Sổ quỹ",
+            back: false,
+            user: true,
           },
         },
       ],
