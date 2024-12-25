@@ -1,3 +1,4 @@
+import EmptyState from "@/components/empty-state";
 import ProductsListing from "@/components/product/products-listing";
 import Divider from "@/components/section-divider";
 import {
@@ -20,12 +21,16 @@ const SearchResult = () => {
     }
   }, [searchQuery]);
 
+  if (isEmpty(searchResults)) {
+    return <EmptyState message="Không có sản phẩm bạn tìm kiếm." />;
+  }
+
   return (
     <div
+      ref={ref}
       className={classNames("flex-1 overflow-y-auto", {
         hidden: isEmpty(searchQuery),
       })}
-      ref={ref}
     >
       {searchResults.map((category) => (
         <Fragment key={category.id}>

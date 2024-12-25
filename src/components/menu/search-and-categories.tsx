@@ -23,7 +23,7 @@ const SearchAndCategories = () => {
   );
 
   const setSearchQueryDebounced = useMemo(
-    () => debounce(setSearchQuery, 500),
+    () => debounce(setSearchQuery, 400),
     [],
   );
 

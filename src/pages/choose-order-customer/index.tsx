@@ -1,5 +1,6 @@
 import { updateOrder as updateOrderApi } from "@/api/order";
 import Button from "@/components/button";
+import EmptyState from "@/components/empty-state";
 import FlexDiv from "@/components/flex-div";
 import HorizontalDivider from "@/components/horizontal-divider";
 import { useAuthorizedApi } from "@/hooks";
@@ -32,7 +33,7 @@ const useDebouncedCustomerSearch = () => {
   const [input, setInput] = useState("");
   const setSearchQuery = useSetAtom(searchCustomerQueryAtom);
   const setSearchQueryDebounced = useMemo(
-    () => debounce(setSearchQuery, 500),
+    () => debounce(setSearchQuery, 400),
     [],
   );
 
@@ -119,9 +120,7 @@ const ChooseOrderCustomer = () => {
       </div>
 
       {isEmpty(searchResults) ? (
-        <p className="py-6 text-center text-sm text-subtitle">
-          Không tìm thấy khách hàng.
-        </p>
+        <EmptyState message="Không tìm thấy khách hàng." />
       ) : (
         <div className="bg-white">
           {searchResults.map((customer) => (
