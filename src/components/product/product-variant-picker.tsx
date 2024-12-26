@@ -145,14 +145,3 @@ const ProductVariantPicker = () => {
 };
 
 export default ProductVariantPicker;
-
-/* 
-<Image
-  src={productVariant.url}
-  alt=""
-  objectFit="cover"
-  w="100%"
-  minHeight="260px"
-  maxHeight="260px"
-/>
-*/
