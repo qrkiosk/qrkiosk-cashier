@@ -1,4 +1,4 @@
-import HorizontalDivider from "@/components/horizontal-divider";
+import Divider from "@/components/section-divider";
 import { ChevronRight } from "@/components/vectors";
 
 const MenuStorePage = () => {
@@ -14,13 +14,23 @@ const MenuStorePage = () => {
         <ChevronRight />
       </div>
 
-      <HorizontalDivider />
+      <Divider />
 
       <div
         className="flex cursor-pointer items-center justify-between bg-background p-2"
         onClick={() => {}}
       >
         <span className="truncate p-2 text-sm font-medium">Sản phẩm</span>
+        <ChevronRight />
+      </div>
+
+      <Divider />
+
+      <div
+        className="flex cursor-pointer items-center justify-between bg-background p-2"
+        onClick={() => {}}
+      >
+        <span className="truncate p-2 text-sm font-medium">Quản lý ca</span>
         <ChevronRight />
       </div>
     </div>
