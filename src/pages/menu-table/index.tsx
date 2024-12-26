@@ -16,7 +16,7 @@ import ZoneList from "./zone-list";
 
 const MENU_TABLE_TABS = ["Tất cả", "Chờ xác nhận", "Đang sử dụng", "Còn trống"];
 
-const MenuTable = () => {
+const MenuTablePage = () => {
   const [index, setIndex] = useAtom(currentMenuTableTabIndexAtom);
   const {
     data,
@@ -102,4 +102,4 @@ const MenuTable = () => {
   );
 };
 
-export default MenuTable;
+export default MenuTablePage;

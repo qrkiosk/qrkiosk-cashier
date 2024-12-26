@@ -7,7 +7,8 @@ import ChooseOrderCustomer from "@/pages/choose-order-customer";
 import HomePage from "@/pages/home";
 import LedgerPage from "@/pages/ledger";
 import LoginPage from "@/pages/login";
-import MenuTable from "@/pages/menu-table";
+import MenuStorePage from "@/pages/menu-store";
+import MenuTablePage from "@/pages/menu-table";
 import OrderCreatePage from "@/pages/order-create";
 import OrderCreatePosPage from "@/pages/order-create-pos";
 import OrderDetailsPage from "@/pages/order-details";
@@ -93,7 +94,7 @@ const router = createBrowserRouter(
         },
         {
           path: "/menu-table",
-          element: <MenuTable />,
+          element: <MenuTablePage />,
           handle: {
             title: "Bán hàng",
             back: false,
@@ -155,6 +156,15 @@ const router = createBrowserRouter(
           element: <LedgerPage />,
           handle: {
             title: "Sổ quỹ",
+            back: false,
+            user: true,
+          },
+        },
+        {
+          path: "/menu-store",
+          element: <MenuStorePage />,
+          handle: {
+            title: "Cửa hàng",
             back: false,
             user: true,
           },
