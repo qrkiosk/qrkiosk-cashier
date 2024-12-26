@@ -104,7 +104,7 @@ const ChooseOrderCustomer = () => {
 
   return (
     <FlexDiv col className="!p-0">
-      <div className="bg-white p-4">
+      <div className="border-b-[1px] border-b-black/5 bg-white p-4">
         <div className="relative w-full">
           <input
             value={input}
