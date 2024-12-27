@@ -23,7 +23,13 @@ const OrderItemOption = ({ option }: { option: CartItemOption }) => {
   return null;
 };
 
-const OrderItem = ({ item }: { item: CartItem }) => {
+const OrderItem = ({
+  item,
+  readOnly = false,
+}: {
+  item: CartItem;
+  readOnly?: boolean;
+}) => {
   const { onOpen } = useProductVariantEditor();
   const removeCartItem = useSetAtom(removeCartItemAtom);
   const itemFormattedPrice = useMemo(
@@ -32,11 +38,11 @@ const OrderItem = ({ item }: { item: CartItem }) => {
   );
 
   const onClickEditItem = useCallback(() => {
-    onOpen(item.id, item);
+    if (!readOnly) onOpen(item.id, item);
   }, [item]);
 
   const onClickRemoveItem = useCallback(() => {
-    removeCartItem(item.uniqIdentifier);
+    if (!readOnly) removeCartItem(item.uniqIdentifier);
   }, [item.uniqIdentifier]);
 
   return (
@@ -61,27 +67,32 @@ const OrderItem = ({ item }: { item: CartItem }) => {
               )}
             </div>
           </div>
-          <div className="flex items-stretch space-x-3 pt-2">
-            <Button
-              size="xs"
-              variant="text"
-              className="text-primary"
-              disabled={item.isDone}
-              onClick={onClickEditItem}
-            >
-              Sửa
-            </Button>
-            <Button
-              size="xs"
-              variant="text"
-              className="text-primary"
-              disabled={item.isDone}
-              onClick={onClickRemoveItem}
-            >
-              Xóa
-            </Button>
-            <div className="clickable-area flex-1" onClick={onClickEditItem} />
-          </div>
+          {!readOnly && (
+            <div className="flex items-stretch space-x-3 pt-2">
+              <Button
+                size="xs"
+                variant="text"
+                className="text-primary"
+                disabled={item.isDone}
+                onClick={onClickEditItem}
+              >
+                Sửa
+              </Button>
+              <Button
+                size="xs"
+                variant="text"
+                className="text-primary"
+                disabled={item.isDone}
+                onClick={onClickRemoveItem}
+              >
+                Xóa
+              </Button>
+              <div
+                className="clickable-area flex-1"
+                onClick={onClickEditItem}
+              />
+            </div>
+          )}
         </div>
       </div>
       <div className="clickable-area col-span-1" onClick={onClickEditItem}>

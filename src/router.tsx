@@ -13,6 +13,7 @@ import OrderCreatePage from "@/pages/order-create";
 import OrderCreatePosPage from "@/pages/order-create-pos";
 import OrderDetailsPage from "@/pages/order-details";
 import OrderDetailsPosPage from "@/pages/order-details-pos";
+import OrderHistoryPage from "@/pages/order-history";
 import PickOrderProducts from "@/pages/pick-order-products";
 import ProfilePage from "@/pages/profile";
 import SearchPage from "@/pages/search";
@@ -167,6 +168,15 @@ const router = createBrowserRouter(
             title: "Cửa hàng",
             back: false,
             user: true,
+          },
+        },
+        {
+          path: "/order-history",
+          element: <OrderHistoryPage />,
+          handle: {
+            title: "Lịch sử đơn hàng",
+            back: true,
+            footerless: true,
           },
         },
       ],
