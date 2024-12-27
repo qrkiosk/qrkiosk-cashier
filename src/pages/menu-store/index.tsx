@@ -1,3 +1,4 @@
+import HorizontalDivider from "@/components/horizontal-divider";
 import Divider from "@/components/section-divider";
 import { ChevronRight } from "@/components/vectors";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +8,8 @@ const MenuStorePage = () => {
 
   return (
     <div className="min-h-full bg-section">
+      <Divider />
+
       <div
         className="flex cursor-pointer items-center justify-between bg-background p-2"
         onClick={() => navigate("/order-history")}
@@ -17,7 +20,7 @@ const MenuStorePage = () => {
         <ChevronRight />
       </div>
 
-      <Divider />
+      <HorizontalDivider />
 
       <div
         className="flex cursor-pointer items-center justify-between bg-background p-2"
@@ -27,7 +30,7 @@ const MenuStorePage = () => {
         <ChevronRight />
       </div>
 
-      <Divider />
+      <HorizontalDivider />
 
       <div
         className="flex cursor-pointer items-center justify-between bg-background p-2"
