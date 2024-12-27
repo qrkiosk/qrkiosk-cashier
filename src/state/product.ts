@@ -15,7 +15,7 @@ import { companyIdAtom, storeIdAtom } from ".";
 
 export const ALL_CATEGORIES = "ALL_CATEGORIES";
 
-export const productsQueryAtom = atomWithQuery<
+export const categoriesWithProductsQueryAtom = atomWithQuery<
   CategoryWithProducts[],
   Error,
   CategoryWithProducts[],
@@ -43,7 +43,7 @@ export const productsQueryAtom = atomWithQuery<
 }));
 
 export const categorizedProductsAtom = atom(
-  (get) => get(productsQueryAtom).data,
+  (get) => get(categoriesWithProductsQueryAtom).data,
 );
 
 export const focusedCategoryIdAtom = atom(ALL_CATEGORIES);

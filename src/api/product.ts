@@ -1,4 +1,8 @@
-import { CategoryWithProducts, ProductWithOptions } from "@/types/product";
+import {
+  CategoryWithProducts,
+  Product,
+  ProductWithOptions,
+} from "@/types/product";
 import axios from "axios";
 import { Response } from "./common";
 import { BASE_URL } from "./constants";
@@ -12,4 +16,8 @@ export const getStoreProductsByCategory = (body: Record<string, any>) => {
 
 export const getProductById = (id: string) => {
   return axios.get<Response<ProductWithOptions>>(`${BASE_URL}/product/${id}`);
+};
+
+export const getProducts = (body: Record<string, any>) => {
+  return axios.post<Response<Product[]>>(`${BASE_URL}/product`, body);
 };

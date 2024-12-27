@@ -9,7 +9,7 @@ import { Icon } from "zmp-ui";
 const ProductItem = {} as {
   Banner: React.FC<{ product: Product }>;
   Grid: React.FC<{ product: Product }>;
-  List: React.FC<{ product: Product }>;
+  List: React.FC<{ product: Product; readOnly: boolean }>;
 };
 
 ProductItem.Banner = ({ product }) => {
@@ -101,10 +101,10 @@ ProductItem.Grid = ({ product }) => {
   );
 };
 
-ProductItem.List = ({ product }) => {
+ProductItem.List = ({ product, readOnly }) => {
   const { onOpen } = useProductVariantPicker();
   const selectProduct = useCallback(() => {
-    onOpen(product.id);
+    if (!readOnly) onOpen(product.id);
   }, [product.id]);
 
   return (
@@ -135,18 +135,20 @@ ProductItem.List = ({ product }) => {
             {[product.price, product.priceSale]}
           </ProductPrice>
         </Box>
-        <IconButton
-          icon={<Icon size={14} icon="zi-plus" />}
-          isRound={true}
-          variant="solid"
-          colorScheme={APP_ACCENT_COLOR}
-          aria-label="Add"
-          size="sm"
-          position="absolute"
-          right={0}
-          bottom={0}
-          onClick={selectProduct}
-        />
+        {!readOnly && (
+          <IconButton
+            icon={<Icon size={14} icon="zi-plus" />}
+            isRound={true}
+            variant="solid"
+            colorScheme={APP_ACCENT_COLOR}
+            aria-label="Add"
+            size="sm"
+            position="absolute"
+            right={0}
+            bottom={0}
+            onClick={selectProduct}
+          />
+        )}
       </div>
     </Card>
   );

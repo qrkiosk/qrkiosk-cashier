@@ -4,7 +4,10 @@ import compact from "lodash/compact";
 import isEmpty from "lodash/isEmpty";
 import { currentOrderQueryAtom, tablesQueryAtom } from ".";
 import { customersQueryAtom } from "./customer";
-import { productsQueryAtom, singleProductQueryAtom } from "./product";
+import {
+  categoriesWithProductsQueryAtom,
+  singleProductQueryAtom,
+} from "./product";
 
 export const hasOngoing401ErrorAtom = atom(false);
 
@@ -13,7 +16,7 @@ export const has401FromAnyQueryAtom = atom((get) => {
     get(tablesQueryAtom).error,
     get(currentOrderQueryAtom).error,
     get(customersQueryAtom).error,
-    get(productsQueryAtom).error,
+    get(categoriesWithProductsQueryAtom).error,
     get(singleProductQueryAtom).error,
   ]) as AxiosError[];
 

@@ -4,6 +4,7 @@ import CategoryListPage from "@/pages/catalog/category-list";
 import ProductDetailPage from "@/pages/catalog/product-detail";
 import ProductListPage from "@/pages/catalog/product-list";
 import ChooseOrderCustomer from "@/pages/choose-order-customer";
+import ConfigProductsPage from "@/pages/configure-products";
 import HomePage from "@/pages/home";
 import LedgerPage from "@/pages/ledger";
 import LoginPage from "@/pages/login";
@@ -175,6 +176,15 @@ const router = createBrowserRouter(
           element: <OrderHistoryPage />,
           handle: {
             title: "Lịch sử đơn hàng",
+            back: true,
+            footerless: true,
+          },
+        },
+        {
+          path: "/configure-products",
+          element: <ConfigProductsPage />,
+          handle: {
+            title: "Sản phẩm",
             back: true,
             footerless: true,
           },
