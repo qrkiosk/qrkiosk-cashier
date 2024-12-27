@@ -31,7 +31,7 @@ const MenuTablePage = () => {
   return (
     <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
       <Tabs
-        items={["Tất cả", "Chờ xác nhận", "Đang sử dụng", "Còn trống"]}
+        items={MENU_TABLE_TABS}
         value={MENU_TABLE_TABS[index]}
         onChange={(tab) => setIndex(MENU_TABLE_TABS.indexOf(tab))}
         renderLabel={(item) => item}
