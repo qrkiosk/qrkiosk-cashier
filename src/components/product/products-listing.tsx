@@ -6,20 +6,24 @@ import useEmblaCarousel from "embla-carousel-react";
 import React, { forwardRef } from "react";
 import ProductItem from "./product-item";
 
-type ProductListingProps = {
+type CommonProductListingProps = {
   category: CategoryWithProducts;
   scrollMargin?: number | undefined;
 };
 
 const ProductsListing = {} as {
   Banner: React.ForwardRefExoticComponent<
-    ProductListingProps & React.RefAttributes<HTMLDivElement>
+    CommonProductListingProps & React.RefAttributes<HTMLDivElement>
   >;
   Grid: React.ForwardRefExoticComponent<
-    ProductListingProps & React.RefAttributes<HTMLDivElement>
+    CommonProductListingProps & React.RefAttributes<HTMLDivElement>
   >;
   List: React.ForwardRefExoticComponent<
-    ProductListingProps & React.RefAttributes<HTMLDivElement>
+    CommonProductListingProps &
+      React.RefAttributes<HTMLDivElement> & {
+        readOnly?: boolean;
+        updateAvailabilityMode?: boolean;
+      }
   >;
 };
 
@@ -70,27 +74,41 @@ ProductsListing.Grid = forwardRef(({ category, scrollMargin }, ref) => {
   );
 });
 
-ProductsListing.List = forwardRef(({ category, scrollMargin }, ref) => {
-  return (
-    <div className="bg-white px-6 py-5">
-      <Box ref={ref} id={category.id} scrollMarginTop={scrollMargin} />
-      <Heading as="p" size="md" fontWeight="semibold" mt={1} mb={4}>
-        {category.name}
-      </Heading>
-      <div className="flex flex-col">
-        {category.products.map((product, idx) => {
-          const isLast = idx === category.products.length - 1;
+ProductsListing.List = forwardRef(
+  (
+    {
+      category,
+      scrollMargin,
+      readOnly = false,
+      updateAvailabilityMode = false,
+    },
+    ref,
+  ) => {
+    return (
+      <div className="bg-white px-6 py-5">
+        <Box ref={ref} id={category.id} scrollMarginTop={scrollMargin} />
+        <Heading as="p" size="md" fontWeight="semibold" mt={1} mb={4}>
+          {category.name}
+        </Heading>
+        <div className="flex flex-col">
+          {category.products.map((product, idx) => {
+            const isLast = idx === category.products.length - 1;
 
-          return (
-            <div key={product.id}>
-              <ProductItem.List product={product} />
-              {!isLast && <LineDivider my={4} />}
-            </div>
-          );
-        })}
+            return (
+              <div key={product.id}>
+                <ProductItem.List
+                  product={product}
+                  readOnly={readOnly}
+                  updateAvailabilityMode={updateAvailabilityMode}
+                />
+                {!isLast && <LineDivider my={4} />}
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 export default ProductsListing;

@@ -12,8 +12,12 @@ import CategoryItem from "./category-item";
 
 const MainMenu = ({
   template = CategoryTemplate.GRID,
+  readOnly = false,
+  updateAvailabilityMode = false,
 }: {
   template?: CategoryTemplate;
+  readOnly?: boolean;
+  updateAvailabilityMode?: boolean;
 }) => {
   const searchQuery = useAtomValue(searchProductQueryAtom);
   const filteredCategories = useAtomValue(filteredCategoriesAtom);
@@ -33,8 +37,14 @@ const MainMenu = ({
         hidden: !isEmpty(searchQuery),
       })}
     >
-      {filteredCategories.map((cat) => (
-        <CategoryItem key={cat.id} category={cat} template={template} />
+      {filteredCategories.map((category) => (
+        <CategoryItem
+          key={category.id}
+          category={category}
+          template={template}
+          readOnly={readOnly}
+          updateAvailabilityMode={updateAvailabilityMode}
+        />
       ))}
     </div>
   );

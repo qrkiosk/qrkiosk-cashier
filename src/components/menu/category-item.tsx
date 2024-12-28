@@ -5,9 +5,13 @@ import { CategoryTemplate, CategoryWithProducts } from "@/types/product";
 const CategoryItem = ({
   category,
   template,
+  readOnly = false,
+  updateAvailabilityMode = false,
 }: {
   category: CategoryWithProducts;
   template: CategoryTemplate;
+  readOnly?: boolean;
+  updateAvailabilityMode?: boolean;
 }) => {
   return (
     <div id={category.id}>
@@ -18,7 +22,13 @@ const CategoryItem = ({
           case CategoryTemplate.GRID:
             return <ProductsListing.Grid category={category} />;
           case CategoryTemplate.LIST:
-            return <ProductsListing.List category={category} />;
+            return (
+              <ProductsListing.List
+                category={category}
+                readOnly={readOnly}
+                updateAvailabilityMode={updateAvailabilityMode}
+              />
+            );
           default:
             return null;
         }

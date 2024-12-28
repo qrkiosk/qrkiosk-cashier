@@ -1,16 +1,24 @@
 import EmptyState from "@/components/empty-state";
-import ProductsListing from "@/components/product/products-listing";
-import Divider from "@/components/section-divider";
 import {
   searchProductQueryAtom,
   searchProductResultsAtom,
 } from "@/state/product";
+import { CategoryTemplate } from "@/types/product";
 import classNames from "classnames";
 import { useAtomValue } from "jotai";
 import isEmpty from "lodash/isEmpty";
-import { Fragment, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import CategoryItem from "./category-item";
 
-const SearchResult = () => {
+const SearchResult = ({
+  template = CategoryTemplate.GRID,
+  readOnly = false,
+  updateAvailabilityMode = false,
+}: {
+  template?: CategoryTemplate;
+  readOnly?: boolean;
+  updateAvailabilityMode?: boolean;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const searchQuery = useAtomValue(searchProductQueryAtom);
   const searchResults = useAtomValue(searchProductResultsAtom);
@@ -33,10 +41,13 @@ const SearchResult = () => {
       })}
     >
       {searchResults.map((category) => (
-        <Fragment key={category.id}>
-          <ProductsListing.Grid category={category} />
-          <Divider />
-        </Fragment>
+        <CategoryItem
+          key={category.id}
+          category={category}
+          template={template}
+          readOnly={readOnly}
+          updateAvailabilityMode={updateAvailabilityMode}
+        />
       ))}
     </div>
   );
