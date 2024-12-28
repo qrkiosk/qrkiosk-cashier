@@ -3,11 +3,11 @@ import FlexDiv from "@/components/flex-div";
 import MainMenu from "@/components/menu/main-menu";
 import SearchResult from "@/components/menu/search-result";
 import TopStickyHeader from "@/components/menu/top-sticky-header";
-import Spinner from "@/components/spinner";
 import { categoriesWithProductsQueryAtom } from "@/state/product";
 import { CategoryTemplate } from "@/types/product";
 import { useAtomValue } from "jotai";
 import toast from "react-hot-toast";
+import { Spinner } from "zmp-ui";
 
 const UpdateAvailability = () => {
   const {
