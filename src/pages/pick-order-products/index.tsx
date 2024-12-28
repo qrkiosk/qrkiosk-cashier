@@ -1,8 +1,8 @@
 import MainMenu from "@/components/menu/main-menu";
 import SearchResult from "@/components/menu/search-result";
+import TopStickyHeader from "@/components/menu/top-sticky-header";
 import ProductVariantPicker from "@/components/product/product-variant-picker";
 import Footer from "./footer";
-import TopStickyHeader from "./top-sticky-header";
 
 const PickOrderProducts = () => {
   return (

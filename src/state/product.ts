@@ -1,8 +1,13 @@
-import { getProductById, getStoreProductsByCategory } from "@/api/product";
+import {
+  getProductById,
+  getProducts,
+  getStoreProductsByCategory,
+} from "@/api/product";
 import { CartItem, CartProductVariant } from "@/types/cart";
 import {
   CategoryWithProducts,
   OptionDetail,
+  Product,
   ProductWithOptions,
 } from "@/types/product";
 import { toTuples } from "@/utils/product";
@@ -11,7 +16,7 @@ import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import compact from "lodash/compact";
 import isEmpty from "lodash/isEmpty";
-import { companyIdAtom, storeIdAtom } from ".";
+import { companyIdAtom, storeIdAtom, tokenAtom } from ".";
 
 export const ALL_CATEGORIES = "ALL_CATEGORIES";
 
@@ -22,7 +27,7 @@ export const categoriesWithProductsQueryAtom = atomWithQuery<
   [string, number | null, number | null]
 >((get) => ({
   initialData: [],
-  queryKey: ["products", get(storeIdAtom), get(companyIdAtom)],
+  queryKey: ["categoriesWithProducts", get(storeIdAtom), get(companyIdAtom)],
   queryFn: async ({ queryKey: [, storeId, companyId] }) => {
     if (storeId == null || companyId == null) return [];
 
@@ -310,3 +315,25 @@ export const searchProductResultsAtom = atom<CategoryWithProducts[]>((get) => {
 
   return searchProducts(searchQuery, products);
 });
+
+export const productsQueryAtom = atomWithQuery<
+  Product[],
+  Error,
+  Product[],
+  [string, string]
+>((get) => ({
+  initialData: [],
+  queryKey: ["products", get(tokenAtom)],
+  queryFn: async ({ queryKey: [, token] }) => {
+    const response = await getProducts(
+      {
+        filtered: [{ id: "name", value: name ?? "" }],
+        sorted: [{ id: "seq", asc: true }],
+        pageSize: 100,
+        page: 0,
+      },
+      token,
+    );
+    return response.data.data;
+  },
+}));

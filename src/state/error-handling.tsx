@@ -6,6 +6,7 @@ import { currentOrderQueryAtom, tablesQueryAtom } from ".";
 import { customersQueryAtom } from "./customer";
 import {
   categoriesWithProductsQueryAtom,
+  productsQueryAtom,
   singleProductQueryAtom,
 } from "./product";
 
@@ -18,6 +19,7 @@ export const has401FromAnyQueryAtom = atom((get) => {
     get(customersQueryAtom).error,
     get(categoriesWithProductsQueryAtom).error,
     get(singleProductQueryAtom).error,
+    get(productsQueryAtom).error,
   ]) as AxiosError[];
 
   if (isEmpty(errors)) return false;

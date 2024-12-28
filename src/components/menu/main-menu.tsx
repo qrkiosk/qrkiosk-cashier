@@ -10,7 +10,11 @@ import isEmpty from "lodash/isEmpty";
 import { useEffect, useRef } from "react";
 import CategoryItem from "./category-item";
 
-const MainMenu = () => {
+const MainMenu = ({
+  template = CategoryTemplate.GRID,
+}: {
+  template?: CategoryTemplate;
+}) => {
   const searchQuery = useAtomValue(searchProductQueryAtom);
   const filteredCategories = useAtomValue(filteredCategoriesAtom);
   const focusedCategoryId = useAtomValue(focusedCategoryIdAtom);
@@ -30,11 +34,7 @@ const MainMenu = () => {
       })}
     >
       {filteredCategories.map((cat) => (
-        <CategoryItem
-          key={cat.id}
-          category={cat}
-          template={CategoryTemplate.GRID}
-        />
+        <CategoryItem key={cat.id} category={cat} template={template} />
       ))}
     </div>
   );

@@ -18,6 +18,10 @@ export const getProductById = (id: string) => {
   return axios.get<Response<ProductWithOptions>>(`${BASE_URL}/product/${id}`);
 };
 
-export const getProducts = (body: Record<string, any>) => {
-  return axios.post<Response<Product[]>>(`${BASE_URL}/product`, body);
+export const getProducts = (body: Record<string, any>, token: string) => {
+  return axios.post<Response<Product[]>>(`${BASE_URL}/product`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
