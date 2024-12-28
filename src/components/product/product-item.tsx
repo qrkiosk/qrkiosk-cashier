@@ -12,7 +12,7 @@ const ProductItem = {} as {
   List: React.FC<{
     product: Product;
     readOnly?: boolean;
-    updateAvailabilityMode?: boolean;
+    simple?: boolean;
   }>;
 };
 
@@ -105,11 +105,7 @@ ProductItem.Grid = ({ product }) => {
   );
 };
 
-ProductItem.List = ({
-  product,
-  readOnly = false,
-  updateAvailabilityMode = false,
-}) => {
+ProductItem.List = ({ product, readOnly = false, simple = false }) => {
   const { onOpen } = useProductVariantPicker();
   const selectProduct = useCallback(() => {
     if (!readOnly) onOpen(product.id);
@@ -129,19 +125,19 @@ ProductItem.List = ({
           loading="lazy"
           borderRadius="xl"
           objectFit="cover"
-          minW={updateAvailabilityMode ? "48px" : "96px"}
-          maxW={updateAvailabilityMode ? "48px" : "96px"}
+          minW={simple ? "48px" : "96px"}
+          maxW={simple ? "48px" : "96px"}
         />
         <div className="flex flex-col">
           <div className="flex-1">
             <p className="text-sm">{product.name}</p>
-            {!updateAvailabilityMode && (
+            {!simple && (
               <p className="two-line-ellipsis text-2xs text-subtitle">
                 {product.description}
               </p>
             )}
           </div>
-          <ProductPrice pb={updateAvailabilityMode ? 0 : 2}>
+          <ProductPrice pb={simple ? 0 : 2}>
             {[product.price, product.priceSale]}
           </ProductPrice>
         </div>

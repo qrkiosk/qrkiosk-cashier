@@ -4,6 +4,7 @@ import { Box, Heading, Divider as LineDivider } from "@chakra-ui/react";
 import classNames from "classnames";
 import useEmblaCarousel from "embla-carousel-react";
 import React, { forwardRef } from "react";
+import { Switch } from "zmp-ui";
 import ProductItem from "./product-item";
 
 type CommonProductListingProps = {
@@ -96,11 +97,24 @@ ProductsListing.List = forwardRef(
 
             return (
               <div key={product.id}>
-                <ProductItem.List
-                  product={product}
-                  readOnly={readOnly}
-                  updateAvailabilityMode={updateAvailabilityMode}
-                />
+                <div className="flex">
+                  <div className="flex-1">
+                    <ProductItem.List
+                      product={product}
+                      readOnly={readOnly}
+                      simple={updateAvailabilityMode}
+                    />
+                  </div>
+
+                  {updateAvailabilityMode && (
+                    <Switch
+                      onChange={(e) => {
+                        console.log(product.id, e.target.checked);
+                      }}
+                    />
+                  )}
+                </div>
+
                 {!isLast && <LineDivider my={4} />}
               </div>
             );
