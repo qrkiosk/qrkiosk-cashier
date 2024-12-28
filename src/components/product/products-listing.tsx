@@ -108,8 +108,10 @@ ProductsListing.List = forwardRef(
 
                   {updateAvailabilityMode && (
                     <Switch
+                      checked={product.isStock}
                       onChange={(e) => {
                         console.log(product.id, e.target.checked);
+                        // TODO: Call API to update availability of product
                       }}
                     />
                   )}
