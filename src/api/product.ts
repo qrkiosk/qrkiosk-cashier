@@ -1,5 +1,6 @@
 import {
   CategoryWithProducts,
+  Option,
   Product,
   ProductWithOptions,
 } from "@/types/product";
@@ -20,6 +21,14 @@ export const getProductById = (id: string) => {
 
 export const getProducts = (body: Record<string, any>, token: string) => {
   return axios.post<Response<Product[]>>(`${BASE_URL}/product`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const getProductOptions = (body: Record<string, any>, token: string) => {
+  return axios.post<Response<Option[]>>(`${BASE_URL}/product/option`, body, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -11,6 +11,7 @@ export interface OptionDetail extends Base {
   name: string;
   price: number;
   isActive: boolean;
+  isStock: boolean;
   productOptionId: string;
   productVariantId: string;
 }
@@ -22,6 +23,7 @@ export interface Option extends Base {
   isMandatory: boolean;
   isMany: boolean;
   isActive: boolean;
+  isStock: boolean;
   details: OptionDetail[];
 }
 
@@ -39,6 +41,7 @@ export interface Product extends Base {
   seq: number;
   url: string;
   isActive: boolean;
+  isStock: boolean;
   categoryId: string;
   productTypeId: string;
   options: Option[];

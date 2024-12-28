@@ -1,13 +1,13 @@
 import {
   getProductById,
-  getProducts,
+  getProductOptions,
   getStoreProductsByCategory,
 } from "@/api/product";
 import { CartItem, CartProductVariant } from "@/types/cart";
 import {
   CategoryWithProducts,
+  Option,
   OptionDetail,
-  Product,
   ProductWithOptions,
 } from "@/types/product";
 import { toTuples } from "@/utils/product";
@@ -316,20 +316,20 @@ export const searchProductResultsAtom = atom<CategoryWithProducts[]>((get) => {
   return searchProducts(searchQuery, products);
 });
 
-export const productsQueryAtom = atomWithQuery<
-  Product[],
+export const productOptionsQueryAtom = atomWithQuery<
+  Option[],
   Error,
-  Product[],
+  Option[],
   [string, string]
 >((get) => ({
   initialData: [],
-  queryKey: ["products", get(tokenAtom)],
+  queryKey: ["productOptions", get(tokenAtom)],
   queryFn: async ({ queryKey: [, token] }) => {
-    const response = await getProducts(
+    const response = await getProductOptions(
       {
-        filtered: [{ id: "name", value: name ?? "" }],
+        filtered: [{ id: "name", value: "" }],
         sorted: [{ id: "seq", asc: true }],
-        pageSize: 100,
+        pageSize: 10,
         page: 0,
       },
       token,
