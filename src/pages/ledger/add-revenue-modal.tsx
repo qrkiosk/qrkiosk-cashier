@@ -15,6 +15,32 @@ const AddRevenueModal = ({
 }) => {
   const user = useAtomValue(userAtom);
 
+  const onSubmit = (values: {
+    amount: string;
+    note: string;
+    paymentMethod: PaymentType;
+    subType: LedgerAccountSubtype;
+  }) => {
+    if (!user) return;
+
+    const body = {
+      companyId: user.companyId,
+      storeId: user.storeId,
+      employeeId: user.employeeId,
+      employeeName: user.name,
+      amount: parseInt(values.amount),
+      type: LedgerAccountType.REVENUE,
+      subType: values.subType,
+      paymentMethod: values.paymentMethod,
+      note: values.note,
+    };
+
+    console.log(body);
+    // TODO: Call API to create revenue
+
+    onClose();
+  };
+
   return (
     <Modal
       maskClosable={false}
@@ -23,31 +49,8 @@ const AddRevenueModal = ({
       onClose={onClose}
     >
       <RevenueForm
-        onSubmit={(values: {
-          amount: string;
-          note: string;
-          paymentMethod: PaymentType;
-          subType: LedgerAccountSubtype;
-        }) => {
-          if (!user) return;
-
-          const body = {
-            companyId: user.companyId,
-            storeId: user.storeId,
-            employeeId: user.employeeId,
-            employeeName: user.name,
-            amount: parseInt(values.amount),
-            type: LedgerAccountType.REVENUE,
-            subType: values.subType,
-            paymentMethod: values.paymentMethod,
-            note: values.note,
-          };
-
-          console.log(body);
-          // TODO: Call API to create revenue
-
-          onClose();
-        }}
+        isOpen={isOpen}
+        onSubmit={onSubmit}
         secondaryAction={
           <Button variant="secondary" onClick={onClose}>
             Hủy
