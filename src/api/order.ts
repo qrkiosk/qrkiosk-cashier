@@ -4,36 +4,12 @@ import axios from "axios";
 import { Response } from "./common";
 import { BASE_URL } from "./constants";
 
-export const getOrders = ({
-  token,
-  storeId,
-  companyId,
-}: {
-  token: string;
-  storeId: number;
-  companyId: number;
-}) => {
-  return axios.post<Response<Order[]>>(
-    `${BASE_URL}/order`,
-    {
-      filtered: [
-        { id: "storeId", value: storeId },
-        { id: "companyId", value: companyId },
-        { id: "name", value: "" },
-        { id: "fromDate", value: "2024-11-10T00:00:00.000Z" },
-        { id: "toDate", value: "" },
-        { id: "status", valueList: [1, 2, 3] },
-      ],
-      sorted: [{ id: "createdAt", asc: true }],
-      pageSize: 20,
-      page: 0,
+export const getOrders = (body: Record<string, any>, token: string) => {
+  return axios.post<Response<Order[]>>(`${BASE_URL}/order`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+  });
 };
 
 export const getOrder = (id: string) => {
