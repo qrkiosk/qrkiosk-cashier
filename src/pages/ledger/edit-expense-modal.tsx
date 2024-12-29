@@ -1,14 +1,22 @@
 import Button from "@/components/button";
 import { userAtom } from "@/state";
-import { LedgerAccountSubtype, LedgerAccountType } from "@/types/company";
+import {
+  LedgerAccount,
+  LedgerAccountSubtype,
+  LedgerAccountType,
+} from "@/types/company";
 import { PaymentType } from "@/types/payment";
 import { useAtomValue } from "jotai";
 import { Modal } from "zmp-ui";
-import { useAddRevenueModal } from "./local-state";
-import RevenueForm from "./revenue-form";
+import ExpenseForm from "./expense-form";
+import { useEditExpenseModal } from "./local-state";
 
-const AddRevenueModal = () => {
-  const { isOpen, onClose } = useAddRevenueModal();
+const EditExpenseModal = ({
+  ledgerAccount,
+}: {
+  ledgerAccount: LedgerAccount;
+}) => {
+  const { isOpen, onClose } = useEditExpenseModal();
   const user = useAtomValue(userAtom);
 
   const onSubmit = async (values: {
@@ -20,19 +28,20 @@ const AddRevenueModal = () => {
     if (!user) return;
 
     const body = {
+      id: ledgerAccount.id,
       companyId: user.companyId,
       storeId: user.storeId,
       employeeId: user.employeeId,
       employeeName: user.name,
       amount: parseInt(values.amount),
-      type: LedgerAccountType.REVENUE,
+      type: LedgerAccountType.EXPENSE,
       subType: values.subType,
       paymentMethod: values.paymentMethod,
       note: values.note,
     };
 
     console.log(body);
-    // TODO: Call API to create revenue
+    // TODO: Call API to update expense
 
     onClose();
   };
@@ -40,13 +49,19 @@ const AddRevenueModal = () => {
   return (
     <Modal
       maskClosable={false}
-      title="Tạo phiếu thu"
+      title="Cập nhật phiếu chi"
       visible={isOpen}
       onClose={onClose}
     >
-      <RevenueForm
+      <ExpenseForm
         isOpen={isOpen}
         onSubmit={onSubmit}
+        initialValues={{
+          amount: ledgerAccount.amount,
+          note: ledgerAccount.note,
+          paymentMethod: ledgerAccount.paymentMethod,
+          subType: ledgerAccount.subType,
+        }}
         secondaryAction={
           <Button variant="secondary" onClick={onClose}>
             Hủy
@@ -57,4 +72,4 @@ const AddRevenueModal = () => {
   );
 };
 
-export default AddRevenueModal;
+export default EditExpenseModal;

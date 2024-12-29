@@ -11,7 +11,7 @@ const AddExpenseModal = () => {
   const { isOpen, onClose } = useAddExpenseModal();
   const user = useAtomValue(userAtom);
 
-  const onSubmit = (values: {
+  const onSubmit = async (values: {
     amount: string;
     note: string;
     paymentMethod: PaymentType;

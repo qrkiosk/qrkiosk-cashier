@@ -4,6 +4,7 @@ import { useAtomValue } from "jotai";
 import { Sheet } from "zmp-ui";
 import AddExpenseModal from "./add-expense-modal";
 import AddRevenueModal from "./add-revenue-modal";
+import EditExpenseModal from "./edit-expense-modal";
 import EditRevenueModal from "./edit-revenue-modal";
 import {
   selectedLedgerAccountAtom,
@@ -50,7 +51,10 @@ const Actions = () => {
       <AddRevenueModal />
       <AddExpenseModal />
       {selectedLedgerAccount != null && (
-        <EditRevenueModal ledgerAccount={selectedLedgerAccount} />
+        <>
+          <EditRevenueModal ledgerAccount={selectedLedgerAccount} />
+          <EditExpenseModal ledgerAccount={selectedLedgerAccount} />
+        </>
       )}
     </>
   );

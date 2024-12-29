@@ -19,7 +19,7 @@ const EditRevenueModal = ({
   const { isOpen, onClose } = useEditRevenueModal();
   const user = useAtomValue(userAtom);
 
-  const onSubmit = (values: {
+  const onSubmit = async (values: {
     amount: string;
     note: string;
     paymentMethod: PaymentType;

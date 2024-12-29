@@ -19,7 +19,11 @@ import {
 } from "react-icons/fa6";
 import { Spinner } from "zmp-ui";
 import Actions from "./actions";
-import { selectedLedgerAccountAtom, useEditRevenueModal } from "./local-state";
+import {
+  selectedLedgerAccountAtom,
+  useEditExpenseModal,
+  useEditRevenueModal,
+} from "./local-state";
 
 type AccountTypeFilter = "ALL" | LedgerAccountType;
 
@@ -58,6 +62,7 @@ const LedgerPage = () => {
 
   const setSelectedLedgerAccount = useSetAtom(selectedLedgerAccountAtom);
   const { onOpen: onOpenEditRevenueModal } = useEditRevenueModal();
+  const { onOpen: onOpenEditExpenseModal } = useEditExpenseModal();
 
   if (isLoading) {
     return (
@@ -153,7 +158,7 @@ const LedgerPage = () => {
                       if (account.type === LedgerAccountType.REVENUE) {
                         onOpenEditRevenueModal();
                       } else if (account.type === LedgerAccountType.EXPENSE) {
-                        // TODO: Open edit expense modal
+                        onOpenEditExpenseModal();
                       }
                     });
                   }}
