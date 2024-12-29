@@ -92,7 +92,7 @@ const RevenueForm = ({
               {...register(FormFields.SUBTYPE)}
             >
               <option value={LedgerAccountSubtype.REVENUE_SALES}>
-                Nguyên vật liệu
+                Bán hàng
               </option>
               <option value={LedgerAccountSubtype.REVENUE_SERVICES}>
                 Dịch vụ
