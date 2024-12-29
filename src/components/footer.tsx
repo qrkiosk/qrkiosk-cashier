@@ -1,7 +1,12 @@
 import { useRouteHandle } from "@/hooks";
 import HorizontalDivider from "./horizontal-divider";
 import TransitionLink from "./transition-link";
-import { HomeIcon, LedgerIcon, MenuTableIcon } from "./vectors";
+import {
+  HomeIcon,
+  KitchenQueueIcon,
+  LedgerIcon,
+  MenuTableIcon,
+} from "./vectors";
 
 const BOTTOM_NAV_ITEMS = [
   {
@@ -13,6 +18,11 @@ const BOTTOM_NAV_ITEMS = [
     name: "Sổ quỹ",
     path: "/ledger",
     icon: LedgerIcon,
+  },
+  {
+    name: "Bếp",
+    path: "/kitchen",
+    icon: KitchenQueueIcon,
   },
   {
     name: "Cửa hàng",

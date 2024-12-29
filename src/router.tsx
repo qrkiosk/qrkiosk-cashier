@@ -6,8 +6,10 @@ import ProductListPage from "@/pages/catalog/product-list";
 import ChooseOrderCustomer from "@/pages/choose-order-customer";
 import ConfigProductsPage from "@/pages/configure-products";
 import HomePage from "@/pages/home";
+import KitchenPage from "@/pages/kitchen";
 import LedgerPage from "@/pages/ledger";
 import LoginPage from "@/pages/login";
+import ManageShiftPage from "@/pages/manage-shift";
 import MenuStorePage from "@/pages/menu-store";
 import MenuTablePage from "@/pages/menu-table";
 import OrderCreatePage from "@/pages/order-create";
@@ -187,6 +189,24 @@ const router = createBrowserRouter(
             title: "Sản phẩm",
             back: true,
             footerless: true,
+          },
+        },
+        {
+          path: "/manage-shift",
+          element: <ManageShiftPage />,
+          handle: {
+            title: "Quản lý ca",
+            back: true,
+            footerless: true,
+          },
+        },
+        {
+          path: "/kitchen",
+          element: <KitchenPage />,
+          handle: {
+            title: "Bếp",
+            back: false,
+            user: true,
           },
         },
       ],
