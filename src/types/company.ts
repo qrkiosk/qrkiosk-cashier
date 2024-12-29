@@ -18,6 +18,7 @@ export enum LedgerAccountType {
 }
 
 export enum LedgerAccountSubtype {
+  EXPENSE_MATERIALS = "EXPENSE_MATERIALS",
   EXPENSE_STAFF = "EXPENSE_STAFF",
   EXPENSE_SPACE = "EXPENSE_SPACE",
   EXPENSE_UTILITIES = "EXPENSE_UTILITIES",
