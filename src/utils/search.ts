@@ -1,3 +1,4 @@
+import { LedgerAccount } from "@/types/company";
 import { Customer } from "@/types/customer";
 import { Order } from "@/types/order";
 import { CategoryWithProducts } from "@/types/product";
@@ -46,6 +47,20 @@ export function searchOrders(searchQuery: string, dataSet: Order[]) {
       { name: "code", weight: 1 },
       { name: "customerName", weight: 1 },
     ],
+  });
+  return fuse.search(searchQuery).map((result) => result.item);
+}
+
+export function searchLedgerAccounts(
+  searchQuery: string,
+  dataSet: LedgerAccount[],
+) {
+  const fuse = new Fuse(dataSet, {
+    includeScore: true,
+    includeMatches: true,
+    shouldSort: true,
+    threshold: 0.3,
+    keys: [{ name: "note", weight: 1 }],
   });
   return fuse.search(searchQuery).map((result) => result.item);
 }

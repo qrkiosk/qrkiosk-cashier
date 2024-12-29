@@ -12,6 +12,26 @@ export enum ShiftStatus {
   CLOSE,
 }
 
+export enum LedgerAccountType {
+  REVENUE = "REVENUE",
+  EXPENSE = "EXPENSE",
+}
+
+export enum LedgerAccountSubtype {
+  EXPENSE_STAFF = "EXPENSE_STAFF",
+  EXPENSE_SPACE = "EXPENSE_SPACE",
+  EXPENSE_UTILITIES = "EXPENSE_UTILITIES",
+  EXPENSE_MARKETING = "EXPENSE_MARKETING",
+  EXPENSE_EQUIPMENT = "EXPENSE_EQUIPMENT",
+  EXPENSE_MANAGEMENT = "EXPENSE_MANAGEMENT",
+  EXPENSE_SAFETY = "EXPENSE_SAFETY",
+  EXPENSE_OTHER = "EXPENSE_OTHER",
+
+  REVENUE_SALES = "REVENUE_SALES",
+  REVENUE_SERVICES = "REVENUE_SERVICES",
+  REVENUE_OTHER = "REVENUE_OTHER",
+}
+
 export interface Table extends CreateUpdateTrace {
   id: number;
   companyId: number;
@@ -59,3 +79,5 @@ export interface Shift extends CreateUpdateTrace {
   status: ShiftStatus;
   ledgers: null;
 }
+
+export interface LedgerAccount extends Record<string, any> {}
