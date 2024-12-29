@@ -116,20 +116,18 @@ const UpdateAvailabilityOptions = () => {
               {option.name}
             </div>
             <div className="space-y-3 p-4 text-sm">
-              {option.details.map((detail) => {
-                return (
-                  <div className="flex items-center">
-                    <div className="flex-1 text-sm">{detail.name}</div>
-                    <Switch
-                      defaultChecked={detail.isStock}
-                      onChange={(e) => {
-                        console.log(detail.id, e.target.checked);
-                        // TODO: Call API to update availability of option detail
-                      }}
-                    />
-                  </div>
-                );
-              })}
+              {option.details.map((detail) => (
+                <div key={detail.id} className="flex items-center">
+                  <div className="flex-1 text-sm">{detail.name}</div>
+                  <Switch
+                    defaultChecked={detail.isStock}
+                    onChange={(e) => {
+                      console.log(detail.id, e.target.checked);
+                      // TODO: Call API to update availability of option detail
+                    }}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         ))}
