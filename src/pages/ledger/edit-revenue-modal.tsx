@@ -36,7 +36,7 @@ const EditRevenueModal = ({
       amount: parseInt(values.amount),
       type: LedgerAccountType.REVENUE,
       subType: values.subType,
-      // paymentMethod: values.paymentMethod,
+      paymentMethod: values.paymentMethod,
       note: values.note,
     };
 
