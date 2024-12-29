@@ -10,7 +10,6 @@ import { ReactNode, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 enum FormFields {
-  TYPE = "type",
   SUBTYPE = "subType",
   PAYMENT_METHOD = "paymentMethod",
   AMOUNT = "amount",
@@ -18,13 +17,15 @@ enum FormFields {
 }
 
 const RevenueForm = ({
+  isOpen,
   onSubmit,
   initialValues,
   secondaryAction,
 }: {
+  isOpen: boolean;
   onSubmit: (values) => void | Promise<void>;
   initialValues?: {
-    type: number;
+    subType: number;
     paymentMethod: PaymentType;
     amount: number;
     note?: string;
@@ -41,12 +42,16 @@ const RevenueForm = ({
 
   useEffect(() => {
     if (initialValues) {
-      setValue(FormFields.SUBTYPE, initialValues.type);
+      setValue(FormFields.SUBTYPE, initialValues.subType);
       setValue(FormFields.PAYMENT_METHOD, initialValues.paymentMethod);
       setValue(FormFields.AMOUNT, initialValues.amount);
       setValue(FormFields.NOTE, initialValues.note ?? "");
     }
   }, [initialValues]);
+
+  useEffect(() => {
+    if (!isOpen) reset();
+  }, [isOpen]);
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>

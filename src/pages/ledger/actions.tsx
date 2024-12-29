@@ -1,23 +1,23 @@
 import FloatingButton from "@/components/floating-button";
 import { useDisclosure } from "@chakra-ui/react";
+import { useAtomValue } from "jotai";
 import { Sheet } from "zmp-ui";
 import AddRevenueModal from "./add-revenue-modal";
+import EditRevenueModal from "./edit-revenue-modal";
+import {
+  selectedLedgerAccountAtom,
+  useAddExpenseModal,
+  useAddRevenueModal,
+} from "./local-state";
 
 const Actions = () => {
+  const selectedLedgerAccount = useAtomValue(selectedLedgerAccountAtom);
+  const { onOpen: onOpenAddRevenueModal } = useAddRevenueModal();
+  const { onOpen: onOpenAddExpenseModal } = useAddExpenseModal();
   const {
     isOpen: isActionsSheetOpen,
     onOpen: onOpenActionsSheet,
     onClose: onCloseActionsSheet,
-  } = useDisclosure();
-  const {
-    isOpen: isRevenueModalOpen,
-    onOpen: onOpenRevenueModal,
-    onClose: onCloseRevenueModal,
-  } = useDisclosure();
-  const {
-    isOpen: isExpenseModalOpen,
-    onOpen: onOpenExpenseModal,
-    onClose: onCloseExpenseModal,
   } = useDisclosure();
 
   return (
@@ -32,16 +32,24 @@ const Actions = () => {
         swipeToClose={false}
         actions={[
           [
-            { text: "Tạo phiếu thu", close: true, onClick: onOpenRevenueModal },
-            { text: "Tạo phiếu chi", close: true, onClick: onOpenExpenseModal },
+            {
+              text: "Tạo phiếu thu",
+              close: true,
+              onClick: onOpenAddRevenueModal,
+            },
+            {
+              text: "Tạo phiếu chi",
+              close: true,
+              onClick: onOpenAddExpenseModal,
+            },
           ],
           [{ text: "Hủy", close: true }],
         ]}
       />
-      <AddRevenueModal
-        isOpen={isRevenueModalOpen}
-        onClose={onCloseRevenueModal}
-      />
+      <AddRevenueModal />
+      {selectedLedgerAccount != null && (
+        <EditRevenueModal ledgerAccount={selectedLedgerAccount} />
+      )}
     </>
   );
 };

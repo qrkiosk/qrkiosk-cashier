@@ -7,7 +7,7 @@ import { LedgerAccountType } from "@/types/company";
 import { withThousandSeparators } from "@/utils/number";
 import { searchLedgerAccounts } from "@/utils/search";
 import dayjs from "dayjs";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import compact from "lodash/compact";
 import isEmpty from "lodash/isEmpty";
 import { Fragment, useMemo, useState } from "react";
@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa6";
 import { Spinner } from "zmp-ui";
 import Actions from "./actions";
+import { selectedLedgerAccountAtom, useEditRevenueModal } from "./local-state";
 
 type AccountTypeFilter = "ALL" | LedgerAccountType;
 
@@ -54,6 +55,9 @@ const LedgerPage = () => {
     }
     return searchLedgerAccounts(search, paymentFilteredOrders);
   }, [ledgerBook, accountTypeFilter, search]);
+
+  const setSelectedLedgerAccount = useSetAtom(selectedLedgerAccountAtom);
+  const { onOpen: onOpenEditRevenueModal } = useEditRevenueModal();
 
   if (isLoading) {
     return (
@@ -123,6 +127,7 @@ const LedgerPage = () => {
             {[
               {
                 id: 1,
+                type: LedgerAccountType.REVENUE,
                 employeeName: "Cashier",
                 paymentMethod: "COD",
                 amount: 10000,
@@ -131,6 +136,7 @@ const LedgerPage = () => {
               },
               {
                 id: 2,
+                type: LedgerAccountType.EXPENSE,
                 employeeName: "Cashier",
                 paymentMethod: "COD",
                 amount: 10000,
@@ -139,7 +145,19 @@ const LedgerPage = () => {
               },
             ].map((account) => (
               <Fragment key={account.id}>
-                <div className="space-y-1 px-5 py-4">
+                <div
+                  className="cursor-pointer space-y-1 px-5 py-4"
+                  onClick={() => {
+                    setSelectedLedgerAccount(account);
+                    setTimeout(() => {
+                      if (account.type === LedgerAccountType.REVENUE) {
+                        onOpenEditRevenueModal();
+                      } else if (account.type === LedgerAccountType.EXPENSE) {
+                        // TODO: Open edit expense modal
+                      }
+                    });
+                  }}
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-primary">
                       <FaCreditCard />
