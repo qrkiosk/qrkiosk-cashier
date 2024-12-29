@@ -3,6 +3,7 @@ export enum PaymentType {
   BANK = "BANK",
   MOMO_SANDBOX = "MOMO_SANDBOX",
   MOMO = "MOMO",
+  E_WALLET = " E_WALLET",
 }
 
 export enum PaymentStatus {

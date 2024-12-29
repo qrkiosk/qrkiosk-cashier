@@ -3,7 +3,7 @@ import { Order } from "@/types/order";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { companyIdAtom, storeIdAtom, tokenAtom } from ".";
 
-export const ordersQuery = atomWithQuery<
+export const ordersQueryAtom = atomWithQuery<
   Order[],
   Error,
   Order[],

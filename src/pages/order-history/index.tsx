@@ -2,7 +2,7 @@ import Button from "@/components/button";
 import EmptyState from "@/components/empty-state";
 import FlexDiv from "@/components/flex-div";
 import HorizontalDivider from "@/components/horizontal-divider";
-import { ordersQuery } from "@/state/order";
+import { ordersQueryAtom } from "@/state/order";
 import { Order } from "@/types/order";
 import { PaymentStatus } from "@/types/payment";
 import { withThousandSeparators } from "@/utils/number";
@@ -35,7 +35,7 @@ const OrderHistoryPage = () => {
     isLoading,
     error,
     refetch: refetchOrders,
-  } = useAtomValue(ordersQuery);
+  } = useAtomValue(ordersQueryAtom);
 
   const filteredOrders = useMemo(() => {
     const paymentFilteredOrders = orders.filter((order) => {
