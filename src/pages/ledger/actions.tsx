@@ -2,6 +2,7 @@ import FloatingButton from "@/components/floating-button";
 import { useDisclosure } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";
 import { Sheet } from "zmp-ui";
+import AddExpenseModal from "./add-expense-modal";
 import AddRevenueModal from "./add-revenue-modal";
 import EditRevenueModal from "./edit-revenue-modal";
 import {
@@ -47,6 +48,7 @@ const Actions = () => {
         ]}
       />
       <AddRevenueModal />
+      <AddExpenseModal />
       {selectedLedgerAccount != null && (
         <EditRevenueModal ledgerAccount={selectedLedgerAccount} />
       )}
