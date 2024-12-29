@@ -1,5 +1,7 @@
 import Button from "@/components/button";
 import FormControl from "@/components/form/form-control";
+import FormError from "@/components/form/form-error";
+import { LedgerAccountSubtype } from "@/types/company";
 import { PaymentType } from "@/types/payment";
 import classNames from "classnames";
 import dayjs from "dayjs";
@@ -15,7 +17,7 @@ enum FormFields {
   NOTE = "note",
 }
 
-const IncomeForm = ({
+const RevenueForm = ({
   onSubmit,
   initialValues,
   secondaryAction,
@@ -73,7 +75,7 @@ const IncomeForm = ({
           <div className="flex h-full items-center justify-end">
             <select
               id={FormFields.SUBTYPE}
-              defaultValue={0}
+              defaultValue={LedgerAccountSubtype.REVENUE_SALES}
               className={classNames(
                 "h-10 w-full rounded-lg bg-section px-1.5 text-xs normal-case outline-none placeholder:text-inactive",
                 {
@@ -84,15 +86,13 @@ const IncomeForm = ({
               )}
               {...register(FormFields.SUBTYPE)}
             >
-              <option value={0}>Nguyên vật liệu</option>
-              <option value={1}>Nhân sự</option>
-              <option value={2}>Mặt bằng</option>
-              <option value={3}>Điện nước & tiện ích</option>
-              <option value={4}>Marketing</option>
-              <option value={5}>Dụng cụ, thiết bị</option>
-              <option value={6}>Quản lý</option>
-              <option value={7}>Vệ sinh an toàn</option>
-              <option value={8}>Khác</option>
+              <option value={LedgerAccountSubtype.REVENUE_SALES}>
+                Nguyên vật liệu
+              </option>
+              <option value={LedgerAccountSubtype.REVENUE_SERVICES}>
+                Dịch vụ
+              </option>
+              <option value={LedgerAccountSubtype.REVENUE_OTHER}>Khác</option>
             </select>
           </div>
         </div>
@@ -134,16 +134,24 @@ const IncomeForm = ({
           </div>
         </div>
         <div className="col-span-1">
-          <div className="flex h-full items-center justify-end">
+          <div className="flex h-full flex-col items-center justify-end">
             <input
               id="fee-amount"
               type="number"
-              className="h-10 w-full rounded-lg bg-section pl-4 pr-3 text-sm normal-case outline-none placeholder:text-inactive"
               placeholder="Nhập số tiền"
-              {...register(FormFields.AMOUNT)}
-              // value={(inputAmount || "").toString()}
-              // onChange={(e) => setInputAmount(parseInt(e.target.value))}
+              className={classNames(
+                "h-10 w-full rounded-lg bg-section pl-4 pr-3 text-sm normal-case outline-none placeholder:text-inactive",
+                {
+                  "border-2 border-red-500": !isEmpty(
+                    errors[FormFields.AMOUNT],
+                  ),
+                },
+              )}
+              {...register(FormFields.AMOUNT, {
+                required: "Đây là trường bắt buộc.",
+              })}
             />
+            <FormError error={errors[FormFields.AMOUNT]} />
           </div>
         </div>
       </div>
@@ -159,8 +167,6 @@ const IncomeForm = ({
           style={{ transition: "height none" }}
           placeholder="Nhập ghi chú"
           {...register(FormFields.NOTE)}
-          // value={input}
-          // onChange={(e) => setInput(e.target.value)}
         />
       </FormControl>
 
@@ -174,4 +180,4 @@ const IncomeForm = ({
   );
 };
 
-export default IncomeForm;
+export default RevenueForm;

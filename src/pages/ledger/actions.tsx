@@ -1,7 +1,7 @@
 import FloatingButton from "@/components/floating-button";
 import { useDisclosure } from "@chakra-ui/react";
 import { Sheet } from "zmp-ui";
-import AddIncomeModal from "./add-income-modal";
+import AddRevenueModal from "./add-revenue-modal";
 
 const Actions = () => {
   const {
@@ -10,9 +10,9 @@ const Actions = () => {
     onClose: onCloseActionsSheet,
   } = useDisclosure();
   const {
-    isOpen: isIncomeModalOpen,
-    onOpen: onOpenIncomeModal,
-    onClose: onCloseIncomeModal,
+    isOpen: isRevenueModalOpen,
+    onOpen: onOpenRevenueModal,
+    onClose: onCloseRevenueModal,
   } = useDisclosure();
   const {
     isOpen: isExpenseModalOpen,
@@ -32,13 +32,16 @@ const Actions = () => {
         swipeToClose={false}
         actions={[
           [
-            { text: "Tạo phiếu thu", close: true, onClick: onOpenIncomeModal },
+            { text: "Tạo phiếu thu", close: true, onClick: onOpenRevenueModal },
             { text: "Tạo phiếu chi", close: true, onClick: onOpenExpenseModal },
           ],
           [{ text: "Hủy", close: true }],
         ]}
       />
-      <AddIncomeModal isOpen={isIncomeModalOpen} onClose={onCloseIncomeModal} />
+      <AddRevenueModal
+        isOpen={isRevenueModalOpen}
+        onClose={onCloseRevenueModal}
+      />
     </>
   );
 };
