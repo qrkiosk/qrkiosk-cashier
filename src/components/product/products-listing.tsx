@@ -1,9 +1,16 @@
-import { useDeviceMode } from "@/hooks";
-import { CategoryWithProducts } from "@/types/product";
+import { updateProductStock as updateProductStockApi } from "@/api/product";
+import { useAuthorizedApi, useDeviceMode } from "@/hooks";
+import { tokenAtom } from "@/state";
+import {
+  CategoryWithProducts,
+  UpdateProductStockReqBody,
+} from "@/types/product";
 import { Box, Heading, Divider as LineDivider } from "@chakra-ui/react";
 import classNames from "classnames";
 import useEmblaCarousel from "embla-carousel-react";
+import { useAtomValue } from "jotai";
 import React, { forwardRef } from "react";
+import toast from "react-hot-toast";
 import { Switch } from "zmp-ui";
 import ProductItem from "./product-item";
 
@@ -85,6 +92,9 @@ ProductsListing.List = forwardRef(
     },
     ref,
   ) => {
+    const updateProductStock = useAuthorizedApi(updateProductStockApi);
+    const token = useAtomValue(tokenAtom);
+
     return (
       <div className="bg-white px-6 py-5">
         <Box ref={ref} id={category.id} scrollMarginTop={scrollMargin} />
@@ -108,10 +118,30 @@ ProductsListing.List = forwardRef(
 
                   {updateAvailabilityMode && (
                     <Switch
-                      defaultChecked={!!product.isStock}
-                      onChange={(e) => {
-                        console.log(product.id, e.target.checked);
-                        // TODO: Call API to update availability of product
+                      defaultChecked={product.isStock}
+                      onChange={async (e) => {
+                        const isProductInStock = e.target.checked;
+                        const body: UpdateProductStockReqBody = {
+                          id: product.id,
+                          companyId: product.companyId,
+                          storeId: product.storeId,
+                          name: product.name,
+                          price: product.price,
+                          seq: product.seq,
+                          url: product.url,
+                          categoryId: product.categoryId,
+                          productTypeId: product.productTypeId,
+                          isActive: product.isActive,
+                          isStock: isProductInStock,
+                        };
+
+                        try {
+                          await updateProductStock(body, token);
+                        } catch {
+                          toast.error(
+                            "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
+                          );
+                        }
                       }}
                     />
                   )}

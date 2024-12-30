@@ -320,16 +320,28 @@ export const productOptionsQueryAtom = atomWithQuery<
   Option[],
   Error,
   Option[],
-  [string, string]
+  [string, string, number | null, number | null]
 >((get) => ({
   initialData: [],
-  queryKey: ["productOptions", get(tokenAtom)],
-  queryFn: async ({ queryKey: [, token] }) => {
+  retry: false,
+  queryKey: [
+    "productOptions",
+    get(tokenAtom),
+    get(storeIdAtom),
+    get(companyIdAtom),
+  ],
+  queryFn: async ({ queryKey: [, token, storeId, companyId] }) => {
+    if (!token || storeId == null || companyId == null) return [];
+
     const response = await getProductOptions(
       {
-        filtered: [{ id: "name", value: "" }],
+        filtered: [
+          { id: "storeId", value: storeId },
+          { id: "companyId", value: companyId },
+          { id: "name", value: "" },
+        ],
         sorted: [{ id: "seq", asc: true }],
-        pageSize: 10,
+        pageSize: 20,
         page: 0,
       },
       token,

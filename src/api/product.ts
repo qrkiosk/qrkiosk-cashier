@@ -3,6 +3,8 @@ import {
   Option,
   Product,
   ProductWithOptions,
+  UpdateProductOptionStockReqBody,
+  UpdateProductStockReqBody,
 } from "@/types/product";
 import axios from "axios";
 import { Response } from "./common";
@@ -33,4 +35,34 @@ export const getProductOptions = (body: Record<string, any>, token: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const updateProductStock = (
+  body: UpdateProductStockReqBody,
+  token: string,
+) => {
+  return axios.put<Response<unknown>>(
+    `${BASE_URL}/product/update-stock`,
+    body,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+};
+
+export const updateProductOptionStock = (
+  body: UpdateProductOptionStockReqBody,
+  token: string,
+) => {
+  return axios.put<Response<unknown>>(
+    `${BASE_URL}/product/option/update`,
+    body,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
 };

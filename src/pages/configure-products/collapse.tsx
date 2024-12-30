@@ -24,7 +24,7 @@ export const Collapse = ({ title, children }: CollapseProps) => {
     <div className="rounded-xl border-[1px] border-black/5 bg-white">
       <div
         className={classNames(
-          "flex cursor-pointer items-center justify-between space-x-3 p-4",
+          "flex cursor-pointer items-center space-x-3 p-4",
           {
             "border-b-0": collapsed,
             "border-b-[1px] border-black/5": !collapsed,
@@ -32,8 +32,8 @@ export const Collapse = ({ title, children }: CollapseProps) => {
         )}
         onClick={toggleCollapse}
       >
-        {title}
         {collapsed ? <FaAngleDown /> : <FaAngleUp />}
+        {title}
       </div>
 
       <animated.div

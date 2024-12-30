@@ -68,3 +68,36 @@ export interface ProductWithOptions extends Product {
 export interface BaseProductVariant extends Product {
   options: OptionWithSelectedDetail[];
 }
+
+export interface UpdateProductStockReqBody {
+  id: string;
+  companyId: number | null;
+  storeId: number | null;
+  name: string;
+  price: number;
+  seq: number;
+  url: string;
+  categoryId: string;
+  productTypeId: string;
+  isActive: boolean;
+  isStock: boolean;
+}
+
+export interface UpdateProductOptionStockReqBody {
+  id: string;
+  companyId: number | null;
+  storeId: number | null;
+  name: string;
+  seq: number;
+  isMandatory: boolean;
+  isMany: boolean;
+  isActive: boolean;
+  isStock: boolean;
+  details: Array<{
+    id: string;
+    name: string;
+    price: number;
+    isActive: boolean;
+    isStock: boolean;
+  }>;
+}
