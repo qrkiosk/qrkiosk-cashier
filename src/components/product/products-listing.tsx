@@ -1,6 +1,7 @@
 import { updateProductStock as updateProductStockApi } from "@/api/product";
 import { useAuthorizedApi, useDeviceMode } from "@/hooks";
 import { tokenAtom } from "@/state";
+import { categoriesWithProductsQueryAtom } from "@/state/product";
 import {
   CategoryWithProducts,
   UpdateProductStockReqBody,
@@ -94,6 +95,9 @@ ProductsListing.List = forwardRef(
   ) => {
     const updateProductStock = useAuthorizedApi(updateProductStockApi);
     const token = useAtomValue(tokenAtom);
+    const { refetch: refetchProducts } = useAtomValue(
+      categoriesWithProductsQueryAtom,
+    );
 
     return (
       <div className="bg-white px-6 py-5">
@@ -137,6 +141,7 @@ ProductsListing.List = forwardRef(
 
                         try {
                           await updateProductStock(body, token);
+                          setTimeout(refetchProducts, 500);
                         } catch {
                           toast.error(
                             "Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.",
