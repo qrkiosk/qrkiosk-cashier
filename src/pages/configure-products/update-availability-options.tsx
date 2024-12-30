@@ -3,6 +3,7 @@ import { productOptionsQueryAtom } from "@/state/product";
 import { Option, OptionDetail } from "@/types/product";
 import { useAtomValue } from "jotai";
 import { Switch } from "zmp-ui";
+import { Collapse } from "./collapse";
 
 const UpdateAvailabilityOptions = () => {
   const {
@@ -108,14 +109,11 @@ const UpdateAvailabilityOptions = () => {
             ] as OptionDetail[],
           } as Option,
         ].map((option) => (
-          <div
+          <Collapse
             key={option.id}
-            className="rounded-xl border-[1px] border-black/5 bg-white"
+            title={<span className="text-sm font-semibold">{option.name}</span>}
           >
-            <div className="border-b-[1px] p-4 text-sm font-semibold">
-              {option.name}
-            </div>
-            <div className="space-y-3 p-4 text-sm">
+            <div className="space-y-3 p-4">
               {option.details.map((detail) => (
                 <div key={detail.id} className="flex items-center">
                   <div className="flex-1 text-sm">{detail.name}</div>
@@ -129,7 +127,7 @@ const UpdateAvailabilityOptions = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </Collapse>
         ))}
       </div>
     </FlexDiv>
