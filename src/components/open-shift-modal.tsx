@@ -64,7 +64,7 @@ const OpenShiftModal = () => {
             </GridItem>
             <GridItem colSpan={2}>
               <Box h="100%" display="flex" alignItems="center">
-                <Text>{dayjs().format("DD/MM/YYYY HH:mm")}</Text>
+                <Text>{dayjs().format("HH:mm DD/MM/YYYY")}</Text>
               </Box>
             </GridItem>
 

@@ -195,7 +195,7 @@ const router = createBrowserRouter(
           path: "/manage-shift",
           element: <ManageShiftPage />,
           handle: {
-            title: "Quản lý ca",
+            title: "Ca làm việc",
             back: true,
             footerless: true,
           },
