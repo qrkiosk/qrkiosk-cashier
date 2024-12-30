@@ -27,6 +27,7 @@ export const categoriesWithProductsQueryAtom = atomWithQuery<
   [string, number | null, number | null]
 >((get) => ({
   initialData: [],
+  retry: false,
   queryKey: ["categoriesWithProducts", get(storeIdAtom), get(companyIdAtom)],
   queryFn: async ({ queryKey: [, storeId, companyId] }) => {
     if (storeId == null || companyId == null) return [];

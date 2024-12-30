@@ -10,6 +10,7 @@ export const ordersQueryAtom = atomWithQuery<
   [string, number | null, number | null, string]
 >((get) => ({
   initialData: [],
+  retry: false,
   queryKey: ["orders", get(companyIdAtom), get(storeIdAtom), get(tokenAtom)],
   queryFn: async ({ queryKey: [, companyId, storeId, token] }) => {
     if (!token || storeId == null || companyId == null) {
