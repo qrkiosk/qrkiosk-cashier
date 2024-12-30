@@ -1,14 +1,25 @@
+import { createLedgerAccount as createLedgerAccountApi } from "@/api/company";
 import Button from "@/components/button";
-import { userAtom } from "@/state";
-import { LedgerAccountSubtype, LedgerAccountType } from "@/types/company";
+import { useAuthorizedApi } from "@/hooks";
+import { tokenAtom, userAtom } from "@/state";
+import { ledgerBookQueryAtom } from "@/state/company";
+import {
+  LedgerAccountReqBody,
+  LedgerAccountSubtype,
+  LedgerAccountType,
+} from "@/types/company";
 import { PaymentType } from "@/types/payment";
 import { useAtomValue } from "jotai";
+import toast from "react-hot-toast";
 import { Modal } from "zmp-ui";
 import { useAddRevenueModal } from "./local-state";
 import RevenueForm from "./revenue-form";
 
 const AddRevenueModal = () => {
   const { isOpen, onClose } = useAddRevenueModal();
+  const createLedgerAccount = useAuthorizedApi(createLedgerAccountApi);
+  const { refetch: refetchLedgerBook } = useAtomValue(ledgerBookQueryAtom);
+  const token = useAtomValue(tokenAtom);
   const user = useAtomValue(userAtom);
 
   const onSubmit = async (values: {
@@ -19,7 +30,7 @@ const AddRevenueModal = () => {
   }) => {
     if (!user) return;
 
-    const body = {
+    const body: LedgerAccountReqBody = {
       companyId: user.companyId,
       storeId: user.storeId,
       employeeId: user.employeeId,
@@ -31,10 +42,14 @@ const AddRevenueModal = () => {
       note: values.note,
     };
 
-    console.log(body);
-    // TODO: Call API to create revenue
-
-    onClose();
+    try {
+      await createLedgerAccount(body, token);
+      await refetchLedgerBook();
+      toast.success("Tạo phiếu thu thành công.");
+      onClose();
+    } catch {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
   };
 
   return (

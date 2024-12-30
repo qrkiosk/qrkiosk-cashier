@@ -125,30 +125,11 @@ const LedgerPage = () => {
           </div>
         </div>
 
-        {isEmpty([1]) ? (
+        {isEmpty(filteredLedgerBook) ? (
           <EmptyState message="Không có dữ liệu." />
         ) : (
           <div className="bg-white">
-            {[
-              {
-                id: 1,
-                type: LedgerAccountType.REVENUE,
-                employeeName: "Cashier",
-                paymentMethod: "COD",
-                amount: 10000,
-                note: "abc",
-                createdAt: dayjs().toISOString(),
-              },
-              {
-                id: 2,
-                type: LedgerAccountType.EXPENSE,
-                employeeName: "Cashier",
-                paymentMethod: "COD",
-                amount: 10000,
-                note: "abc",
-                createdAt: dayjs().toISOString(),
-              },
-            ].map((account) => (
+            {filteredLedgerBook.map((account) => (
               <Fragment key={account.id}>
                 <div
                   className="cursor-pointer space-y-1 px-5 py-4"

@@ -1,5 +1,6 @@
 import { CreateUpdateTrace } from "./common";
 import { Order } from "./order";
+import { PaymentType } from "./payment";
 
 export enum TableType {
   TAKE_AWAY = "TAKE_AWAY",
@@ -82,3 +83,16 @@ export interface Shift extends CreateUpdateTrace {
 }
 
 export interface LedgerAccount extends Record<string, any> {}
+
+export interface LedgerAccountReqBody {
+  id?: number;
+  companyId: number;
+  storeId: number;
+  employeeId: number;
+  employeeName: string;
+  type: LedgerAccountType;
+  subType: LedgerAccountSubtype;
+  paymentMethod: PaymentType;
+  amount: number;
+  note: string;
+}

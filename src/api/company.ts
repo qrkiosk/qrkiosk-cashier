@@ -1,4 +1,9 @@
-import { LedgerAccount, Shift, Table } from "@/types/company";
+import {
+  LedgerAccount,
+  LedgerAccountReqBody,
+  Shift,
+  Table,
+} from "@/types/company";
 import axios from "axios";
 import { Response } from "./common";
 import { BASE_URL } from "./constants";
@@ -55,6 +60,36 @@ export const createShift = (
 export const getLedgerBook = (body: Record<string, any>, token: string) => {
   return axios.post<Response<{ pages: number; data: LedgerAccount[] }>>(
     `${BASE_URL}/company/store/ledger`,
+    body,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+};
+
+export const createLedgerAccount = (
+  body: LedgerAccountReqBody,
+  token: string,
+) => {
+  return axios.post<Response<unknown>>(
+    `${BASE_URL}/company/store/ledger/create`,
+    body,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+};
+
+export const updateLedgerAccount = (
+  body: LedgerAccountReqBody,
+  token: string,
+) => {
+  return axios.put<Response<unknown>>(
+    `${BASE_URL}/company/store/ledger/update`,
     body,
     {
       headers: {

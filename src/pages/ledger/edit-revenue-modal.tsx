@@ -1,5 +1,8 @@
+import { updateLedgerAccount as updateLedgerAccountApi } from "@/api/company";
 import Button from "@/components/button";
-import { userAtom } from "@/state";
+import { useAuthorizedApi } from "@/hooks";
+import { tokenAtom, userAtom } from "@/state";
+import { ledgerBookQueryAtom } from "@/state/company";
 import {
   LedgerAccount,
   LedgerAccountSubtype,
@@ -7,6 +10,7 @@ import {
 } from "@/types/company";
 import { PaymentType } from "@/types/payment";
 import { useAtomValue } from "jotai";
+import toast from "react-hot-toast";
 import { Modal } from "zmp-ui";
 import { useEditRevenueModal } from "./local-state";
 import RevenueForm from "./revenue-form";
@@ -17,6 +21,9 @@ const EditRevenueModal = ({
   ledgerAccount: LedgerAccount;
 }) => {
   const { isOpen, onClose } = useEditRevenueModal();
+  const updateLedgerAccount = useAuthorizedApi(updateLedgerAccountApi);
+  const { refetch: refetchLedgerBook } = useAtomValue(ledgerBookQueryAtom);
+  const token = useAtomValue(tokenAtom);
   const user = useAtomValue(userAtom);
 
   const onSubmit = async (values: {
@@ -40,10 +47,14 @@ const EditRevenueModal = ({
       note: values.note,
     };
 
-    console.log(body);
-    // TODO: Call API to update revenue
-
-    onClose();
+    try {
+      await updateLedgerAccount(body, token);
+      await refetchLedgerBook();
+      toast.success("Cập nhật phiếu thu thành công.");
+      onClose();
+    } catch {
+      toast.error("Xảy ra lỗi trong quá trình xử lý. Vui lòng thử lại sau.");
+    }
   };
 
   return (
