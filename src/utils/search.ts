@@ -60,7 +60,10 @@ export function searchLedgerAccounts(
     includeMatches: true,
     shouldSort: true,
     threshold: 0.3,
-    keys: [{ name: "note", weight: 1 }],
+    keys: [
+      { name: "amount", weight: 1 },
+      { name: "note", weight: 1 },
+    ],
   });
   return fuse.search(searchQuery).map((result) => result.item);
 }

@@ -52,11 +52,10 @@ const LedgerPage = () => {
       }
     });
 
-    return paymentFilteredOrders;
-
     if (isEmpty(search)) {
       return paymentFilteredOrders;
     }
+
     return searchLedgerAccounts(search, paymentFilteredOrders);
   }, [ledgerBook, accountTypeFilter, search]);
 
