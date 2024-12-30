@@ -1,6 +1,7 @@
 import { isAuthenticatedAtom, logoutAtom, tokenAtom, userAtom } from "@/state";
 import userSVG from "@/static/user.svg";
 import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -9,6 +10,10 @@ const Profile = () => {
   const navigate = useNavigate();
   const logout = useSetAtom(logoutAtom);
   const token = useAtomValue(tokenAtom);
+
+  useEffect(() => {
+    console.log(token);
+  }, [token]);
 
   if (!isAuthenticated) return null;
 

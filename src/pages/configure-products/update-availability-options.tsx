@@ -118,7 +118,7 @@ const UpdateAvailabilityOptions = () => {
                 <div key={detail.id} className="flex items-center">
                   <div className="flex-1 text-sm">{detail.name}</div>
                   <Switch
-                    defaultChecked={detail.isStock}
+                    defaultChecked={!!detail.isStock}
                     onChange={(e) => {
                       console.log(detail.id, e.target.checked);
                       // TODO: Call API to update availability of option detail

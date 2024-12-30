@@ -35,7 +35,7 @@ export const categoriesWithProductsQueryAtom = atomWithQuery<
       filtered: [
         { id: "storeId", value: storeId },
         { id: "companyId", value: companyId },
-        { id: "name", value: name ?? "" },
+        { id: "name", value: "" },
       ],
       sorted: [{ id: "seq", asc: true }],
       pageSize: 10,
