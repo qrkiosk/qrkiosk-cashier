@@ -24,7 +24,7 @@ const EndShiftForm = () => {
   const navigate = useNavigate();
   const { data: orders } = useAtomValue(ordersQueryAtom);
   const { data: ledgerBook } = useAtomValue(ledgerBookQueryAtom);
-  const [shift, setCurrentShift] = useAtom(currentShiftAtom);
+  const [currentShift, setCurrentShift] = useAtom(currentShiftAtom);
   const token = useAtomValue(tokenAtom);
   const endShift = useAuthorizedApi(endShiftApi);
   const {
@@ -34,15 +34,15 @@ const EndShiftForm = () => {
   } = useForm();
 
   const onSubmit = async (values: { amount: string; note: string }) => {
-    if (!shift) return;
+    if (!currentShift) return;
 
     const body = {
-      id: shift.id,
-      companyId: shift.companyId,
-      storeId: shift.storeId,
-      employeeId: shift.employeeId,
-      employeeName: shift.employeeName,
-      beginAmount: shift.beginAmount,
+      id: currentShift.id,
+      companyId: currentShift.companyId,
+      storeId: currentShift.storeId,
+      employeeId: currentShift.employeeId,
+      employeeName: currentShift.employeeName,
+      beginAmount: currentShift.beginAmount,
       endAmount: parseInt(values.amount),
       note: values.note,
       orders: orders.map(({ id }) => id),

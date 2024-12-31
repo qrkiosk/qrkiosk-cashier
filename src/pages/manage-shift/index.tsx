@@ -15,7 +15,7 @@ import EndShiftForm from "./end-shift-form";
 import Line from "./line";
 
 const ManageShiftPage = () => {
-  const shift = useAtomValue(currentShiftAtom);
+  const currentShift = useAtomValue(currentShiftAtom);
   const { onOpen } = useStartShiftModal();
   const { refetch: refetchOrders } = useAtomValue(ordersQueryAtom);
   const { refetch: refetchLedgerBook } = useAtomValue(ledgerBookQueryAtom);
@@ -25,7 +25,7 @@ const ManageShiftPage = () => {
     refetchLedgerBook();
   }, []);
 
-  if (!shift) {
+  if (!currentShift) {
     return (
       <FlexDiv col className="!p-0">
         <EmptyState message="Hiện chưa mở ca làm việc." />
@@ -46,13 +46,13 @@ const ManageShiftPage = () => {
         <div className="grid grid-cols-6 gap-y-2">
           <Line
             left={<span className="text-sm font-semibold">Mã</span>}
-            mid={<span className="text-sm">{shift.id}</span>}
+            mid={<span className="text-sm">{currentShift.id}</span>}
           />
           <Line
             left={<span className="text-sm font-semibold">Ngày tạo</span>}
             mid={
               <span className="text-sm">
-                {dayjs(shift.beginDate).format("HH:mm DD/MM/YYYY")}
+                {dayjs(currentShift.beginDate).format("HH:mm DD/MM/YYYY")}
               </span>
             }
           />
@@ -67,7 +67,7 @@ const ManageShiftPage = () => {
             left={<span className="text-sm font-semibold">Đầu ca</span>}
             mid={
               <span className="text-sm">
-                Tiền mặt: {withThousandSeparators(shift.beginAmount)}
+                Tiền mặt: {withThousandSeparators(currentShift.beginAmount)}
               </span>
             }
           />
