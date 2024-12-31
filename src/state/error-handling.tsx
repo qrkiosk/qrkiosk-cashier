@@ -23,7 +23,7 @@ export const has401FromAnyQueryAtom = atom((get) => {
     get(singleProductQueryAtom).error,
     get(productOptionsQueryAtom).error,
     get(ordersQueryAtom).error,
-    get(ledgerBookQueryAtom),
+    get(ledgerBookQueryAtom).error,
   ]) as AxiosError[];
 
   if (isEmpty(errors)) return false;
