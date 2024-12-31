@@ -11,6 +11,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import ConfigProvider from "./config-provider";
 import Footer from "./footer";
 import Header from "./header";
+import LongShiftWarning from "./long-shift-warning";
 import OpenShiftModal from "./open-shift-modal";
 import OrderSocket from "./order-socket";
 import { PageSkeleton } from "./skeleton";
@@ -46,7 +47,7 @@ const InnerLayout = () => {
       />
       <OrderSocket />
       <OpenShiftModal />
-      {/* <ScrollRestoration /> */}
+      <LongShiftWarning />
     </div>
   );
 };
