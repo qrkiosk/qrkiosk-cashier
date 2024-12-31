@@ -5,6 +5,7 @@ import HorizontalDivider from "@/components/horizontal-divider";
 import { ledgerBookQueryAtom } from "@/state/company";
 import { LedgerAccountType } from "@/types/company";
 import { withThousandSeparators } from "@/utils/number";
+import { toDisplayPaymentMethod } from "@/utils/payment";
 import { searchLedgerAccounts } from "@/utils/search";
 import dayjs from "dayjs";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -159,7 +160,7 @@ const LedgerPage = () => {
                       <p className="text-xs text-subtitle">
                         {compact([
                           account.employeeName,
-                          account.paymentMethod,
+                          toDisplayPaymentMethod(account.paymentMethod),
                         ]).join(" • ")}
                       </p>
                       <p className="text-xs text-subtitle">{account.note}</p>

@@ -3,6 +3,7 @@ import FormControl from "@/components/form/form-control";
 import FormError from "@/components/form/form-error";
 import { LedgerAccountSubtype } from "@/types/company";
 import { PaymentType } from "@/types/payment";
+import { toDisplayPaymentMethod } from "@/utils/payment";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import isEmpty from "lodash/isEmpty";
@@ -142,9 +143,11 @@ const ExpenseForm = ({
               )}
               {...register(FormFields.PAYMENT_METHOD)}
             >
-              <option value={PaymentType.COD}>Tiền mặt</option>
-              <option value={PaymentType.BANK}>Chuyển khoản</option>
-              <option value={PaymentType.MOMO}>Ví Momo</option>
+              {[PaymentType.COD, PaymentType.BANK, PaymentType.MOMO].map(
+                (item) => (
+                  <option value={item}>{toDisplayPaymentMethod(item)}</option>
+                ),
+              )}
             </select>
           </div>
         </div>

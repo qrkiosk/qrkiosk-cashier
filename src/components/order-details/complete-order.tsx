@@ -28,6 +28,7 @@ import {
   calcTotalDiscount,
   genOrderReqBody,
 } from "@/utils/order";
+import { toDisplayPaymentMethod } from "@/utils/payment";
 import {
   Modal,
   ModalBody,
@@ -267,9 +268,11 @@ const CompleteOrder = () => {
               onChange={(v: PaymentType) => setPaymentType(v)}
             >
               <Stack direction="column" spacing={1.5}>
-                <Radio value={PaymentType.COD}>Tiền mặt</Radio>
-                <Radio value={PaymentType.BANK}>Chuyển khoản</Radio>
-                <Radio value={PaymentType.MOMO}>Ví Momo</Radio>
+                {[PaymentType.COD, PaymentType.BANK, PaymentType.MOMO].map(
+                  (item) => (
+                    <Radio value={item}>{toDisplayPaymentMethod(item)}</Radio>
+                  ),
+                )}
               </Stack>
             </RadioGroup>
           </ModalBody>
