@@ -26,7 +26,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 
 const OpenShiftModal = () => {
@@ -41,10 +41,10 @@ const OpenShiftModal = () => {
   const token = useAtomValue(tokenAtom);
   const companyId = useAtomValue(companyIdAtom);
   const storeId = useAtomValue(storeIdAtom);
-  const setCurrentShift = useSetAtom(currentShiftAtom);
+  const [currentShift, setCurrentShift] = useAtom(currentShiftAtom);
 
   useEffect(() => {
-    if (!token || !companyId || !storeId) return;
+    if (!token || !companyId || !storeId || currentShift != null) return;
 
     checkIsShiftOpen({ companyId, storeId }, token).then((res) => {
       const shift = res.data.data;
@@ -54,7 +54,7 @@ const OpenShiftModal = () => {
         setCurrentShift(shift);
       }
     });
-  }, [token, companyId, storeId]);
+  }, [token, companyId, storeId, currentShift]);
 
   return (
     <Modal

@@ -57,6 +57,28 @@ export const createShift = (
   });
 };
 
+export const endShift = (
+  body: {
+    id: number;
+    companyId: number;
+    storeId: number;
+    employeeId: number;
+    employeeName: string;
+    beginAmount: number;
+    endAmount: number;
+    note: string;
+    orders: string[];
+    ledgers: number[];
+  },
+  token: string,
+) => {
+  return axios.put<unknown>(`${BASE_URL}/company/store/shift/close`, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export const getLedgerBook = (body: Record<string, any>, token: string) => {
   return axios.post<Response<{ pages: number; data: LedgerAccount[] }>>(
     `${BASE_URL}/company/store/ledger`,

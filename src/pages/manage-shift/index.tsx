@@ -1,39 +1,43 @@
 import Button from "@/components/button";
+import EmptyState from "@/components/empty-state";
 import FlexDiv from "@/components/flex-div";
 import Divider from "@/components/section-divider";
+import { useOpenShiftModal } from "@/hooks";
+import { currentShiftAtom } from "@/state";
+import { ledgerBookQueryAtom } from "@/state/company";
+import { ordersQueryAtom } from "@/state/order";
 import { withThousandSeparators } from "@/utils/number";
-import classNames from "classnames";
 import dayjs from "dayjs";
-import { ReactNode } from "react";
+import { useAtomValue } from "jotai";
+import { useEffect } from "react";
 import Collapse from "./collapse";
-
-const Line = ({
-  left,
-  mid,
-  right,
-  leftIndent = false,
-}: {
-  left: ReactNode;
-  mid: ReactNode;
-  right?: ReactNode;
-  leftIndent?: boolean;
-}) => {
-  return (
-    <>
-      <div
-        className={classNames("col-span-3 flex items-center", {
-          "pl-2": leftIndent,
-        })}
-      >
-        {left}
-      </div>
-      <div className="col-span-3 flex items-center justify-end">{mid}</div>
-      {right && <div className="col-span-1 flex items-center">{right}</div>}
-    </>
-  );
-};
+import EndShiftForm from "./end-shift-form";
+import Line from "./line";
 
 const ManageShiftPage = () => {
+  const shift = useAtomValue(currentShiftAtom);
+  const { onOpen } = useOpenShiftModal();
+  const { refetch: refetchOrders } = useAtomValue(ordersQueryAtom);
+  const { refetch: refetchLedgerBook } = useAtomValue(ledgerBookQueryAtom);
+
+  useEffect(() => {
+    refetchOrders();
+    refetchLedgerBook();
+  }, []);
+
+  if (!shift) {
+    return (
+      <FlexDiv col className="!p-0">
+        <EmptyState message="Hiện chưa mở ca làm việc." />
+        <div className="flex justify-center space-x-3 p-2">
+          <Button variant="primary" onClick={onOpen}>
+            Mở ca
+          </Button>
+        </div>
+      </FlexDiv>
+    );
+  }
+
   return (
     <FlexDiv col className="!p-0">
       <Divider />
@@ -42,13 +46,13 @@ const ManageShiftPage = () => {
         <div className="grid grid-cols-6 gap-y-2">
           <Line
             left={<span className="text-sm font-semibold">Mã</span>}
-            mid={<span className="text-sm">6986411313</span>}
+            mid={<span className="text-sm">{shift.id}</span>}
           />
           <Line
             left={<span className="text-sm font-semibold">Ngày tạo</span>}
             mid={
               <span className="text-sm">
-                {dayjs().format("HH:mm DD/MM/YYYY")}
+                {dayjs(shift.beginDate).format("HH:mm DD/MM/YYYY")}
               </span>
             }
           />
@@ -63,7 +67,7 @@ const ManageShiftPage = () => {
             left={<span className="text-sm font-semibold">Đầu ca</span>}
             mid={
               <span className="text-sm">
-                Tiền mặt: {withThousandSeparators(200000)}
+                Tiền mặt: {withThousandSeparators(shift.beginAmount)}
               </span>
             }
           />
@@ -178,69 +182,7 @@ const ManageShiftPage = () => {
 
       <Divider />
 
-      <div className="bg-white p-4">
-        <div className="grid grid-cols-6 gap-y-2">
-          <Line
-            left={<span className="text-sm font-semibold">Cuối ca</span>}
-            mid={
-              <span className="text-sm font-semibold">
-                Tiền mặt: {withThousandSeparators(200000)}
-              </span>
-            }
-          />
-          <Line
-            leftIndent
-            left={
-              <label htmlFor="actual-cash" className="text-sm">
-                Tiền mặt thực tế
-              </label>
-            }
-            mid={
-              <input
-                id="actual-cash"
-                type="number"
-                placeholder="Nhập số tiền"
-                className={classNames(
-                  "h-8 w-3/4 rounded-lg bg-section pl-4 pr-3 text-xs normal-case outline-none placeholder:text-inactive",
-                  {
-                    "border-2 border-red-500": false,
-                  },
-                )}
-              />
-            }
-          />
-          <Line
-            leftIndent
-            left={<span className="text-sm">Số tiền chênh lệch</span>}
-            mid={
-              <span className="text-sm font-semibold">
-                {withThousandSeparators(0)}
-              </span>
-            }
-          />
-
-          <div className="col-span-6 pl-2">
-            <label htmlFor="shift-note" className="text-sm">
-              Ghi chú
-            </label>
-            <textarea
-              id="shift-note"
-              rows={3}
-              maxLength={500}
-              className="w-full resize-none rounded-lg bg-section p-4 text-sm normal-case outline-none placeholder:text-inactive"
-              style={{ transition: "height none" }}
-              placeholder="Nhập ghi chú"
-            />
-          </div>
-        </div>
-      </div>
-
-      <Divider />
-
-      <div className="flex justify-center space-x-3 p-2">
-        <Button variant="secondary">Hủy</Button>
-        <Button variant="primary">Đóng ca</Button>
-      </div>
+      <EndShiftForm />
     </FlexDiv>
   );
 };
