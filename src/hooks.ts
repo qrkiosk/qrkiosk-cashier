@@ -23,7 +23,7 @@ import { withErrorStatusCodeHandler } from "@/utils/error";
 import { getConfig } from "@/utils/template";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 import {
   MutableRefObject,
   useCallback,
@@ -146,26 +146,28 @@ export const use401ErrorFlag = () => {
   return { escalate, deEscalate };
 };
 
-const showErrorToastDebounced = debounce(() => {
-  toast.error(
-    "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục sử dụng.",
-    { duration: 5000 },
-  );
-}, 500);
-
 export const useHandle401 = () => {
   const navigate = useNavigate();
   const logout = useSetAtom(logoutAtom);
   const has401 = useAtomValue(has401Atom);
   const { deEscalate } = use401ErrorFlag();
 
+  const onHandle401 = useMemo(
+    () =>
+      throttle(() => {
+        deEscalate();
+        toast.error(
+          "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để tiếp tục sử dụng.",
+          { duration: 5000 },
+        );
+        logout();
+        navigate("/login", { replace: true });
+      }, 3000),
+    [],
+  );
+
   useEffect(() => {
-    if (has401) {
-      deEscalate();
-      showErrorToastDebounced();
-      logout();
-      navigate("/login", { replace: true });
-    }
+    if (has401) onHandle401();
   }, [has401]);
 };
 
