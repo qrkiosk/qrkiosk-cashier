@@ -5,6 +5,7 @@ import { tokenAtom, userAtom } from "@/state";
 import { ledgerBookQueryAtom } from "@/state/company";
 import {
   LedgerAccount,
+  LedgerAccountReqBody,
   LedgerAccountSubtype,
   LedgerAccountType,
 } from "@/types/company";
@@ -34,7 +35,7 @@ const EditRevenueModal = ({
   }) => {
     if (!user) return;
 
-    const body = {
+    const body: LedgerAccountReqBody = {
       id: ledgerAccount.id,
       companyId: user.companyId,
       storeId: user.storeId,
@@ -65,6 +66,7 @@ const EditRevenueModal = ({
       onClose={onClose}
     >
       <RevenueForm
+        isEdit
         isOpen={isOpen}
         onSubmit={onSubmit}
         initialValues={{

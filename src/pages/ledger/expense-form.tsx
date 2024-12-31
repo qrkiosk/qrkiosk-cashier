@@ -22,6 +22,7 @@ const ExpenseForm = ({
   onSubmit,
   initialValues,
   secondaryAction,
+  isEdit = false,
 }: {
   isOpen: boolean;
   onSubmit: (values) => void | Promise<void>;
@@ -32,6 +33,7 @@ const ExpenseForm = ({
     note?: string;
   };
   secondaryAction?: ReactNode;
+  isEdit?: boolean;
 }) => {
   const {
     handleSubmit,
@@ -82,6 +84,7 @@ const ExpenseForm = ({
             <select
               id={FormFields.SUBTYPE}
               defaultValue={LedgerAccountSubtype.EXPENSE_MATERIALS}
+              disabled={isEdit}
               className={classNames(
                 "h-10 w-full rounded-lg bg-section px-1.5 text-xs normal-case outline-none placeholder:text-inactive",
                 {
@@ -133,6 +136,7 @@ const ExpenseForm = ({
             <select
               id={FormFields.PAYMENT_METHOD}
               defaultValue={PaymentType.COD}
+              disabled={isEdit}
               className={classNames(
                 "h-10 w-full rounded-lg bg-section px-1.5 text-xs normal-case outline-none placeholder:text-inactive",
                 {
