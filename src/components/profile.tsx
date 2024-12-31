@@ -9,7 +9,7 @@ import userSVG from "@/static/user.svg";
 import dayjs from "dayjs";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const isAuthenticated = useAtomValue(isAuthenticatedAtom);
@@ -31,10 +31,17 @@ const Profile = () => {
         <img className="h-[32px] w-[32px]" src={userSVG} />
         <div>
           <p className="text-xs font-semibold">{user?.name}</p>
-          <p className="text-2xs text-subtitle">
-            Ca #{currentShift?.id} (mở lúc{" "}
-            {dayjs(currentShift?.beginDate).format("HH:mm DD/MM/YYYY")})
-          </p>
+          <div className="text-2xs text-subtitle">
+            <span>Ca </span>
+            <Link to="/manage-shift" className="text-primary">
+              #{currentShift?.id}
+            </Link>
+            <span>
+              {" "}
+              (mở lúc{" "}
+              {dayjs(currentShift?.beginDate).format("HH:mm DD/MM/YYYY")})
+            </span>
+          </div>
         </div>
       </div>
       {/* <button
