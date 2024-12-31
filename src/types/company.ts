@@ -82,7 +82,19 @@ export interface Shift extends CreateUpdateTrace {
   ledgers: null;
 }
 
-export interface LedgerAccount extends Record<string, any> {}
+export interface LedgerAccount extends CreateUpdateTrace {
+  id: number;
+  companyId: number;
+  storeId: number;
+  employeeId: number;
+  employeeName: string;
+  type: LedgerAccountType;
+  subType: LedgerAccountSubtype;
+  paymentMethod: PaymentType;
+  amount: number;
+  note: string;
+  isActive: boolean;
+}
 
 export interface LedgerAccountReqBody {
   id?: number;

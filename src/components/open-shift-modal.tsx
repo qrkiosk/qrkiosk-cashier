@@ -36,6 +36,7 @@ const OpenShiftModal = () => {
   const { isOpen, onOpen, onClose } = useOpenShiftModal();
   const createShift = useAuthorizedApi(createShiftApi);
   const checkIsShiftOpen = useAuthorizedApi(checkIsShiftOpenApi);
+
   const user = useAtomValue(userAtom)!;
   const token = useAtomValue(tokenAtom);
   const companyId = useAtomValue(companyIdAtom);
