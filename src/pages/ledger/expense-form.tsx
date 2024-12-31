@@ -166,7 +166,7 @@ const ExpenseForm = ({
         <div className="col-span-1">
           <div className="flex h-full flex-col items-center justify-end">
             <input
-              id="fee-amount"
+              id={FormFields.AMOUNT}
               type="number"
               placeholder="Nhập số tiền"
               className={classNames(
@@ -191,6 +191,7 @@ const ExpenseForm = ({
           Ghi chú:
         </label>
         <textarea
+          id={FormFields.NOTE}
           rows={3}
           maxLength={500}
           className="w-full resize-none rounded-lg bg-section p-4 text-sm normal-case outline-none placeholder:text-inactive"
@@ -200,12 +201,12 @@ const ExpenseForm = ({
         />
       </FormControl>
 
-      <div className="flex justify-end space-x-2">
+      <FormControl className="flex justify-end space-x-2">
         {secondaryAction}
         <Button variant="primary" type="submit" disabled={isSubmitting}>
           Lưu
         </Button>
-      </div>
+      </FormControl>
     </form>
   );
 };
