@@ -1,7 +1,15 @@
-import { createShift as createShiftApi } from "@/api/company";
-import { checkOpenShiftEffect } from "@/effects";
+import {
+  checkIsShiftOpen as checkIsShiftOpenApi,
+  createShift as createShiftApi,
+} from "@/api/company";
 import { useAuthorizedApi, useOpenShiftModal } from "@/hooks";
-import { tokenAtom, userAtom } from "@/state";
+import {
+  companyIdAtom,
+  currentShiftAtom,
+  storeIdAtom,
+  tokenAtom,
+  userAtom,
+} from "@/state";
 import {
   Box,
   Button,
@@ -18,19 +26,34 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { useAtom, useAtomValue } from "jotai";
-import { useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect, useState } from "react";
 
 const OpenShiftModal = () => {
   const toast = useToast();
   const [amount, setAmount] = useState<string>("");
   const [note, setNote] = useState<string>("");
-  const { isOpen, onClose } = useOpenShiftModal();
+  const { isOpen, onOpen, onClose } = useOpenShiftModal();
   const createShift = useAuthorizedApi(createShiftApi);
+  const checkIsShiftOpen = useAuthorizedApi(checkIsShiftOpenApi);
   const user = useAtomValue(userAtom)!;
   const token = useAtomValue(tokenAtom);
+  const companyId = useAtomValue(companyIdAtom);
+  const storeId = useAtomValue(storeIdAtom);
+  const setCurrentShift = useSetAtom(currentShiftAtom);
 
-  useAtom(checkOpenShiftEffect);
+  useEffect(() => {
+    if (!token || !companyId || !storeId) return;
+
+    checkIsShiftOpen({ companyId, storeId }, token).then((res) => {
+      const shift = res.data.data;
+      if (shift == null) {
+        onOpen();
+      } else {
+        setCurrentShift(shift);
+      }
+    });
+  }, [token, companyId, storeId]);
 
   return (
     <Modal
