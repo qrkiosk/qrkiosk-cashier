@@ -12,9 +12,9 @@ import ConfigProvider from "./config-provider";
 import Footer from "./footer";
 import Header from "./header";
 import LongShiftWarning from "./long-shift-warning";
-import OpenShiftModal from "./open-shift-modal";
 import OrderSocket from "./order-socket";
 import { PageSkeleton } from "./skeleton";
+import StartShiftModal from "./start-shift-modal";
 
 const InnerLayout = () => {
   useHandle401();
@@ -46,7 +46,7 @@ const InnerLayout = () => {
         }}
       />
       <OrderSocket />
-      <OpenShiftModal />
+      <StartShiftModal />
       <LongShiftWarning />
     </div>
   );

@@ -2,7 +2,7 @@ import Button from "@/components/button";
 import EmptyState from "@/components/empty-state";
 import FlexDiv from "@/components/flex-div";
 import Divider from "@/components/section-divider";
-import { useOpenShiftModal } from "@/hooks";
+import { useStartShiftModal } from "@/hooks";
 import { currentShiftAtom } from "@/state";
 import { ledgerBookQueryAtom } from "@/state/company";
 import { ordersQueryAtom } from "@/state/order";
@@ -16,7 +16,7 @@ import Line from "./line";
 
 const ManageShiftPage = () => {
   const shift = useAtomValue(currentShiftAtom);
-  const { onOpen } = useOpenShiftModal();
+  const { onOpen } = useStartShiftModal();
   const { refetch: refetchOrders } = useAtomValue(ordersQueryAtom);
   const { refetch: refetchLedgerBook } = useAtomValue(ledgerBookQueryAtom);
 

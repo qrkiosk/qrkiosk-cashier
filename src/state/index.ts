@@ -146,7 +146,7 @@ export const activeTabAtom = atom<Tab>(Tab.TABLE);
 
 export const currentZoneAtom = atom<string>(ALL_ZONES);
 
-export const openShiftModalAtom = atom(false);
+export const startShiftModalAtom = atom(false);
 
 export const tablesQueryAtom = atomWithQuery<
   Table[],

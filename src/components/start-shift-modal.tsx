@@ -2,7 +2,7 @@ import {
   checkIsShiftOpen as checkIsShiftOpenApi,
   createShift as createShiftApi,
 } from "@/api/company";
-import { useAuthorizedApi, useOpenShiftModal } from "@/hooks";
+import { useAuthorizedApi, useStartShiftModal } from "@/hooks";
 import {
   companyIdAtom,
   currentShiftAtom,
@@ -29,11 +29,11 @@ import dayjs from "dayjs";
 import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 
-const OpenShiftModal = () => {
+const StartShiftModal = () => {
   const toast = useToast();
   const [amount, setAmount] = useState<string>("");
   const [note, setNote] = useState<string>("");
-  const { isOpen, onOpen, onClose } = useOpenShiftModal();
+  const { isOpen, onOpen, onClose } = useStartShiftModal();
   const createShift = useAuthorizedApi(createShiftApi);
   const checkIsShiftOpen = useAuthorizedApi(checkIsShiftOpenApi);
 
@@ -199,4 +199,4 @@ const OpenShiftModal = () => {
   );
 };
 
-export default OpenShiftModal;
+export default StartShiftModal;

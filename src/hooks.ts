@@ -6,7 +6,7 @@ import {
   draftOrderAtom,
   isAuthenticatedAtom,
   logoutAtom,
-  openShiftModalAtom,
+  startShiftModalAtom,
   tablesQueryAtom,
 } from "@/state";
 import { resetCartAtom } from "@/state/cart";
@@ -130,8 +130,8 @@ export const useRemoveQueriesOnUnmount = (queryKey: string[]) => {
   );
 };
 
-export const useOpenShiftModal = () => {
-  const [state, setState] = useAtom(openShiftModalAtom);
+export const useStartShiftModal = () => {
+  const [state, setState] = useAtom(startShiftModalAtom);
   const onOpen = useCallback(() => setState(true), []);
   const onClose = useCallback(() => setState(false), []);
 
