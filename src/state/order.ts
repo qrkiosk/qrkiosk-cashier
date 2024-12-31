@@ -1,31 +1,54 @@
 import { getOrders } from "@/api/order";
+import { Shift, ShiftStatus } from "@/types/company";
 import { Order } from "@/types/order";
 import { atomWithQuery } from "jotai-tanstack-query";
-import { companyIdAtom, storeIdAtom, tokenAtom } from ".";
+import { companyIdAtom, currentShiftAtom, storeIdAtom, tokenAtom } from ".";
 
 export const ordersQueryAtom = atomWithQuery<
   Order[],
   Error,
   Order[],
-  [string, number | null, number | null, string]
+  [string, string, number | null, number | null, Shift | null]
 >((get) => ({
   initialData: [],
   retry: false,
-  queryKey: ["orders", get(companyIdAtom), get(storeIdAtom), get(tokenAtom)],
-  queryFn: async ({ queryKey: [, companyId, storeId, token] }) => {
-    if (!token || storeId == null || companyId == null) {
+  queryKey: [
+    "orders",
+    get(tokenAtom),
+    get(storeIdAtom),
+    get(companyIdAtom),
+    get(currentShiftAtom),
+  ],
+  queryFn: async ({
+    queryKey: [, token, storeId, companyId, currentShift],
+  }) => {
+    if (
+      !token ||
+      storeId == null ||
+      companyId == null ||
+      currentShift == null
+    ) {
       return [];
     }
 
+    const { status, beginDate, endDate } = currentShift;
+
+    if (status == null) return [];
+
+    const isShiftOpen = status === ShiftStatus.OPEN;
+    const isShiftClosed = status === ShiftStatus.CLOSE;
+
+    if ((isShiftOpen && !beginDate) || (isShiftClosed && !endDate)) return [];
+
+    const fromDate = isShiftClosed ? endDate : beginDate;
     const response = await getOrders(
       {
         filtered: [
-          { id: "storeId", value: storeId },
           { id: "companyId", value: companyId },
-          { id: "name", value: "" },
-          { id: "fromDate", value: "2024-12-01T00:00:00.000Z" },
+          { id: "storeId", value: storeId },
+          { id: "fromDate", value: fromDate },
           { id: "toDate", value: "" },
-          // { id: "status", valueList: [1, 2, 3] },
+          { id: "name", value: "" },
         ],
         sorted: [{ id: "createdAt", asc: true }],
         pageSize: 100,

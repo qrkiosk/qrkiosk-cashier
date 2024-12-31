@@ -7,18 +7,14 @@ import { Order } from "@/types/order";
 import { PaymentStatus } from "@/types/payment";
 import { withThousandSeparators } from "@/utils/number";
 import { searchOrders } from "@/utils/search";
-import { useDisclosure } from "@chakra-ui/react";
+import { Tag, useDisclosure } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { useAtomValue } from "jotai";
 import { compact } from "lodash";
 import isEmpty from "lodash/isEmpty";
 import { Fragment, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import {
-  FaCreditCard,
-  FaMagnifyingGlass,
-  FaPenToSquare,
-} from "react-icons/fa6";
+import { FaCreditCard, FaMagnifyingGlass } from "react-icons/fa6";
 import { Spinner } from "zmp-ui";
 import OrderDetailsSheet from "./order-details-sheet";
 
@@ -129,60 +125,55 @@ const OrderHistoryPage = () => {
           <EmptyState message="Không có dữ liệu." />
         ) : (
           <div className="bg-white">
-            {filteredOrders.map((order) => (
-              <Fragment key={order.id}>
-                <div
-                  className="space-y-1 px-5 py-4"
-                  onClick={() => {
-                    setSelectedOrder(order);
-                    setTimeout(onOpen);
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-primary">
-                      <FaCreditCard />
-                      <span className="font-semibold text-primary">
-                        {withThousandSeparators(order.amount)}
+            {filteredOrders.map((order) => {
+              const isOrderPaid = order.paymentStatus === PaymentStatus.PAID;
+
+              return (
+                <Fragment key={order.id}>
+                  <div
+                    className="space-y-1 px-5 py-4"
+                    onClick={() => {
+                      setSelectedOrder(order);
+                      setTimeout(onOpen);
+                    }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2 text-primary">
+                        <FaCreditCard />
+                        <span className="font-semibold text-primary">
+                          {withThousandSeparators(order.amount)}
+                        </span>
+                      </div>
+                      <span className="text-sm font-semibold">
+                        {dayjs(order.createdAt).format("HH:mm DD/MM/YYYY")}
                       </span>
                     </div>
-                    <span className="text-sm font-semibold">
-                      {dayjs(order.createdAt).format("HH:mm DD/MM/YYYY")}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="text-xs text-subtitle">
-                        {compact([
-                          order.tableName,
-                          order.code,
-                          order.customerName,
-                          order.note,
-                        ]).join(" • ")}
-                      </p>
-                      <p className="text-xs text-subtitle">
-                        {order.paymentType}
-                      </p>
-                    </div>
-                    <div className="flex items-center pl-3">
-                      <Button
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="text-xs text-subtitle">
+                          {compact([
+                            order.tableName,
+                            order.code,
+                            order.customerName,
+                            order.note,
+                          ]).join(" • ")}
+                        </p>
+                        <p className="text-xs text-subtitle">
+                          {order.paymentType}
+                        </p>
+                      </div>
+                      <Tag
                         size="sm"
-                        variant="text"
-                        onClick={() => {
-                          setSelectedOrder(order);
-                          setTimeout(onOpen);
-                        }}
+                        colorScheme={isOrderPaid ? "green" : "gray"}
                       >
-                        <FaPenToSquare
-                          className="text-subtitle"
-                          fontSize={16}
-                        />
-                      </Button>
+                        {isOrderPaid ? "ĐÃ TH.TOÁN" : "CHƯA TH.TOÁN"}
+                      </Tag>
                     </div>
                   </div>
-                </div>
-                <HorizontalDivider />
-              </Fragment>
-            ))}
+                  <HorizontalDivider />
+                </Fragment>
+              );
+            })}
           </div>
         )}
       </FlexDiv>
